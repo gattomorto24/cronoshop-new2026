@@ -679,7 +679,9 @@
         <p id="modalDesc" style="color:var(--text-sec); line-height:1.6; margin-bottom:24px;"></p>
         
         <div id="aiResponse" style="background:var(--bg-base); padding:16px; border-radius:12px; margin-bottom:20px; display:none; border-left: 3px solid var(--primary);"></div>
-        <button class="ios-btn btn-primary" style="margin-bottom:12px;"><i class="ph-bold ph-amazon-logo"></i> Acquista su Amazon</button>
+        <button id="btnBuyAmazon" class="ios-btn btn-primary" style="margin-bottom:12px;">
+    <i class="ph-bold ph-amazon-logo"></i> Acquista su Amazon
+        </button>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
             <button id="btnAddToCart" class="ios-btn btn-secondary"><i class="ph-bold ph-shopping-cart"></i> Aggiungi</button>
             <button id="btnAddToWish" class="ios-btn btn-secondary"><i class="ph-bold ph-heart"></i> Preferiti</button>
@@ -2155,6 +2157,12 @@ const products = [
         }
     }
     const app = new App();
+    // Bottone Amazon
+const amazonBtn = document.getElementById("btnBuyAmazon");
+amazonBtn.onclick = () => {
+    if (p.link) window.open(p.link, "_blank");
+    else alert("Link Amazon non disponibile per questo prodotto.");
+};
 </script>
 </body>
 </html>
