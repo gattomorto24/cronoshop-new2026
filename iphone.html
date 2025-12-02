@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>iPhone 17 – Cronoshop</title>
+
+<!-- Icon set -->
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+<style>
+/* =========================================================
+   VARIABILI CRONOSHOP (copiate dal tuo index.html)
+========================================================= */
+:root {
+    --primary: #007aff;
+    --primary-rgb: 0,122,255;
+
+    --text-main: #101010;
+    --text-sec: #444;
+    --text-rgb: 16,16,16;
+
+    --bg-base: #ffffff;
+    --glass-bg: rgba(255,255,255,0.45);
+    --glass-border: rgba(0,0,0,0.06);
+    --separator: rgba(0,0,0,0.08);
+
+    --radius: 20px;
+    --shadow: 0 4px 30px rgba(0,0,0,0.06);
+}
+
+/* DARK MODE AUTO */
+@media (prefers-color-scheme: dark) {
+:root {
+    --text-main: #ffffff;
+    --text-sec: #aaa;
+    --bg-base: #000;
+    --glass-bg: rgba(0,0,0,0.55);
+    --glass-border: rgba(255,255,255,0.1);
+    --separator: rgba(255,255,255,0.12);
+}}
+/* =========================================================
+   GLOBAL
+========================================================= */
+body {
+    margin: 0;
+    background: var(--bg-base);
+    color: var(--text-main);
+    font-family: Inter, sans-serif;
+}
+.main-wrapper {
+    padding: 16px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* HEADER iOS */
+.ios-header {
+    background: var(--glass-bg);
+    backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 14px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 99;
+}
+
+/* HERO */
+.hero-card {
+    width: 100%;
+    height: 360px;
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+.hero-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.hero-overlay {
+    position: absolute;
+    bottom: 0;
+    padding: 30px;
+    color: white;
+    background: linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0));
+}
+
+/* GRID */
+.grid-layout {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+}
+
+/* CARDS */
+.product-card {
+    height: 222px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+}
+.product-img-wrap {
+    width: 100%;
+    height: 180px;
+    background: #f2f2f2;
+}
+.product-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+.product-details {
+    padding: 12px 14px;
+}
+.product-name {
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+.product-price {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+/* BUTTON */
+.ios-btn {
+    width: 100%;
+    padding: 12px;
+    font-weight: 700;
+    font-size: 0.95em;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.btn-primary {
+    background: rgb(var(--primary-rgb));
+    color: white;
+}
+.btn-primary:active {
+    opacity: 0.7;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="ios-header">
+    <div style="display:flex; align-items:center; gap:12px;">
+        <a href="index.html" style="color:var(--primary); font-size:1.6em;">
+            <i class="ph-bold ph-arrow-left"></i>
+        </a>
+        <span style="font-weight:700; font-size:1.25em;">iPhone 17 Series</span>
+    </div>
+</header>
+
+<main class="main-wrapper">
+
+<!-- HERO -->
+<div class="hero-card">
+    <img src="https://andreagaleazzi.com/wp-content/uploads/2025/09/iphone17_pro_air-1-1024x576.jpg">
+    <div class="hero-overlay">
+        <span style="
+            background:rgba(255,255,255,0.25);
+            backdrop-filter:blur(8px);
+            padding:6px 12px;
+            border-radius:8px;
+            font-size:0.75em;
+            font-weight:700;">
+            Lineup 2025
+        </span>
+
+        <h1 style="margin:10px 0 0; font-size:2.3em; font-weight:800;">
+            Scopri la Serie iPhone 17
+        </h1>
+
+        <p style="width:95%; margin-top:10px; opacity:0.9;">
+            A partire da <b>€899</b>. Lineup completa: 17, 17 Pro, Pro Max e Air.
+        </p>
+    </div>
+</div>
+
+<h2 style="margin:26px 0 14px; font-weight:800;">Modelli Disponibili</h2>
+
+<!-- GRID -->
+<div class="grid-layout">
+
+    <!-- iPhone 17 -->
+    <div class="product-card">
+        <div class="product-img-wrap">
+            <img src="https://www.apple.com/v/iphone-17/a/images/meta/iphone-17_overview__d4o74q28yjma_og.png?202510170201">
+        </div>
+        <div class="product-details">
+            <div class="product-name">iPhone 17</div>
+            <div class="product-price">Da €899</div>
+        </div>
+        <button class="ios-btn btn-primary"
+            onclick="window.open('https://www.amazon.it/Apple-iPhone-256-fotocamera-resistenza/dp/B0FQFJRZNZ?tag=tony64010a-21','_blank');">
+            <i class="ph-bold ph-amazon-logo"></i> Acquista
+        </button>
+    </div>
+
+    <!-- iPhone 17 Pro -->
+    <div class="product-card">
+        <div class="product-img-wrap">
+            <img src="https://www.apple.com/v/iphone-17-pro/a/images/overview/highlights/highlights_design_endframe__flnga0hibmeu_large.jpg">
+        </div>
+        <div class="product-details">
+            <div class="product-name">iPhone 17 Pro</div>
+            <div class="product-price">Da €1199</div>
+        </div>
+        <button class="ios-btn btn-primary"
+            onclick="window.open('https://www.amazon.it/dp/B0FQFQ7544?tag=tony64010a-21','_blank');">
+            <i class="ph-bold ph-amazon-logo"></i> Acquista
+        </button>
+    </div>
+
+    <!-- iPhone 17 Pro Max -->
+    <div class="product-card">
+        <div class="product-img-wrap">
+            <img src="https://hd2.tudocdn.net/1286655?w=1200&h=675">
+        </div>
+        <div class="product-details">
+            <div class="product-name">iPhone 17 Pro Max</div>
+            <div class="product-price">Da €1399</div>
+        </div>
+        <button class="ios-btn btn-primary"
+            onclick="window.open('https://www.amazon.it/dp/B0FQGYQTNG?tag=tony64010a-21','_blank');">
+            <i class="ph-bold ph-amazon-logo"></i> Acquista
+        </button>
+    </div>
+
+    <!-- iPhone Air -->
+    <div class="product-card">
+        <div class="product-img-wrap">
+            <img src="https://www.apple.com/v/iphone-air/a/images/meta/iphone-air_overview__9wya87nt75u6_og.png?202510170201">
+        </div>
+        <div class="product-details">
+            <div class="product-name">iPhone 17 Air</div>
+            <div class="product-price">Da €749</div>
+        </div>
+        <button class="ios-btn btn-primary"
+            onclick="window.open('https://www.amazon.it/dp/B0FQG97MKK?tag=tony64010a-21','_blank');">
+            <i class="ph-bold ph-amazon-logo"></i> Acquista
+        </button>
+    </div>
+
+</div>
+
+</main>
+
+</body>
+</html>
