@@ -8,7 +8,6 @@
     <!-- Phosphor Icons & Fonts -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Lora:ital,wght@0,400;0,600;1,400&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
-
     <style>
         /* =========================================
            1. CSS VARIABLES ENGINE
@@ -31,7 +30,7 @@
             --glass-blur: 0px;
             --glass-shadow: 0px 4px 12px rgba(0,0,0,0.05);
             --glass-saturate: 100%;
-
+            
             /* Text Colors */
             --text-main: rgb(var(--text-rgb));
             --text-sec: rgba(var(--text-rgb), 0.6);
@@ -42,12 +41,12 @@
             --base-size: 17px;
             --font-weight-normal: 400;
             --font-weight-bold: 600;
-
+            
             /* UI Utils */
             --radius-md: 20px;
             --ease: cubic-bezier(0.25, 1, 0.5, 1);
         }
-
+        
         /* ULTRA GLASS MODE (Attivata da JS) */
         body.glass-active {
             --glass-bg: rgba(var(--card-rgb), 0.35);
@@ -61,11 +60,11 @@
             --glass-bg: rgba(30, 30, 30, 0.45);
             --glass-border: rgba(255, 255, 255, 0.15);
         }
-
+        
         body.theme-dark {
             --glass-shadow: 0px 4px 20px rgba(0, 0, 0, 0.3);
         }
-
+        
         /* RESET */
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
@@ -84,7 +83,7 @@
             height: 100vh;
             font-weight: var(--font-weight-normal);
         }
-
+        
         body.glass-active {
             background-image: 
                 radial-gradient(at 0% 0%, rgba(var(--primary-rgb), 0.6) 0px, transparent 50%),
@@ -93,79 +92,129 @@
                 radial-gradient(at 0% 100%, rgba(var(--accent-rgb), 0.6) 0px, transparent 50%),
                 radial-gradient(at 50% 50%, rgba(var(--card-rgb), 0.1) 0px, transparent 50%);
         }
-
+        
         /* UTILS */
         .ios-touch { cursor: pointer; transition: transform 0.1s; }
         .ios-touch:active { transform: scale(0.96); opacity: 0.8; }
         .hidden { display: none !important; }
-
+        
         /* LAYOUT */
         .app-container { display: flex; height: 100vh; overflow: hidden; }
-
+        
         /* SIDEBAR */
         .sidebar {
-            width: 280px; height: 100%; flex-shrink: 0;
+            width: 280px;
+            height: 100%;
+            flex-shrink: 0;
             background-color: var(--glass-bg);
             backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
             -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-            border-right: 1px solid var(--glass-border); 
+            border-right: 1px solid var(--glass-border);
             padding: 20px 16px;
-            display: flex; flex-direction: column; z-index: 100;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
             transition: transform 0.3s var(--ease), background 0.3s, border 0.3s;
         }
+        
         @media (max-width: 1024px) {
-            .sidebar { position: fixed; inset: 0 auto 0 0; transform: translateX(-100%); width: 300px; box-shadow: 5px 0 30px rgba(0,0,0,0.15); }
-            .sidebar.active { transform: translateX(0); }
+            .sidebar {
+                position: fixed;
+                inset: 0 auto 0 0;
+                transform: translateX(-100%);
+                width: 85%;
+                max-width: 320px;
+                box-shadow: 5px 0 30px rgba(0,0,0,0.15);
+                padding: max(env(safe-area-inset-top), 20px) 16px max(env(safe-area-inset-bottom), 20px) max(env(safe-area-inset-left), 16px);
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
         }
-
+        
         .brand-area { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; padding: 0 8px; }
         .brand-logo { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; color:white; background: linear-gradient(135deg, var(--primary), rgb(var(--accent-rgb))); font-size:1.2em; box-shadow: 0 4px 10px rgba(var(--primary-rgb), 0.3); }
         .brand-title { font-size: 1.3em; font-weight: var(--font-weight-bold); letter-spacing: -0.5px; }
-
+        
         .nav-item {
             display: flex; align-items: center; gap: 14px; padding: 12px 14px; margin-bottom: 4px;
             border-radius: 16px; color: var(--text-main); font-weight: var(--font-weight-normal);
             transition: 0.2s;
+            min-height: 48px;
         }
         .nav-item:hover { background-color: rgba(var(--text-rgb), 0.05); }
         .nav-item.active { 
             background-color: rgba(var(--primary-rgb), 0.15);
             color: var(--primary); 
-            font-weight: var(--font-weight-bold); 
+            font-weight: var(--font-weight-bold);
             backdrop-filter: blur(5px);
         }
         .nav-item i { font-size: 1.4em; }
         
         .menu-label { font-size: 0.8em; font-weight: var(--font-weight-bold); color: var(--text-sec); text-transform: uppercase; margin: 24px 0 8px 16px; letter-spacing: 0.5px; opacity: 0.8; }
         .badge { background: #FF3B30; color: white; font-size: 0.75em; padding: 2px 8px; border-radius: 12px; margin-left: auto; display: none; font-weight: 600; box-shadow: 0 2px 5px rgba(255, 59, 48, 0.4); }
-
+        
         /* MAIN */
-        .main-wrapper { flex: 1; height: 100%; overflow-y: auto; padding: 20px; position: relative; scroll-behavior: smooth; }
-
-        /* HEADER */
+        .main-wrapper { flex: 1; height: 100%; overflow-y: auto; padding: 20px; position: relative; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
+        
+        /* Enhanced header with proper iOS glass morphism */
         .ios-header {
-            position: sticky; top: 10px; z-index: 90;
-            background-color: var(--glass-bg); 
-            backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)); 
+            position: sticky;
+            top: 0;
+            z-index: 90;
+            background-color: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
             -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-            margin: 0 0 20px 0; padding: 12px 20px; border-radius: 20px;
-            display: flex; align-items: center; justify-content: space-between;
+            margin: 0 0 20px 0;
+            padding: 14px 20px;
+            border-radius: 0 0 20px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             border: 1px solid var(--glass-border);
+            border-top: none;
             box-shadow: var(--glass-shadow);
             transition: background 0.3s, border 0.3s, box-shadow 0.3s;
         }
+        
         @media (max-width: 768px) {
-            .ios-header { top: 0; margin: -20px -20px 20px -20px; border-radius: 0 0 20px 20px; }
+            .ios-header {
+                position: -webkit-sticky;
+                position: sticky;
+                top: 0;
+                margin: 0;
+                padding: max(env(safe-area-inset-top), 12px) 16px 12px 16px;
+                border-radius: 0 0 24px 24px;
+                gap: 12px;
+            }
+            
+            .header-title {
+                font-size: 1.3em !important;
+                font-weight: 800 !important;
+            }
+            
+            .main-wrapper {
+                padding: 0 16px 16px 16px;
+            }
         }
-
-        .mobile-menu-btn { display: none; font-size: 1.6em; color: var(--primary); background: none; border: none; padding:0; }
-        @media (max-width: 1024px) { .mobile-menu-btn { display: block; } }
-
+        
+        .mobile-menu-btn { display: none; font-size: 1.6em; color: var(--primary); background: none; border: none; padding: 8px; min-width: 44px; min-height: 44px; }
+        @media (max-width: 1024px) { .mobile-menu-btn { display: flex; align-items: center; justify-content: center; } }
+        
         .ios-search {
             flex: 1; max-width: 400px; background-color: rgba(var(--text-rgb), 0.05);
             border-radius: 14px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; margin: 0 20px;
             border: 1px solid transparent; transition: 0.2s;
         }
+        
+        @media (max-width: 768px) {
+            .ios-search {
+                max-width: none;
+                margin: 0 12px;
+                padding: 8px 12px;
+            }
+        }
+        
         .ios-search:focus-within { 
             background-color: rgba(var(--card-rgb), 0.6); 
             border-color: var(--primary); 
@@ -173,21 +222,22 @@
             backdrop-filter: blur(10px);
         }
         .ios-search input { border: none; background: transparent; font-size: 1em; width: 100%; outline: none; color: var(--text-main); font-family: inherit; }
-
+        
         /* VIEWS */
         .view-section { display: none; animation: slideUp 0.4s var(--ease); }
         .view-section.active { display: block; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* AUTH STYLES (New) */
+        
+        /* AUTH STYLES */
         .auth-logo-area { display: flex; flex-direction: column; align-items: center; margin-bottom: 24px; }
         .auth-logo-icon { 
-            width: 64px; height: 64px; border-radius: 18px; 
-            background: linear-gradient(135deg, var(--primary), rgb(var(--accent-rgb))); 
-            color: white; display: flex; align-items: center; justify-content: center; 
+            width: 64px; height: 64px; border-radius: 18px;
+            background: linear-gradient(135deg, var(--primary), rgb(var(--accent-rgb)));
+            color: white; display: flex; align-items: center; justify-content: center;
             font-size: 32px; box-shadow: 0 10px 20px rgba(var(--primary-rgb), 0.3);
             margin-bottom: 16px;
         }
+        
         .auth-input-group { position: relative; width: 100%; margin-bottom: 12px; }
         .auth-input {
             width: 100%; padding: 16px; border-radius: 12px; border: 1px solid var(--separator);
@@ -200,7 +250,7 @@
             max-height: 0; overflow: hidden; opacity: 0; transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
         }
         .password-section.open { max-height: 100px; opacity: 1; margin-top: 12px; }
-
+        
         /* CARDS & GRID */
         .hero-card {
             background-color: var(--glass-bg); border-radius: var(--radius-md); overflow: hidden;
@@ -213,8 +263,22 @@
             background: linear-gradient(to top, rgba(0,0,0,0.8), transparent 60%);
             padding: 30px; color: white; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start;
         }
-
+        
         .grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 20px; }
+        
+        @media (max-width: 768px) {
+            .grid-layout {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .grid-layout {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+        }
         
         .product-card {
             background-color: var(--glass-bg); border-radius: var(--radius-md); overflow: hidden;
@@ -229,9 +293,10 @@
         .product-details { padding: 16px; }
         .product-name { font-size: 1em; font-weight: var(--font-weight-bold); margin-bottom: 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 2.8em; }
         .product-price { color: var(--primary); font-weight: var(--font-weight-bold); font-size: 1.1em; }
-
+        
         /* CHIPS */
-        .filter-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; scrollbar-width: none; }
+        .filter-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+        .filter-scroll::-webkit-scrollbar { display: none; }
         .ios-chip {
             padding: 10px 20px; background-color: var(--glass-bg); border-radius: 50px; font-size: 0.9em; font-weight: 600;
             box-shadow: var(--glass-shadow); white-space: nowrap; transition: 0.2s; 
@@ -239,40 +304,93 @@
             backdrop-filter: blur(var(--glass-blur));
         }
         .ios-chip.active { 
-            background-color: var(--text-main); color: var(--bg-base); border-color: transparent; 
+            background-color: var(--text-main); color: var(--bg-base); border-color: transparent;
             box-shadow: 0 4px 12px rgba(var(--text-rgb), 0.3);
         }
-
+        
         /* BUTTONS */
-        .ios-btn { width: 100%; padding: 16px; border-radius: 16px; font-size: 1em; font-weight: var(--font-weight-bold); cursor: pointer; border: none; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .ios-btn { width: 100%; padding: 16px; border-radius: 16px; font-size: 1em; font-weight: var(--font-weight-bold); cursor: pointer; border: none; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; min-height: 48px; }
         .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.4); }
         .btn-primary:active { opacity: 0.8; transform: scale(0.98); }
         .btn-secondary { background: rgba(var(--text-rgb), 0.08); color: var(--text-main); backdrop-filter: blur(10px); }
         .btn-magic { background: linear-gradient(135deg, #FF2D55, #5856D6); color: white; box-shadow: 0 4px 15px rgba(255, 45, 85, 0.4); }
         .btn-text { background: transparent; color: var(--primary); box-shadow: none; font-size: 0.9em; margin-top: 10px; }
-
+        
         /* SETTINGS & THEMES UI */
         .settings-group { 
-            background: var(--glass-bg); border-radius: 20px; overflow: hidden; margin-bottom: 24px; 
-            box-shadow: var(--glass-shadow); border: 1px solid var(--glass-border); 
-            backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)); 
+            background: var(--glass-bg); border-radius: 20px; overflow: hidden; margin-bottom: 24px;
+            box-shadow: var(--glass-shadow); border: 1px solid var(--glass-border);
+            backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
         }
         .settings-row { 
-            display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; 
+            display: flex; align-items: center; justify-content: space-between; padding: 18px 20px;
             border-bottom: 1px solid var(--glass-border); cursor: pointer; transition: background 0.2s;
+            min-height: 60px;
         }
         .settings-row:last-child { border-bottom: none; }
         .settings-row:hover { background: rgba(var(--text-rgb), 0.05); }
         
-        .theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; padding: 20px; }
-        .theme-item {
-            display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer;
-            padding: 12px; border-radius: 16px; border: 2px solid transparent; transition: 0.2s;
+        /* Fixed theme grid to display all 12 themes properly */
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+            gap: 12px;
+            padding: 20px;
+            max-height: none;
+            overflow: visible;
         }
-        .theme-item.active { border-color: var(--primary); background: rgba(var(--primary-rgb), 0.15); backdrop-filter: blur(5px); }
-        .theme-preview { width: 48px; height: 48px; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.15); border: 2px solid white; position: relative; }
-        .theme-name { font-size: 0.8em; text-align: center; color: var(--text-sec); font-weight: 600; }
-
+        
+        @media (max-width: 768px) {
+            .theme-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+                padding: 16px;
+            }
+        }
+        
+        .theme-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 10px 8px;
+            border-radius: 14px;
+            border: 2px solid transparent;
+            transition: 0.2s;
+            min-height: 90px;
+        }
+        
+        .theme-item.active {
+            border-color: var(--primary);
+            background: rgba(var(--primary-rgb), 0.1);
+            backdrop-filter: blur(5px);
+        }
+        
+        .theme-preview {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border: 3px solid rgba(255,255,255,0.3);
+            position: relative;
+        }
+        
+        @media (max-width: 768px) {
+            .theme-preview {
+                width: 44px;
+                height: 44px;
+            }
+        }
+        
+        .theme-name {
+            font-size: 0.75em;
+            text-align: center;
+            color: var(--text-sec);
+            font-weight: 600;
+            line-height: 1.2;
+        }
+        
         /* TOGGLES */
         .switch-toggle { position: relative; width: 52px; height: 32px; }
         .switch-toggle input { opacity: 0; width: 0; height: 0; }
@@ -280,49 +398,93 @@
         .slider:before { position: absolute; content: ""; height: 24px; width: 24px; left: 4px; bottom: 4px; background-color: white; border-radius: 50%; transition: .4s; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         input:checked + .slider { background-color: var(--primary); }
         input:checked + .slider:before { transform: translateX(20px); }
-
+        
         /* MODALS & OVERLAYS */
         .modal-scrim, .sidebar-scrim { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 2000; opacity: 0; pointer-events: none; transition: 0.3s; backdrop-filter: blur(8px); }
         .modal-scrim.open, .sidebar-scrim.active { opacity: 1; pointer-events: auto; }
         
+        .sidebar-scrim { z-index: 99; }
+        
         .ios-modal { 
-            background: var(--glass-bg); width: 95%; max-width: 500px; border-radius: 24px; padding: 24px; max-height: 90vh; overflow-y: auto; 
-            transform: scale(0.9); transition: 0.3s var(--ease); box-shadow: var(--glass-shadow); position: absolute; top: 50%; left: 50%; translate: -50% -50%; 
+            background: var(--glass-bg); width: 95%; max-width: 500px; border-radius: 24px; padding: 24px; max-height: 90vh; overflow-y: auto;
+            transform: scale(0.9); transition: 0.3s var(--ease); box-shadow: var(--glass-shadow); position: absolute; top: 50%; left: 50%; translate: -50% -50%;
             border: 1px solid var(--glass-border); backdrop-filter: blur(40px) saturate(150%);
         }
         .modal-scrim.open .ios-modal { transform: scale(1); }
-
+        
         /* CHATBOT */
         .chat-btn-float { 
-            position: fixed; bottom: 24px; right: 24px; width: 64px; height: 64px; 
-            background: linear-gradient(135deg, var(--primary), rgb(var(--accent-rgb))); 
-            border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; 
-            font-size: 32px; box-shadow: 0 10px 30px rgba(var(--primary-rgb), 0.4); 
+            position: fixed; bottom: 24px; right: 24px; width: 64px; height: 64px;
+            background: linear-gradient(135deg, var(--primary), rgb(var(--accent-rgb)));
+            border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center;
+            font-size: 32px; box-shadow: 0 10px 30px rgba(var(--primary-rgb), 0.4);
             border: none; z-index: 900; transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .chat-btn-float:active { transform: scale(0.9); }
-
+        
+        @media (max-width: 768px) {
+            .chat-btn-float {
+                bottom: max(env(safe-area-inset-bottom), 16px);
+                right: 16px;
+                width: 56px;
+                height: 56px;
+                font-size: 28px;
+            }
+        }
+        
         .chat-interface { 
-            position: fixed; bottom: 100px; right: 24px; width: 360px; height: 550px; 
-            background: var(--glass-bg); 
+            position: fixed; bottom: 100px; right: 24px; width: 360px; height: 550px;
+            background: var(--glass-bg);
             backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%);
-            border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.25); 
+            border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.25);
             z-index: 900; opacity: 0; pointer-events: none; transform: scale(0.9);
-            transition: opacity 0.3s, transform 0.3s; 
-            display: flex; flex-direction: column; border: 1px solid var(--glass-border); 
+            transition: opacity 0.3s, transform 0.3s;
+            display: flex; flex-direction: column; border: 1px solid var(--glass-border);
             overflow: hidden; resize: both; min-width: 300px; min-height: 400px;
         }
         .chat-interface.open { opacity: 1; pointer-events: auto; transform: scale(1); }
+        
+        @media (max-width: 768px) {
+            .chat-interface {
+                position: fixed;
+                inset: 0;
+                width: 100%;
+                height: 100%;
+                bottom: 0;
+                right: 0;
+                border-radius: 0;
+                resize: none;
+                min-width: auto;
+                min-height: auto;
+            }
+        }
         
         .chat-nav { 
             padding: 16px; cursor: move; user-select: none;
             background: rgba(var(--text-rgb), 0.03); border-bottom: 1px solid var(--glass-border);
             display: flex; justify-content: space-between; align-items: center; font-weight: 600;
         }
+        
+        @media (max-width: 768px) {
+            .chat-nav {
+                cursor: default;
+                padding: max(env(safe-area-inset-top), 16px) 16px 16px 16px;
+            }
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            -webkit-overflow-scrolling: touch;
+        }
+        
         .msg-bubble { max-width: 80%; padding: 12px 16px; border-radius: 20px; font-size: 0.95em; line-height: 1.5; margin-bottom: 10px; }
         .msg-ai { background-color: rgba(var(--text-rgb), 0.06); color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 4px; backdrop-filter: blur(5px); }
         .msg-user { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; box-shadow: 0 4px 10px rgba(var(--primary-rgb), 0.3); }
-
+        
         /* USER PROFILE CARD IN SETTINGS */
         .user-card-profile {
             display: flex; align-items: center; gap: 15px; padding: 20px;
@@ -334,7 +496,6 @@
     </style>
 </head>
 <body>
-
 <div class="app-container">
     <div class="sidebar-scrim" id="sidebarScrim" onclick="app.toggleSidebar()"></div>
     <aside class="sidebar" id="sidebar">
@@ -342,14 +503,12 @@
             <div class="brand-logo"><i class="ph-bold ph-lightning"></i></div>
             <span class="brand-title">Cronoshop</span>
         </div>
-
         <div class="menu-group">
             <div class="menu-label">Navigazione</div>
             <div class="nav-item ios-touch active" id="nav-home" onclick="app.navigate('home')"><i class="ph ph-house"></i> Home</div>
             <div class="nav-item ios-touch" id="nav-products" onclick="app.navigate('products')"><i class="ph ph-bag"></i> Prodotti</div>
             <div class="nav-item ios-touch" onclick="app.toggleChat()"><i class="ph-fill ph-sparkle" style="color: var(--primary);"></i> CronoAI</div>
         </div>
-
         <div class="menu-group">
             <div class="menu-label">Personale</div>
             <div class="nav-item ios-touch" id="nav-wishlist" onclick="app.navigate('wishlist')"><i class="ph ph-heart"></i> Preferiti <span class="badge" id="badge-wishlist">0</span></div>
@@ -357,12 +516,11 @@
             <div class="nav-item ios-touch" id="nav-settings" onclick="app.navigate('settings')"><i class="ph ph-gear"></i> Impostazioni</div>
         </div>
     </aside>
-
     <main class="main-wrapper">
         <header class="ios-header">
-            <div style="display: flex; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 12px;">
                 <button class="mobile-menu-btn" onclick="app.toggleSidebar()"><i class="ph ph-list"></i></button>
-                <span class="header-title" id="pageTitle" style="margin-left: 10px; font-weight: 700; font-size: 1.2em;">Home</span>
+                <span class="header-title" id="pageTitle" style="font-weight: 700; font-size: 1.25em;">Home</span>
             </div>
             <div class="ios-search" id="globalSearchContainer">
                 <i class="ph ph-magnifying-glass"></i>
@@ -373,7 +531,6 @@
                 <span class="badge" id="header-badge-cart" style="position: absolute; top: -5px; right: -5px; display: flex;">0</span>
             </div>
         </header>
-
         <!-- HOME -->
         <section id="view-home" class="view-section active">
             <div class="hero-card ios-touch" onclick="app.openProductModal('labubu-special')">
@@ -388,7 +545,6 @@
             <h2 style="margin-bottom: 16px; padding-left: 4px;">In Evidenza</h2>
             <div class="grid-layout" id="homeGrid"></div>
         </section>
-
         <!-- PRODUCTS -->
         <section id="view-products" class="view-section">
             <div class="filter-scroll">
@@ -399,7 +555,6 @@
             </div>
             <div class="grid-layout" id="productsGrid"></div>
         </section>
-
         <!-- CART -->
         <section id="view-cart" class="view-section">
             <div id="cartListContainer"></div>
@@ -412,13 +567,11 @@
                 <button class="ios-btn btn-primary" style="margin-top:20px;" onclick="alert('Checkout simulato!')">Paga Ora</button>
             </div>
         </section>
-
         <!-- WISHLIST -->
         <section id="view-wishlist" class="view-section">
             <h2 style="margin-bottom:20px;">I miei preferiti</h2>
             <div id="wishlistContainer" class="grid-layout"></div>
         </section>
-
         <!-- SETTINGS -->
         <section id="view-settings" class="view-section" style="max-width:700px; margin:0 auto;">
             
@@ -428,7 +581,6 @@
                     <!-- Iniettato via JS -->
                 </div>
             </div>
-
             <div class="menu-label">Stile & Temi</div>
             <div class="settings-group">
                 <div class="settings-row" onclick="app.openAiPrompt('theme')">
@@ -440,7 +592,6 @@
                 </div>
                 <div class="theme-grid" id="themeSelector"></div>
             </div>
-
             <div class="menu-label">Accessibilità & Display</div>
             <div class="settings-group">
                 <div class="settings-row" onclick="app.openAiPrompt('visual')">
@@ -450,7 +601,6 @@
                     </div>
                     <span style="font-size:0.9em; color:var(--text-sec);">Ottimizza per me</span>
                 </div>
-
                 <div class="settings-row" style="cursor:default;">
                     <span>Effetto Vetro</span>
                     <label class="switch-toggle"><input type="checkbox" id="glassToggle" onchange="app.toggleGlass()"><span class="slider"></span></label>
@@ -460,7 +610,6 @@
                     <span>Testo Grande</span>
                     <label class="switch-toggle"><input type="checkbox" id="boldToggle" onchange="app.toggleBold()"><span class="slider"></span></label>
                 </div>
-
                 <div class="settings-row">
                     <span>Dimensione</span>
                     <div style="display:flex; gap:8px;">
@@ -474,7 +623,6 @@
         </section>
     </main>
 </div>
-
 <!-- AUTH MODAL (NEW) -->
 <div class="modal-scrim" id="authDialog">
     <div class="ios-modal" style="text-align: center;">
@@ -483,7 +631,6 @@
             <h2 id="authTitle" style="font-weight:800; font-size:1.6em; margin-bottom:8px;">Accedi</h2>
             <p id="authSubtitle" style="color:var(--text-sec);">Usa il tuo account Crono ID per accedere.</p>
         </div>
-
         <!-- Login / Email Check View -->
         <div id="authStep1">
             <input type="text" id="authInputIdentity" class="auth-input" placeholder="Email o Nome utente">
@@ -492,10 +639,8 @@
             <div id="authPasswordSection" class="password-section">
                 <input type="password" id="authInputPassword" class="auth-input" placeholder="Password">
             </div>
-
             <button class="ios-btn btn-primary" onclick="app.handleAuthStep()" style="margin-top:20px;">Continua</button>
         </div>
-
         <!-- Register View (Overlay stile) -->
         <div id="authStep2" style="display:none; text-align:left;">
             <p style="color:var(--text-sec); margin-bottom:20px; text-align:center;">Crea un nuovo Crono ID per accedere alle impostazioni.</p>
@@ -505,13 +650,11 @@
             <div class="auth-input-group"><input type="tel" id="regPhone" class="auth-input" placeholder="Numero di telefono (opzionale)"></div>
             <div class="auth-input-group"><input type="password" id="regPass" class="auth-input" placeholder="Password"></div>
             <div class="auth-input-group"><input type="password" id="regConfirm" class="auth-input" placeholder="Conferma Password"></div>
-
             <button class="ios-btn btn-primary" onclick="app.finalizeRegistration()" style="margin-top:10px;">Crea Account</button>
             <button class="ios-btn btn-text" onclick="app.resetAuthUI()">Indietro</button>
         </div>
     </div>
 </div>
-
 <!-- AI PROMPT MODAL -->
 <div class="modal-scrim" id="aiPromptOverlay">
     <div class="ios-modal ai-prompt-card">
@@ -524,7 +667,6 @@
         </div>
     </div>
 </div>
-
 <!-- PRODUCT MODAL -->
 <div class="modal-scrim" id="productDialog" onclick="if(event.target===this) app.closeModal()">
     <div class="ios-modal">
@@ -537,7 +679,6 @@
         <p id="modalDesc" style="color:var(--text-sec); line-height:1.6; margin-bottom:24px;"></p>
         
         <div id="aiResponse" style="background:var(--bg-base); padding:16px; border-radius:12px; margin-bottom:20px; display:none; border-left: 3px solid var(--primary);"></div>
-
         <button class="ios-btn btn-primary" style="margin-bottom:12px;"><i class="ph-bold ph-amazon-logo"></i> Acquista su Amazon</button>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
             <button id="btnAddToCart" class="ios-btn btn-secondary"><i class="ph-bold ph-shopping-cart"></i> Aggiungi</button>
@@ -546,7 +687,6 @@
         <button class="ios-btn btn-magic" onclick="app.askAI()"><i class="ph-fill ph-sparkle"></i> Chiedi all'AI</button>
     </div>
 </div>
-
 <!-- CHATBOT -->
 <button class="chat-btn-float ios-touch" onclick="app.toggleChat()"><i class="ph-fill ph-chat-teardrop-text"></i></button>
 <div class="chat-interface" id="chatOverlay">
@@ -554,21 +694,19 @@
         <div style="display:flex; align-items:center; gap:8px;"><i class="ph-fill ph-sparkle" style="color:var(--primary);"></i> CronoAI</div>
         <div style="color:var(--primary); cursor:pointer;" onclick="app.toggleChat()">Chiudi</div>
     </div>
-    <div class="chat-messages" style="flex:1; padding:20px; overflow-y:auto; display:flex; flex-direction:column;" id="chatBody">
-        <div class="msg-bubble msg-ai">Ciao! Sono qui per aiutarti. Puoi chiedermi di cambiare tema, aggiungere prodotti al carrello o consigli per i regali. 🛍️</div>
+    <div class="chat-messages" id="chatBody">
+        <div class="msg-bubble msg-ai">Ciao! Sono qui per aiutarti. Puoi chiedermi di cambiare tema, aggiungere prodotti al carrello o consigli per i regali.</div>
     </div>
     <div style="padding:16px; background:var(--glass-bg); border-top:1px solid var(--glass-border); display:flex; gap:10px;">
         <input type="text" id="chatInput" placeholder="Chiedi..." style="flex:1; height:44px; border-radius:22px; border:1px solid var(--separator); padding:0 16px; background:var(--bg-base); color:var(--text-main); outline:none;" onkeypress="if(event.key==='Enter') app.sendChat()">
         <button onclick="app.sendChat()" style="width:44px; height:44px; border-radius:50%; background:var(--primary); color:white; border:none; display:flex; align-items:center; justify-content:center;"><i class="ph-bold ph-paper-plane-right"></i></button>
     </div>
 </div>
-
 <script>
     /* --- CONFIG --- */
     const apiKey = "AIzaSyA0XCo1e2VyEDtA3ijXGm65rjRiMDrcQ1c";
-
     /* --- DATA --- */
-   const products = [
+const products = [
   {
     id: "labubu-special",
     link: "https://amzn.to/3JpXORG",
@@ -1539,7 +1677,6 @@
     categoria: "casa"
   }
 ];
-
     /* --- THEMES (HEX) --- */
     const presets = {
         'light': { name: 'Chiaro', bg: '#F2F2F7', card: '#FFFFFF', text: '#000000', primary: '#007AFF', accent: '#5856D6' },
@@ -1555,7 +1692,6 @@
         'slate': { name: 'Ardesia', bg: '#F8FAFC', card: '#FFFFFF', text: '#0F172A', primary: '#64748B', accent: '#94A3B8' },
         'nebula': { name: 'Nebulosa', bg: '#2E1065', card: '#4C1D95', text: '#F5F3FF', primary: '#A78BFA', accent: '#C084FC' }
     };
-
     /* --- APP LOGIC --- */
     class App {
         constructor() {
@@ -1568,16 +1704,14 @@
                 wishlist: [],
                 view: 'home',
                 promptType: null,
-                users: [], // Array di utenti salvati
-                currentUser: null // Utente loggato corrente
+                users: [],
+                currentUser: null
             };
             this.init();
         }
-
         init() {
             if(localStorage.getItem('crono_state')) {
                 const saved = JSON.parse(localStorage.getItem('crono_state'));
-                // Merge saved state but ensure arrays exist
                 this.state = { ...this.state, ...saved };
             }
             
@@ -1588,12 +1722,10 @@
             this.updateBadges();
             this.initDraggableChat();
             
-            // Check if logged in for settings view
             if(this.state.view === 'settings' && !this.state.currentUser) {
-                this.state.view = 'home'; // Fallback to home if not logged in
+                this.state.view = 'home';
             }
-            this.navigate(this.state.view); // Render current view
-
+            this.navigate(this.state.view);
             document.getElementById('globalSearchInput').addEventListener('input', (e) => {
                 const val = e.target.value.toLowerCase();
                 const filtered = products.filter(p => p.nome.toLowerCase().includes(val));
@@ -1601,18 +1733,14 @@
                 this.renderGrid(filtered, target);
             });
         }
-
         saveState() {
             localStorage.setItem('crono_state', JSON.stringify(this.state));
         }
-
         /* --- AUTH ENGINE --- */
         openAuth() {
-            // Reset UI
             this.resetAuthUI();
             document.getElementById('authDialog').classList.add('open');
         }
-
         resetAuthUI() {
             document.getElementById('authStep1').style.display = 'block';
             document.getElementById('authStep2').style.display = 'none';
@@ -1621,22 +1749,17 @@
             document.getElementById('authInputPassword').value = '';
             document.getElementById('authTitle').innerText = 'Accedi';
             document.getElementById('authSubtitle').innerText = 'Usa il tuo account Crono ID per accedere.';
-            this.pendingUser = null; // Reset pending user
+            this.pendingUser = null;
         }
-
         handleAuthStep() {
             const identity = document.getElementById('authInputIdentity').value.trim();
             const passField = document.getElementById('authPasswordSection');
             const passInput = document.getElementById('authInputPassword');
-
             if(!identity) return this.showNotification('Inserisci email o nome utente', 'error');
-
-            // Caso 1: Stiamo già chiedendo la password (il box è aperto)
             if(passField.classList.contains('open')) {
                 const password = passInput.value.trim();
                 if(!password) return this.showNotification('Inserisci la password', 'error');
                 
-                // Verifica Login
                 const user = this.state.users.find(u => (u.username === identity || u.email === identity) && u.password === password);
                 
                 if(user) {
@@ -1646,41 +1769,31 @@
                 }
                 return;
             }
-
-            // Caso 2: Primo step (verifica identità)
             const userExists = this.state.users.find(u => u.username === identity || u.email === identity);
-
             if(userExists) {
-                // Utente trovato -> Animazione Password verso il basso
                 passField.classList.add('open');
-                this.pendingUser = userExists; // Memorizza chi stiamo provando a loggare
+                this.pendingUser = userExists;
             } else {
-                // Utente NON trovato -> Overlay Registrazione
                 this.showRegistrationOverlay(identity);
             }
         }
-
         showRegistrationOverlay(prefill) {
             document.getElementById('authStep1').style.display = 'none';
             document.getElementById('authStep2').style.display = 'block';
             document.getElementById('authTitle').innerText = 'Crea ID';
             document.getElementById('authSubtitle').innerText = '';
             
-            // Prefill intelligente
             if(prefill.includes('@')) document.getElementById('regEmail').value = prefill;
             else document.getElementById('regUser').value = prefill;
         }
-
         finalizeRegistration() {
             const username = document.getElementById('regUser').value.trim();
             const email = document.getElementById('regEmail').value.trim();
             const phone = document.getElementById('regPhone').value.trim();
             const pass = document.getElementById('regPass').value.trim();
             const confirm = document.getElementById('regConfirm').value.trim();
-
             if(!username || !email || !pass) return this.showNotification('Compila i campi obbligatori', 'error');
             if(pass !== confirm) return this.showNotification('Le password non coincidono', 'error');
-
             const newUser = { username, email, phone, password: pass, avatar: username.charAt(0).toUpperCase() };
             this.state.users.push(newUser);
             this.saveState();
@@ -1688,27 +1801,22 @@
             this.showNotification('Account creato!', 'success');
             this.login(newUser);
         }
-
         login(user) {
             this.state.currentUser = user;
             this.saveState();
             document.getElementById('authDialog').classList.remove('open');
             this.showNotification(`Benvenuto, ${user.username}!`, 'success');
             
-            // Aggiorna UI profilo
             this.updateProfileUI();
             
-            // Naviga alle impostazioni
             this.navigate('settings');
         }
-
         logout() {
             this.state.currentUser = null;
             this.saveState();
             this.navigate('home');
             this.showNotification('Disconnesso', 'info');
         }
-
         updateProfileUI() {
             if(!this.state.currentUser) return;
             const u = this.state.currentUser;
@@ -1721,41 +1829,35 @@
                 </div>
             `;
         }
-
         /* --- THEME ENGINE (HEX TO RGB) --- */
         hexToRgb(hex) {
             const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
             return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '0,0,0';
         }
-
         applyTheme(keyOrObj) {
             let t = typeof keyOrObj === 'string' ? presets[keyOrObj] : keyOrObj;
             if(!t) t = presets['light'];
-
             const root = document.documentElement.style;
             root.setProperty('--bg-rgb', this.hexToRgb(t.bg));
             root.setProperty('--card-rgb', this.hexToRgb(t.card));
             root.setProperty('--text-rgb', this.hexToRgb(t.text));
             root.setProperty('--primary-rgb', this.hexToRgb(t.primary));
             root.setProperty('--accent-rgb', this.hexToRgb(t.accent || t.primary));
-
             if (typeof keyOrObj === 'string') this.state.theme = keyOrObj;
             this.saveState();
             this.renderThemes();
         }
-
         renderThemes() {
             const container = document.getElementById('themeSelector');
             container.innerHTML = Object.entries(presets).map(([k, t]) => `
                 <div class="theme-item ${this.state.theme === k ? 'active' : ''}" onclick="app.applyTheme('${k}')">
                     <div class="theme-preview" style="background:${t.bg}; display:flex; justify-content:center; align-items:center;">
-                        <div style="width:20px; height:20px; background:${t.primary}; border-radius:50%;"></div>
+                        <div style="width:22px; height:22px; background:${t.primary}; border-radius:50%; box-shadow: 0 2px 8px rgba(0,0,0,0.2);"></div>
                     </div>
                     <div class="theme-name">${t.name}</div>
                 </div>
             `).join('');
         }
-
         /* --- DISPLAY SETTINGS --- */
         applyDisplaySettings() {
             const r = document.documentElement.style;
@@ -1767,11 +1869,9 @@
             document.getElementById('glassToggle').checked = this.state.glass;
             document.getElementById('boldToggle').checked = this.state.bold;
         }
-
         toggleGlass() { this.state.glass = !this.state.glass; this.applyDisplaySettings(); this.saveState(); }
         toggleBold() { this.state.bold = !this.state.bold; this.applyDisplaySettings(); this.saveState(); }
         adjustSize(d) { this.state.size = Math.max(12, Math.min(24, this.state.size + d)); this.applyDisplaySettings(); this.saveState(); }
-
         /* --- AI FUNCTIONS --- */
         async callGemini(prompt) {
             try {
@@ -1783,7 +1883,6 @@
                 return data.candidates?.[0]?.content?.parts?.[0]?.text;
             } catch { return null; }
         }
-
         async sendChat() {
             const inp = document.getElementById('chatInput'); 
             const txt = inp.value; 
@@ -1796,15 +1895,14 @@
                 Sei CronoAI, l'assistente di sistema di Cronoshop.
                 PUOI ESEGUIRE AZIONI REALI SULL'APP.
                 
-                Se l'utente chiede di fare qualcosa (es. "cambia tema in scuro", "aggiungi iphone al carrello", "svuota carrello"), 
-                DEVI rispondere SOLO con un JSON in questo formato:
+                Se l'utente chiede di fare qualcosa (es. "cambia tema in scuro", "aggiungi iphone al carrello", "svuota carrello"),
+                 DEVI rispondere SOLO con un JSON in questo formato:
                 {"action": "set_theme", "value": "dark"}  // value: light, dark, sunset, forest, ocean, cyber
                 {"action": "add_cart", "query": "iphone"} // query: nome prodotto da cercare
                 {"action": "clear_cart"}
                 
                 Se l'utente chiede info o consigli, rispondi normalmente in italiano.
             `;
-
             const res = await this.callGemini(`${systemContext}\nUtente: "${txt}"`);
             
             try {
@@ -1812,7 +1910,7 @@
                 if(jsonMatch) {
                     const command = JSON.parse(jsonMatch[0]);
                     this.executeCommand(command);
-                    document.getElementById('chatBody').innerHTML += `<div class="msg-bubble msg-ai">Fatto! 👍</div>`;
+                    document.getElementById('chatBody').innerHTML += `<div class="msg-bubble msg-ai">Fatto!</div>`;
                 } else {
                     document.getElementById('chatBody').innerHTML += `<div class="msg-bubble msg-ai">${res}</div>`;
                 }
@@ -1820,7 +1918,6 @@
                 document.getElementById('chatBody').innerHTML += `<div class="msg-bubble msg-ai">${res}</div>`;
             }
         }
-
         executeCommand(cmd) {
             if(cmd.action === 'set_theme') {
                 if(presets[cmd.value]) this.applyTheme(cmd.value);
@@ -1837,7 +1934,6 @@
                 this.showNotification("Carrello svuotato", "info");
             }
         }
-
         /* --- THEME & VISUAL GENERATORS --- */
         openAiPrompt(type) {
             this.state.promptType = type;
@@ -1846,13 +1942,11 @@
             document.getElementById('aiPromptOverlay').classList.add('open');
         }
         closeAiPrompt() { document.getElementById('aiPromptOverlay').classList.remove('open'); }
-
         async submitAiPrompt() {
             const txt = document.getElementById('aiPromptInput').value;
             if(!txt) return;
             this.closeAiPrompt();
             this.showNotification("L'AI sta lavorando...", "info");
-
             if (this.state.promptType === 'theme') {
                 const prompt = `Genera un JSON valido (senza markdown) per un tema UI basato su: "${txt}". Keys: bg, card, text, primary, accent. Usa colori HEX.`;
                 const res = await this.callGemini(prompt);
@@ -1875,7 +1969,6 @@
                 } catch { this.showNotification("Errore ottimizzazione", "error"); }
             }
         }
-
         /* --- SHOPPING --- */
         addToCart(id) {
             const p = products.find(x=>x.id===id);
@@ -1889,7 +1982,6 @@
             const items = this.state.cart.map(x=>x.nome).join(', ');
             this.callGemini(`Ho nel carrello: ${items}. Dammi un consiglio creativo su come usarli insieme. Max 20 parole.`).then(res => alert(res));
         }
-
         toggleWishlist(id) {
             const idx = this.state.wishlist.findIndex(x => x.id === id);
             if(idx > -1) {
@@ -1907,7 +1999,6 @@
             if(this.state.view === 'wishlist') this.renderWishlist();
             this.updateModalHeart(id);
         }
-
         updateModalHeart(id) {
             const btn = document.getElementById('btnAddToWish');
             if(!btn) return;
@@ -1923,7 +2014,6 @@
                 btn.style.color = 'inherit';
             }
         }
-
         updateQty(id, delta) {
             const item = this.state.cart.find(x => x.id === id);
             if(item) {
@@ -1934,7 +2024,6 @@
                 this.updateBadges();
             }
         }
-
         updateBadges() { 
             const qty = this.state.cart.reduce((a,b)=>a+(b.qty||1),0);
             document.querySelectorAll('#badge-cart, #header-badge-cart').forEach(e => { e.innerText = qty; e.style.display = qty ? 'block':'none'; });
@@ -1943,15 +2032,12 @@
             const wBadge = document.getElementById('badge-wishlist');
             if(wBadge) { wBadge.innerText = wQty; wBadge.style.display = wQty ? 'block':'none'; }
         }
-
         /* --- NAVIGATION & UI --- */
         navigate(view) {
-            // AUTH GUARD PER IMPOSTAZIONI
             if(view === 'settings' && !this.state.currentUser) {
                 this.openAuth();
                 return;
             }
-
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             const target = document.getElementById('view-'+view);
             if(target) target.classList.add('active');
@@ -1968,7 +2054,6 @@
             if(view === 'wishlist') this.renderWishlist();
             if(view === 'settings') this.updateProfileUI();
         }
-
         renderProducts() { this.renderGrid(products, 'homeGrid'); this.renderGrid(products, 'productsGrid'); }
         renderGrid(list, target) {
             document.getElementById(target).innerHTML = list.map(p => `
@@ -1977,7 +2062,12 @@
                     <div class="product-details"><div class="product-name">${p.nome}</div><div class="product-price">€${p.prezzo}</div></div>
                 </div>`).join('');
         }
-
+        filterProducts(cat, btn) {
+            document.querySelectorAll('.ios-chip').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            const filtered = cat === 'all' ? products : products.filter(p => p.categoria === cat);
+            this.renderGrid(filtered, 'productsGrid');
+        }
         openProductModal(id) {
             const p = products.find(x=>x.id===id);
             if(!p) return;
@@ -2003,7 +2093,6 @@
             d.style.cssText = `position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:${t==='success'?'var(--primary)':(t==='error'?'#FF3B30':'#333')};color:white;padding:12px 24px;border-radius:50px;box-shadow:var(--glass-shadow);z-index:9999;font-weight:600;animation:slideUp 0.3s;font-size:0.9em;`;
             d.innerText = m; document.body.appendChild(d); setTimeout(()=>d.remove(), 2500);
         }
-
         renderCart() {
             const c = document.getElementById('cartListContainer');
             if(!this.state.cart.length) { c.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-sec);">Vuoto</div>'; document.getElementById('cartSummary').style.display='none'; return; }
@@ -2020,7 +2109,6 @@
                 </div>`).join('');
             document.getElementById('cartTotal').innerText = '€'+this.state.cart.reduce((a,b)=>a+b.prezzo*(b.qty||1),0).toFixed(2);
         }
-
         renderWishlist() { 
             const container = document.getElementById('wishlistContainer');
             if(this.state.wishlist.length === 0) {
@@ -2034,21 +2122,22 @@
                                 <div class="product-name">${p.nome}</div>
                                 <div class="product-price">€${p.prezzo}</div>
                             </div>
-                            <button class="ios-btn btn-secondary" style="width:auto; padding:8px;" onclick="app.addToCart('${p.id}'); app.toggleWishlist('${p.id}')">🛒</button>
+                            <button class="ios-btn btn-secondary" style="width:auto; padding:8px;" onclick="app.addToCart('${p.id}'); app.toggleWishlist('${p.id}')"><i class="ph ph-shopping-cart"></i></button>
                             <button class="ios-btn btn-secondary" style="width:auto; padding:8px; color:#FF3B30;" onclick="app.toggleWishlist('${p.id}')"><i class="ph-fill ph-trash"></i></button>
                         </div>
                     </div>
                 `).join('');
             }
         }
-
         refreshViews() {
             if(this.state.view === 'cart') this.renderCart();
             if(this.state.view === 'wishlist') this.renderWishlist();
         }
-
         /* DRAGGABLE CHAT */
         initDraggableChat() {
+            const isMobile = window.innerWidth <= 768;
+            if(isMobile) return;
+            
             const el = document.getElementById('chatOverlay'); const h = document.getElementById('chatHeader');
             let isDown = false, offX, offY;
             h.addEventListener('mousedown', (e) => { isDown = true; offX = el.offsetLeft - e.clientX; offY = el.offsetTop - e.clientY; });
@@ -2065,7 +2154,6 @@
             const box = document.getElementById('aiResponse'); box.style.display='block'; box.innerHTML = `<b>AI:</b> ${res}`;
         }
     }
-
     const app = new App();
 </script>
 </body>
