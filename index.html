@@ -285,6 +285,7 @@
             box-shadow: var(--glass-shadow); display: flex; flex-direction: column; cursor: pointer;
             border: 1px solid var(--glass-border); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+            position: relative;
         }
         .product-card:hover { transform: translateY(-6px) scale(1.02); z-index: 10; }
         .product-img-wrap { padding-top: 100%; position: relative; background-color: rgba(var(--text-rgb), 0.03); }
@@ -493,6 +494,360 @@
             width: 60px; height: 60px; background: rgba(var(--text-rgb), 0.1); border-radius: 50%;
             display: flex; align-items: center; justify-content: center; font-size: 1.5em; color: var(--text-sec);
         }
+        .new-badge { position: absolute; top: 10px; left: 10px; background: #FF3B30; color: #fff; padding: 6px 8px; border-radius: 10px; font-weight:700; font-size:0.75em; }
+        .featured-badge { position: absolute; top: 10px; right: 10px; background: linear-gradient(135deg,#FFD66B,#FF7A7A); color: #111; padding: 6px 8px; border-radius: 10px; font-weight:700; font-size:0.9em; }
+
+        /* ========== ULTRA MOBILE OPTIMIZATION ========== */
+        
+        /* Ultra-small screens (< 400px) */
+        @media (max-width: 399px) {
+            :root {
+                --base-size: 15px;
+            }
+            
+            .app-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                height: auto;
+                max-height: 60vh;
+                border-right: none;
+                border-top: 1px solid var(--glass-border);
+                flex-direction: row;
+                overflow-x: auto;
+                overflow-y: hidden;
+                padding: 12px 8px;
+                gap: 8px;
+                z-index: 100;
+            }
+            
+            .brand-area, .menu-label {
+                display: none;
+            }
+            
+            .nav-item {
+                min-width: 70px;
+                padding: 8px 12px;
+                border-radius: 12px;
+                font-size: 0.8em;
+                margin-bottom: 0;
+                margin-right: 8px;
+                min-height: 42px;
+            }
+            
+            .nav-item i {
+                font-size: 1.2em;
+            }
+            
+            .main-wrapper {
+                padding: 0 12px 70px 12px;
+                margin-bottom: 0;
+            }
+            
+            .ios-header {
+                padding: 10px 12px;
+                border-radius: 0;
+                margin-bottom: 12px;
+            }
+            
+            .header-title {
+                font-size: 1.2em !important;
+            }
+            
+            .grid-layout {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .product-card {
+                border-radius: 12px;
+            }
+            
+            .product-details {
+                padding: 10px;
+            }
+            
+            .product-name {
+                font-size: 0.85em;
+                height: 2.4em;
+            }
+            
+            .product-price {
+                font-size: 1em;
+            }
+            
+            .ios-btn {
+                padding: 12px;
+                font-size: 0.9em;
+                min-height: 44px;
+            }
+            
+            .ios-chip {
+                padding: 8px 16px;
+                font-size: 0.85em;
+            }
+            
+            .chat-btn-float {
+                width: 48px;
+                height: 48px;
+                bottom: 70px;
+                font-size: 24px;
+            }
+        }
+        
+        /* Small screens (400px - 599px) */
+        @media (max-width: 599px) {
+            :root {
+                --base-size: 16px;
+            }
+            
+            .sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                width: 75%;
+                height: 100%;
+                max-width: 280px;
+                transform: translateX(-100%);
+                transition: transform 0.3s var(--ease);
+                z-index: 1000;
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .ios-header {
+                padding: 12px 16px;
+                margin-bottom: 16px;
+                border-radius: 0 0 16px 16px;
+            }
+            
+            .main-wrapper {
+                padding: 0 16px 16px 16px;
+            }
+            
+            .grid-layout {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            
+            .product-card {
+                border-radius: 14px;
+            }
+            
+            .product-img-wrap {
+                padding-top: 100%;
+            }
+            
+            .product-img {
+                padding: 16px;
+            }
+            
+            .product-details {
+                padding: 12px;
+            }
+            
+            .product-name {
+                font-size: 0.9em;
+            }
+            
+            .product-price {
+                font-size: 1.05em;
+            }
+            
+            .ios-btn {
+                padding: 14px;
+                font-size: 0.95em;
+                min-height: 44px;
+            }
+            
+            .ios-chip {
+                padding: 10px 18px;
+                font-size: 0.9em;
+                min-height: 36px;
+            }
+            
+            .settings-row {
+                padding: 16px 18px;
+                min-height: 56px;
+            }
+            
+            .theme-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 12px;
+                padding: 16px;
+            }
+            
+            .chat-btn-float {
+                width: 52px;
+                height: 52px;
+                bottom: 20px;
+                right: 16px;
+                font-size: 26px;
+            }
+            
+            .chat-interface {
+                position: fixed;
+                bottom: 80px;
+                right: 16px;
+                width: calc(100% - 32px);
+                max-width: 380px;
+                height: 480px;
+            }
+            
+            .hero-section {
+                padding: 24px;
+            }
+            
+            .hero-overlay {
+                padding: 20px;
+            }
+        }
+        
+        /* Medium screens (600px - 799px) */
+        @media (max-width: 799px) {
+            :root {
+                --base-size: 16px;
+            }
+            
+            .sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                width: 70%;
+                max-width: 300px;
+                height: 100vh;
+                transform: translateX(-100%);
+                z-index: 1000;
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .app-container {
+                flex-direction: column;
+            }
+            
+            .main-wrapper {
+                padding: 12px 16px 16px 16px;
+                width: 100%;
+            }
+            
+            .grid-layout {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 12px;
+            }
+            
+            .ios-header {
+                padding: 12px 16px;
+                margin-bottom: 16px;
+                gap: 10px;
+            }
+            
+            .header-title {
+                font-size: 1.3em;
+            }
+            
+            .chat-btn-float {
+                width: 54px;
+                height: 54px;
+                bottom: 24px;
+                right: 20px;
+            }
+            
+            .chat-interface {
+                width: calc(100% - 40px);
+                max-width: 400px;
+                bottom: 100px;
+                right: 20px;
+                height: 500px;
+            }
+        }
+        
+        /* Tablets & landscape (800px - 1023px) */
+        @media (max-width: 1023px) {
+            .sidebar {
+                position: fixed;
+                width: 280px;
+                height: 100%;
+                transform: translateX(-100%);
+                box-shadow: 5px 0 30px rgba(0,0,0,0.15);
+                z-index: 1000;
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .app-container {
+                flex-direction: column;
+            }
+            
+            .main-wrapper {
+                width: 100%;
+                padding: 16px;
+            }
+            
+            .grid-layout {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 16px;
+            }
+        }
+        
+        /* Hamburger menu icon for mobile */
+        .hamburger-toggle {
+            display: none;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            font-size: 1.5em;
+            color: var(--text-main);
+            padding: 8px;
+            min-height: 44px;
+            min-width: 44px;
+        }
+        
+        @media (max-width: 1023px) {
+            .hamburger-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+        
+        /* Touch target optimization */
+        @media (hover: none) and (pointer: coarse) {
+            .ios-btn,
+            .nav-item,
+            .ios-chip,
+            .product-card,
+            button {
+                min-height: 44px;
+                min-width: 44px;
+            }
+        }
+        
+        /* Notch/Safe area support */
+        @media (max-width: 599px) {
+            body {
+                padding-left: max(env(safe-area-inset-left), 0);
+                padding-right: max(env(safe-area-inset-right), 0);
+            }
+            
+            .main-wrapper {
+                padding-top: max(env(safe-area-inset-top), 12px);
+                padding-bottom: max(env(safe-area-inset-bottom), 16px);
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -507,6 +862,8 @@
             <div class="menu-label">Navigazione</div>
             <div class="nav-item ios-touch active" id="nav-home" onclick="app.navigate('home')"><i class="ph ph-house"></i> Home</div>
             <div class="nav-item ios-touch" id="nav-products" onclick="app.navigate('products')"><i class="ph ph-bag"></i> Prodotti</div>
+            <div class="nav-item ios-touch" id="nav-apple" onclick="app.navigate('apple')"><i class="ph ph-apple-logo"></i> Apple Store</div>
+            <div class="nav-item ios-touch" id="nav-samsung" onclick="app.navigate('samsung')"><i class="ph-bold ph-samsung-logo"></i> Samsung Store</div>
             <div class="nav-item ios-touch" onclick="app.toggleChat()"><i class="ph-fill ph-sparkle" style="color: var(--primary);"></i> CronoAI</div>
         </div>
         <div class="menu-group">
@@ -533,7 +890,7 @@
         </header>
         <!-- HOME -->
         <!-- HERO iPhone 17 -->
-<div class="hero-card ios-touch" onclick="window.location.href='iphone.html'"
+<div class="hero-card ios-touch" onclick="app.navigate('apple')"
      style="height:360px; position:relative;">
 
     <img src="https://andreagaleazzi.com/wp-content/uploads/2025/09/iphone17_pro_air-1-1024x576.jpg"
@@ -605,6 +962,16 @@
                 <div class="ios-chip" onclick="app.filterProducts('fashion', this)">Moda</div>
             </div>
             <div class="grid-layout" id="productsGrid"></div>
+        </section>
+        <!-- APPLE STORE (embedded) -->
+        <section id="view-apple" class="view-section">
+            <h2 style="margin-bottom:16px;">Apple Store</h2>
+            <div class="grid-layout" id="appleGrid"></div>
+        </section>
+        <!-- SAMSUNG STORE (embedded) -->
+        <section id="view-samsung" class="view-section">
+            <h2 style="margin-bottom:16px;">Samsung Store</h2>
+            <div class="grid-layout" id="samsungGrid"></div>
         </section>
         <!-- CART -->
         <section id="view-cart" class="view-section">
@@ -782,8 +1149,69 @@ const products = [
     prezzo_originale: 1599.00,
     sconto: 25,
     descrizione: "Smartphone AI con display 6.9\" QHD+ Dynamic AMOLED 2X, fotocamera da 200MP, RAM 12GB, memoria interna da 256GB, batteria da 5000 mAh. Colore Titanium Silverblue. Garanzia 3 anni.",
-    categoria: "smartphone"
+    categoria: "smartphone",
+    isNew: true
   },
+    // Galaxy Z foldable family (featured)
+    {
+        id: "zfold7",
+        link: "https://www.amazon.it/dp/B0FBGKKK9S?tag=tony64010a-21",
+        img: "https://m.media-amazon.com/images/I/71nNPz7vbiL._AC_SL1500_.jpg",
+        nome: "Samsung Galaxy Z Fold 7 – 256 GB",
+        prezzo: 1871.85,
+        prezzo_originale: 2219.00,
+        sconto: 16,
+        descrizione: "Il pieghevole più avanzato di Samsung. Schermo interno 8.0\" e esterno 6.5\". Snapdragon 8 Elite, fotocamera avanzata.",
+        categoria: "smartphone",
+        featured: true,
+        isNew: true
+    },
+    {
+        id: "zfold6",
+        link: "https://www.amazon.it/dp/B0F9X6M84V?tag=tony64010a-21",
+        img: "https://m.media-amazon.com/images/I/51gZaUJ722L._AC_SY450_.jpg",
+        nome: "Samsung Galaxy Z Fold 6 – 256 GB",
+        prezzo: 1649.00,
+        prezzo_originale: 1999.00,
+        sconto: 17,
+        descrizione: "Galaxy Z Fold 6 con display pieghevole da 8.0\" e design ultra-sottile.",
+        categoria: "smartphone",
+        featured: true
+    },
+    {
+        id: "zflip7",
+        link: "https://www.amazon.it/dp/B0FBGMM5SM?th=1&tag=tony64010a-21",
+        img: "https://m.media-amazon.com/images/I/61awzxH2DHL._AC_SY300_SX300_QL70_ML2_.jpg",
+        nome: "Samsung Galaxy Z Flip 7 – 256 GB",
+        prezzo: 799.00,
+        prezzo_originale: 999.00,
+        sconto: 20,
+        descrizione: "Galaxy Z Flip 7 pieghevole con display esterno 4.1\" e interno 6.9\". Snapdragon 8 Elite.",
+        categoria: "smartphone",
+        featured: true
+    },
+    {
+        id: "zflip7fe",
+        link: "https://www.amazon.it/dp/B0FJVZS6K6?th=1&tag=tony64010a-21",
+        img: "https://m.media-amazon.com/images/I/51fnYbM7hLL._AC_SY450_.jpg",
+        nome: "Samsung Galaxy Z Flip 7 FE – 128 GB",
+        prezzo: 555.00,
+        prezzo_originale: 699.00,
+        sconto: 21,
+        descrizione: "Galaxy Z Flip 7 FE con il miglior rapporto qualità-prezzo. Exynos 2400, batteria 4000mAh.",
+        categoria: "smartphone"
+    },
+    {
+        id: "zflip6",
+        link: "https://www.amazon.it/dp/B0D92BLFJ6?th=1&tag=tony64010a-21",
+        img: "https://m.media-amazon.com/images/I/51mRtvBdsqL._AC_SY450_.jpg",
+        nome: "Samsung Galaxy Z Flip 6 – 256 GB",
+        prezzo: 800.00,
+        prezzo_originale: 999.00,
+        sconto: 20,
+        descrizione: "Galaxy Z Flip 6 pieghevole con display esterno 3.4\" e interno 6.7\". Snapdragon 8 Gen 3.",
+        categoria: "smartphone"
+    },
   {
     id: "prod2",
     link: "https://www.amazon.it/Amazon-Bio-Quinoa-500g/dp/B09YYD1JLD?tag=tony64010a-21",
@@ -860,6 +1288,54 @@ const products = [
     sconto: 20,
     descrizione: "Telefono 5G con controllo fotocamera avanzato, registrazione video Dolby Vision 4K a 120 fps e autonomia senza precedenti. Compatibile con AirPods.",
     categoria: "smartphone"
+  },
+  {
+    id: "iphone17",
+    link: "https://www.amazon.it/dp/B0FQFJRZNZ?tag=tony64010a-21",
+    img: "https://m.media-amazon.com/images/I/61WYeXatWNL._AC_SX466_.jpg",
+    nome: "Apple iPhone 17 – 128 GB",
+    prezzo: 899.00,
+    prezzo_originale: 1099.00,
+    sconto: 10,
+    descrizione: "Nuovo iPhone 17 con chip A19, display da 6.1\", fotocamera da 48MP, batteria straordinaria e design in titanio leggero.",
+    categoria: "smartphone",
+    isNew: true
+  },
+  {
+    id: "iphone17pro",
+    link: "https://www.amazon.it/dp/B0FQFQ7544?tag=tony64010a-21",
+    img: "https://m.media-amazon.com/images/I/71cdtM6hgmL._AC_SL1500_.jpg",
+    nome: "Apple iPhone 17 Pro – 256 GB",
+    prezzo: 1249.00,
+    prezzo_originale: 1449.00,
+    sconto: 11,
+    descrizione: "iPhone 17 Pro con chip A19 Pro, display Super Retina XDR da 6.3\", fotocamera ProMotion 120Hz, titania, e 8GB RAM.",
+    categoria: "smartphone",
+    isNew: true
+  },
+  {
+    id: "iphone17promax",
+    link: "https://www.amazon.it/dp/B0FQGYQTNG?tag=tony64010a-21",
+    img: "https://m.media-amazon.com/images/I/71ddhabs2mL._AC_SX342_SY445_QL70_ML2_.jpg",
+    nome: "Apple iPhone 17 Pro Max – 512 GB",
+    prezzo: 1539.00,
+    prezzo_originale: 1749.00,
+    sconto: 10,
+    descrizione: "Il massimo del lusso: iPhone 17 Pro Max con display da 6.7\", fotocamera da 200MP, autonomia estrema e design in titania.",
+    categoria: "smartphone",
+    isNew: true
+  },
+  {
+    id: "iphone17air",
+    link: "https://www.amazon.it/dp/B0FQG97MKK?tag=tony64010a-21",
+    img: "https://m.media-amazon.com/images/I/61B6NzhtoHL._AC_SX466_.jpg",
+    nome: "Apple iPhone 17 Air – 128 GB",
+    prezzo: 1149.00,
+    prezzo_originale: 1249.00,
+    sconto: 12,
+    descrizione: "Elegante e leggero: iPhone 17 Air con chip A19, design ultra-sottile da 5.2mm, display OLED e fotocamera dual camera.",
+    categoria: "smartphone",
+    isNew: true
   },
   {
     id: "prod9",
@@ -1728,7 +2204,73 @@ const products = [
     sconto: 20,
     descrizione: "Robot aspirapolvere intelligente con funzione di autopulizia, autosvuotamento e autolavaggio, ideale per una pulizia completa e automatica.",
     categoria: "casa"
-  }
+    },
+    {
+        id: "prod30",
+        link: "https://www.amazon.it/Smartphone-Fotocamere-Versione-Italiana-Ricondizionato/dp/B0BL1FSGZR?tag=tony64010a-21",
+        img: "https://m.media-amazon.com/images/I/81irfL63EQL.__AC_SX300_SY300_QL70_ML2_.jpg?tag=tony64010a-21",
+        nome: "Samsung Galaxy S22+ 5G – 128GB (Ricondizionato)",
+        prezzo: 284.99,
+        prezzo_originale: 450.00,
+        sconto: 37,
+        descrizione: "Smartphone ricondizionato con SIM singola + e-SIM, colore Phantom Black. Risparmia 155,00€ rispetto al prezzo nuovo.",
+        categoria: "smartphone"
+    },
+    {
+        id: "prod31",
+        link: "https://www.amazon.it/Samsung-Smartphone-pollici-fotocamere-posteriori/dp/B095SZCD5K?tag=tony64010a-21",
+        img: "https://m.media-amazon.com/images/I/61CY-+ZEN6L._AC_SY300_SX300_.jpg?tag=tony64010a-21",
+        nome: "Samsung Galaxy S21 Ultra 5G – 128GB (Ricondizionato)",
+        prezzo: 294.99,
+        prezzo_originale: 480.00,
+        sconto: 39,
+        descrizione: "Smartphone ricondizionato, RAM 12GB, Dual SIM (e-SIM), colore Nero. Ottima occasione con grande risparmio.",
+        categoria: "smartphone"
+    },
+    {
+        id: "prod32",
+        link: "https://www.amazon.it/Smartphone-Batteria-Resistenza-espandibile-Versione/dp/B0DKTJ22QN?__mk_it_IT=%C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=2LJBHQKCBBQH&dib=eyJ2IjoiMSJ9.tINOFydTC4-ECnetuG8WqFR7iqiGtvBXUR6c75v6tf9E9RagJj4Ce5OsfrV_Y41O8Zm14AbYtZEM2YXyNFypYA9Btv6fKaZHuBLshzWujo7ohpHopgMr3dcwTXUikRyIk96a6vfcR9JiKahoOubyOjnyjOXEcfOwxfsUenCacCdNdO7hxBF9jJimzyVg7aMC5PmPZLpviqOAE5Gd1VHLKPM2P3s8cvwV6V6xCrTdp8iUEZy8QWH55t8ciU5Swv0LVOagC05Poro24XBACAomdq7QiIAHLdV1ZdrOS3MKDGE.yQAOMJ5QB4Qm8932syCHuwIbHW32ACZHwJtObGp6SUg&dib_tag=tony64010a-21&keywords=galaxy+a16&qid=1748448131&sprefix=galaxy+a16,aps,145&sr=8-4&ufe=app_do:amzn1.fos.9d4f9b77-768c-4a4e-94ad-33674c20ab35&linkCode=sl1&tag=tony64010a-21&linkId=ad76102ee37517835bfca81f5c0b2cc3&language=it_IT&ref_=as_li_ss_tl",
+        img: "https://m.media-amazon.com/images/I/61pc4vR8BoL._AC_SL1500_.jpg?tag=tony64010a-21",
+        nome: "Samsung Galaxy A16 (128 GB)",
+        prezzo: 120.98,
+        prezzo_originale: 179.90,
+        sconto: 33,
+        descrizione: "Samsung Galaxy A16 Smartphone Android 14, Display Super AMOLED 6.7\" FHD+, 4GB RAM, 128GB, Batteria 5.000 mAh, Resistenza IP54.",
+        categoria: "smartphone"
+    },
+    {
+        id: "prod33",
+        link: "https://www.amazon.it/5G-smartphone-antracite-aggiornamento-operativo/dp/B0F1FRL5HX?tag=tony64010a-21",
+        img: "https://m.media-amazon.com/images/I/616+oTRo6-L._AC_SL1500_.jpg?tag=tony64010a-21",
+        nome: "Samsung Galaxy A56 5G (256 GB)",
+        prezzo: 342.68,
+        prezzo_originale: 499.90,
+        sconto: 31,
+        descrizione: "Samsung Galaxy A56 5G, smartphone Android, 256 GB di memoria, 8 GB di RAM, antracite, grande schermo, lunga durata della batteria.",
+        categoria: "smartphone"
+    },
+    {
+        id: "prod34",
+        link: "https://www.amazon.it/Samsung-A266-GALAXY-A26-6-7/dp/B0F2YYRB36?tag=tony64010a-21",
+        img: "https://m.media-amazon.com/images/I/61waTtq8hCL._AC_SL1500_.jpg?tag=tony64010a-21",
+        nome: "GALAXY A26 5G – 8GB + 256GB - Black",
+        prezzo: 234.69,
+        prezzo_originale: 319.90,
+        sconto: 27,
+        descrizione: "Smartphone GALAXY A26 5G con 8GB di RAM e 256GB di memoria interna. Ottimo rapporto qualità-prezzo.",
+        categoria: "smartphone"
+    },
+    {
+        id: "prod20",
+        link: "https://www.amazon.it/Samsung-GALAXY-S24-ULTRA-BLACK/dp/B0CSVS3FNK?crid=1YNP4E6YBVVU2&dib=eyJ2IjoiMSJ9.R2Q2KSfPVJB6x-ihhBVzG-K7kO_8XZ9komxlHIr-cOL1QDwwFZ7dpPYFzqDHpdwah7jm40glBa-fX86tBmLb3PXKghNuNmfrARerscNgDgIkIHK2NGnV4StP_yKulywyvHJS4hSo1mofVEi2mVuLPlt7foh2DZXFcDVeyMOA9ZRReqYQBONb3xzOnHwVH3nwJzBAOXRgDPG-8IrMZjbRA5PijKtKBn-sqW669cvWuej3f0rToI7uI_VFL7urY4lxrx9VQidDqzCaD8md9bCBaJDlMeeylADQCmK_L7KSJkM.qJ4vnFivRFdPgcIp-O7qG41KV7pwJ4PbDfIftbCr9F8&dib_tag=tony64010a-21&keywords=s24+ultra&qid=1748454164&sprefix=S2,aps,148&sr=8-8&ufe=app_do:amzn1.fos.9d4f9b77-768c-4a4e-94ad-33674c20ab35&linkCode=sl1&tag=tony64010a-21&linkId=69fbb7c017a32a098ba727a0723bd465&language=it_IT&ref_=as_li_ss_tl",
+        img: "https://m.media-amazon.com/images/I/31SLM5sJK4L.__AC_SY300_SX300_QL70_ML2_.jpg?tag=tony64010a-21",
+        nome: "Samsung Galaxy S24 Ultra – 12GB / 256GB - Black",
+        prezzo: 864.90,
+        prezzo_originale: 1499.00,
+        sconto: 42,
+        descrizione: "Smartphone top di gamma Samsung, 12GB RAM, 256GB memoria. Prestazioni estreme e design premium in colorazione Phantom Black.",
+        categoria: "smartphone"
+    }
 ];
     /* --- THEMES (HEX) --- */
     const presets = {
@@ -2106,13 +2648,95 @@ const products = [
             if(view === 'cart') this.renderCart();
             if(view === 'wishlist') this.renderWishlist();
             if(view === 'settings') this.updateProfileUI();
+            // If navigating to apple/samsung, ensure grids are fresh
+            if(view === 'apple') this.renderGrid(products.filter(p => (p.nome||'').toLowerCase().includes('iphone') || (p.nome||'').toLowerCase().includes('apple')), 'appleGrid');
+            if(view === 'samsung') this.renderGrid(products.filter(p => (p.nome||'').toLowerCase().includes('samsung') || (p.nome||'').toLowerCase().includes('galaxy')), 'samsungGrid');
         }
-        renderProducts() { this.renderGrid(products, 'homeGrid'); this.renderGrid(products, 'productsGrid'); }
+        renderProducts() { 
+            this.renderGrid(products, 'homeGrid'); 
+            this.renderGrid(products, 'productsGrid'); 
+            // Render Apple Store with categories
+            this.renderAppleStore();
+            // Render Samsung Store with categories
+            this.renderSamsungStore();
+        }
+        renderAppleStore() {
+            const appleList = products.filter(p => (p.nome || '').toLowerCase().includes('iphone') || (p.nome || '').toLowerCase().includes('apple'));
+            
+            // Separate into categories
+            const iphone17New = appleList.filter(p => (p.id || '').startsWith('iphone17'));
+            const otherIphones = appleList.filter(p => !p.id.startsWith('iphone17') && (p.nome || '').toLowerCase().includes('iphone'));
+            const otherApple = appleList.filter(p => !(p.nome || '').toLowerCase().includes('iphone'));
+            
+            let html = '';
+            
+            if(iphone17New.length > 0) {
+                html += '<h3 style="margin: 24px 0 16px 0; font-size: 1.2em; font-weight: var(--font-weight-bold); color: var(--text-main);">🆕 Flagship - iPhone 17 Series</h3>';
+                html += '<div class="grid-layout">' + iphone17New.map(p => this.getProductCardHTML(p)).join('') + '</div>';
+            }
+            
+            if(otherIphones.length > 0) {
+                html += '<h3 style="margin: 24px 0 16px 0; font-size: 1.2em; font-weight: var(--font-weight-bold); color: var(--text-main);">Precedenti Modelli</h3>';
+                html += '<div class="grid-layout">' + otherIphones.map(p => this.getProductCardHTML(p)).join('') + '</div>';
+            }
+            
+            if(otherApple.length > 0) {
+                html += '<h3 style="margin: 24px 0 16px 0; font-size: 1.2em; font-weight: var(--font-weight-bold); color: var(--text-main);">Accessori Apple</h3>';
+                html += '<div class="grid-layout">' + otherApple.map(p => this.getProductCardHTML(p)).join('') + '</div>';
+            }
+            
+            document.getElementById('appleGrid').innerHTML = html;
+        }
+        renderSamsungStore() {
+            const samsungList = products.filter(p => (p.nome || '').toLowerCase().includes('samsung') || (p.nome || '').toLowerCase().includes('galaxy'));
+            
+            // Separate into categories
+            const s25Ultra = samsungList.filter(p => (p.nome || '').toLowerCase().includes('s25 ultra'));
+            const zFoldFlip = samsungList.filter(p => (p.nome || '').toLowerCase().includes('z fold') || (p.nome || '').toLowerCase().includes('z flip'));
+            const otherSamsung = samsungList.filter(p => 
+                !(p.nome || '').toLowerCase().includes('s25 ultra') && 
+                !(p.nome || '').toLowerCase().includes('z fold') && 
+                !(p.nome || '').toLowerCase().includes('z flip')
+            );
+            
+            let html = '';
+            
+            if(s25Ultra.length > 0) {
+                html += '<h3 style="margin: 24px 0 16px 0; font-size: 1.2em; font-weight: var(--font-weight-bold); color: var(--text-main);">🆕 Flagship - Galaxy S25 Ultra</h3>';
+                html += '<div class="grid-layout">' + s25Ultra.map(p => this.getProductCardHTML(p)).join('') + '</div>';
+            }
+            
+            if(zFoldFlip.length > 0) {
+                html += '<h3 style="margin: 24px 0 16px 0; font-size: 1.2em; font-weight: var(--font-weight-bold); color: var(--text-main);">Galaxy Z Fold & Flip</h3>';
+                html += '<div class="grid-layout">' + zFoldFlip.map(p => this.getProductCardHTML(p)).join('') + '</div>';
+            }
+            
+            if(otherSamsung.length > 0) {
+                html += '<h3 style="margin: 24px 0 16px 0; font-size: 1.2em; font-weight: var(--font-weight-bold); color: var(--text-main);">Altro Samsung</h3>';
+                html += '<div class="grid-layout">' + otherSamsung.map(p => this.getProductCardHTML(p)).join('') + '</div>';
+            }
+            
+            document.getElementById('samsungGrid').innerHTML = html;
+        }
+        getProductCardHTML(p) {
+            return `<div class="product-card" onclick="app.openProductModal('${p.id}')">
+                    <div class="product-img-wrap"><img src="${p.img}" class="product-img"></div>
+                    <div class="product-details">
+                        <div class="product-name">${p.nome}</div>
+                        <div class="product-price">€${p.prezzo}</div>
+                    </div>
+                    ${p.isNew ? '<div class="new-badge">NUOVO</div>' : (p.featured ? '<div class="featured-badge">★</div>' : '')}
+                </div>`;
+        }
         renderGrid(list, target) {
             document.getElementById(target).innerHTML = list.map(p => `
                 <div class="product-card" onclick="app.openProductModal('${p.id}')">
                     <div class="product-img-wrap"><img src="${p.img}" class="product-img"></div>
-                    <div class="product-details"><div class="product-name">${p.nome}</div><div class="product-price">€${p.prezzo}</div></div>
+                    <div class="product-details">
+                        <div class="product-name">${p.nome}</div>
+                        <div class="product-price">€${p.prezzo}</div>
+                    </div>
+                    ${p.isNew ? '<div class="new-badge">NUOVO</div>' : (p.featured ? '<div class="featured-badge">★</div>' : '')}
                 </div>`).join('');
         }
         filterProducts(cat, btn) {
