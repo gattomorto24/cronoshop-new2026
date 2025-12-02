@@ -2079,11 +2079,16 @@ const products = [
             document.getElementById('modalDesc').innerText = p.descrizione;
             document.getElementById('aiResponse').style.display = 'none';
             
+            
             document.getElementById('btnAddToCart').onclick = () => { this.addToCart(id); this.closeModal(); };
             
             const wishBtn = document.getElementById('btnAddToWish');
             wishBtn.onclick = () => { this.toggleWishlist(id); };
             this.updateModalHeart(id);
+            
+            const amazonBtn = document.getElementById("btnBuyAmazon");
+            amazonBtn.onclick = () => {
+            window.open(p.link, "_blank"); };
             
             document.getElementById('productDialog').classList.add('open');
         }
@@ -2157,12 +2162,6 @@ const products = [
         }
     }
     const app = new App();
-    // Bottone Amazon
-const amazonBtn = document.getElementById("btnBuyAmazon");
-amazonBtn.onclick = () => {
-    if (p.link) window.open(p.link, "_blank");
-    else alert("Link Amazon non disponibile per questo prodotto.");
-};
 </script>
 </body>
 </html>
