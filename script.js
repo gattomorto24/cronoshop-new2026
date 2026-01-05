@@ -1021,6 +1021,7 @@
             this.renderThemes();
             this.updateBadges();
             this.initDraggableChat();
+            window.addEventListener('scroll', this.handleScroll.bind(this));
             
             // Check if logged in for settings view
             if(this.state.view === 'settings' && !this.state.currentUser) {
@@ -1377,6 +1378,13 @@
             const wBadge = document.getElementById('badge-wishlist');
             if(wBadge) { wBadge.innerText = wQty; wBadge.style.display = wQty ? 'block':'none'; }
         }
+        handleScroll() {
+            const scrollY = window.scrollY;
+            const navbar = document.getElementById('crono-navbar');
+            const blur = Math.min(scrollY / 5, 30);
+            navbar.style.backdropFilter = `blur(${30 + blur}px)`;
+            navbar.style.webkitBackdropFilter = `blur(${30 + blur}px)`;
+        }
 
         /* --- NAVIGATION & UI --- */
         navigate(view) {
@@ -1431,6 +1439,58 @@
         }
         closeModal() { document.getElementById('productDialog').classList.remove('open'); }
         toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); document.getElementById('sidebarScrim').classList.toggle('active'); }
+        toggleRightSidebar() { document.getElementById('right-sidebar').classList.toggle('active'); document.getElementById('rightSidebarScrim').classList.toggle('active'); }
+        toggleNavMenu() {
+            if (Prefs.minimal) {
+                this.toggleSidebar();
+            } else {
+                const header = document.getElementById('crono-navbar');
+                const menu = document.getElementById('nav-menu');
+                const backdrop = document.getElementById('nav-backdrop');
+                const isActive = menu.classList.contains('active');
+                this.closeNav();
+                if (!isActive) {
+                    header.classList.add('expanded-left');
+                    menu.classList.add('active');
+                    backdrop.classList.add('active');
+                }
+            }
+        }
+        toggleUserPanel() {
+            if (Prefs.minimal) {
+                this.toggleRightSidebar();
+            } else {
+                const header = document.getElementById('crono-navbar');
+                const panel = document.getElementById('user-panel');
+                const backdrop = document.getElementById('nav-backdrop');
+                const isActive = panel.classList.contains('active');
+                this.closeNav();
+                if (!isActive) {
+                    header.classList.add('expanded-right');
+                    panel.classList.add('active');
+                    backdrop.classList.add('active');
+                }
+            }
+        }
+        closeNav() {
+            const header = document.getElementById('crono-navbar');
+            const menu = document.getElementById('nav-menu');
+            const panel = document.getElementById('user-panel');
+            const backdrop = document.getElementById('nav-backdrop');
+            header.classList.remove('expanded-left', 'expanded-right');
+            menu.classList.remove('active');
+            panel.classList.remove('active');
+            backdrop.classList.remove('active');
+            // Also close sidebars
+            document.getElementById('sidebar').classList.remove('active');
+            document.getElementById('sidebarScrim').classList.remove('active');
+            document.getElementById('right-sidebar').classList.remove('active');
+            document.getElementById('rightSidebarScrim').classList.remove('active');
+        }
+        toggleOpaque() {
+            const header = document.getElementById('crono-navbar');
+            header.classList.toggle('opaque');
+        }
         
         showNotification(m, t) {
             const d = document.createElement('div');
@@ -1501,3 +1561,224 @@
     }
 
     const app = new App();
+
+
+
+/* ==========================================================================
+   CRONOTOOLS V7 UI MANAGER (Nuova Logica)
+   Questo codice si collega alla tua App esistente per gestire la nuova grafica.
+   ========================================================================== */
+
+const Prefs = {
+    theme: 'light',
+    minimal: false,
+    beta: false,
+    
+    load() {
+        const s = JSON.parse(localStorage.getItem('crono_prefs_v7')) || {};
+        this.theme = s.theme || 'light';
+        this.minimal = s.minimal || false;
+        this.beta = s.beta || false;
+        this.apply();
+    },
+    
+    save() {
+        localStorage.setItem('crono_prefs_v7', JSON.stringify({
+            theme: this.theme,
+            minimal: this.minimal,
+            beta: this.beta
+        }));
+        this.apply();
+    },
+    
+    apply() {
+        document.documentElement.setAttribute('data-theme', this.theme);
+        document.body.classList.toggle('old-design-mode', this.minimal);
+        document.body.classList.toggle('beta-anims', this.beta);
+        
+        // Re-render switch se menu aperto
+        UI.renderMenus(); 
+    }
+};
+
+const UI = {
+    init() {
+        Prefs.load();
+        this.renderMenus();
+        this.updateBadge();
+        
+        // Hooking into original App logic for badge updates
+        // Ogni volta che clicchi qualcosa che potrebbe aggiornare il carrello
+        document.addEventListener('click', () => setTimeout(() => this.updateBadge(), 100));
+    },
+
+    toggleMenu(side) {
+        if(Prefs.minimal) {
+            // MINIMAL MODE: Slide Sidebar
+            this.openSidebar(side);
+        } else {
+            // STANDARD MODE: Expand Pill
+            this.expandPill(side);
+        }
+    },
+
+    openSidebar(side) {
+        this.closeAll();
+        const el = document.getElementById(side === 'left' ? 'sidebar-left' : 'sidebar-right');
+        const bd = document.getElementById('backdrop');
+        if(el) {
+            el.classList.add('open');
+            bd.classList.add('active');
+            document.body.classList.add('no-scroll');
+        }
+    },
+
+    expandPill(side) {
+        const nav = document.getElementById('crono-nav-container');
+        const content = document.getElementById('dynamic-menu-content');
+        const bd = document.getElementById('backdrop');
+
+        if(nav.classList.contains('expanded')) {
+            this.closeAll();
+        } else {
+            // Iniettiamo l'HTML giusto
+            if(content) {
+                content.innerHTML = side === 'right' ? this.getSettingsHTML() : this.getNavHTML();
+            }
+            nav.classList.add('expanded');
+            bd.classList.add('active');
+            document.body.classList.add('no-scroll');
+        }
+    },
+
+    closeAll() {
+        document.querySelectorAll('.sidebar-layer').forEach(s => s.classList.remove('open'));
+        document.getElementById('crono-nav-container').classList.remove('expanded');
+        document.getElementById('backdrop').classList.remove('active');
+        document.body.classList.remove('no-scroll');
+    },
+
+    updateBadge() {
+        // Tenta di leggere la lunghezza del carrello dalla tua app originale
+        try {
+            const count = app.cart.length; // Assume che la tua istanza si chiami 'app'
+            const badges = document.querySelectorAll('.cart-badge');
+            badges.forEach(b => {
+                b.style.display = count > 0 ? 'flex' : 'none';
+                b.innerText = count;
+            });
+        } catch(e) {
+            console.log("App cart not found yet");
+        }
+    },
+
+    // HTML Generators
+    renderMenus() {
+        const left = document.getElementById('sidebar-left-content');
+        const right = document.getElementById('sidebar-right-content');
+        if(left) left.innerHTML = this.getNavHTML();
+        if(right) right.innerHTML = this.getSettingsHTML();
+    },
+
+    getNavHTML() {
+        return `
+            <div style="padding:10px;">
+                <button class="btn secondary full-width" onclick="app.navigate('home'); UI.closeAll()" style="justify-content:flex-start; margin-bottom:10px;">🏠 Home</button>
+                <button class="btn secondary full-width" onclick="app.navigate('products'); UI.closeAll()" style="justify-content:flex-start; margin-bottom:10px;">🛍️ Catalogo</button>
+                <button class="btn secondary full-width" onclick="app.navigate('apple'); UI.closeAll()" style="justify-content:flex-start; margin-bottom:10px;">🍏 Apple Store</button>
+                <button class="btn secondary full-width" onclick="app.navigate('samsung'); UI.closeAll()" style="justify-content:flex-start; margin-bottom:10px;">🌌 Samsung</button>
+                <div style="height:1px; background:var(--border); margin:15px 0;"></div>
+                <button class="btn secondary full-width" onclick="app.navigate('wishlist'); UI.closeAll()" style="justify-content:flex-start; margin-bottom:10px;">❤️ Preferiti</button>
+                <button class="btn secondary full-width" onclick="app.navigate('cart'); UI.closeAll()" style="justify-content:flex-start; margin-bottom:10px;">🛒 Carrello</button>
+                <button class="btn secondary full-width" onclick="app.navigate('settings'); UI.closeAll()" style="justify-content:flex-start;">👤 Profilo</button>
+            </div>
+        `;
+    },
+
+    getSettingsHTML() {
+        const chk = (val) => val ? 'checked' : '';
+        return `
+            <div style="padding:10px;">
+                <!-- Widget Utente -->
+                <div class="glass-panel" style="display:flex; align-items:center; gap:15px; padding:15px; margin-bottom:20px;">
+                    <div style="width:50px; height:50px; background:var(--accent); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:bold;">U</div>
+                    <div>
+                        <div style="font-weight:bold;">Utente</div>
+                        <div style="font-size:0.8rem; opacity:0.7;">CronoID: #8821</div>
+                    </div>
+                </div>
+
+                <h4 style="margin-bottom:10px; opacity:0.6; text-transform:uppercase; font-size:0.8rem;">Interfaccia</h4>
+                
+                <!-- Toggle Minimal Mode -->
+                <div class="ios-row">
+                    <label>Modalità Minimale</label>
+                    <div class="ios-switch">
+                        <input type="checkbox" ${chk(Prefs.minimal)} onchange="Prefs.minimal = this.checked; Prefs.save();">
+                        <span class="slider"></span>
+                    </div>
+                </div>
+
+                <!-- Toggle Beta Animations -->
+                <div class="ios-row">
+                    <label>Animazioni BETA</label>
+                    <div class="ios-switch">
+                        <input type="checkbox" ${chk(Prefs.beta)} onchange="Prefs.beta = this.checked; Prefs.save();">
+                        <span class="slider"></span>
+                    </div>
+                </div>
+
+                <h4 style="margin:20px 0 10px; opacity:0.6; text-transform:uppercase; font-size:0.8rem;">Temi</h4>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <button class="btn secondary" onclick="Prefs.theme='light'; Prefs.save();">Light</button>
+                    <button class="btn secondary" style="background:#000; color:#fff;" onclick="Prefs.theme='dark'; Prefs.save();">Dark</button>
+                    <button class="btn secondary" style="background:#14120B; color:#D4AF37;" onclick="Prefs.theme='gold'; Prefs.save();">Gold</button>
+                    <button class="btn secondary" style="background:#050005; color:#FF0099;" onclick="Prefs.theme='cyber'; Prefs.save();">Cyber</button>
+                </div>
+            </div>
+        `;
+    }
+};
+
+/* WEB COMPONENT NAVBAR */
+class CronoNavbar extends HTMLElement {
+    connectedCallback() {
+        this.innerHTML = `
+        <div id="crono-nav-container">
+            <div class="nav-pill">
+                <div class="nav-bar-row">
+                    <!-- Left: Menu -->
+                    <button class="icon-btn" onclick="UI.toggleMenu('left')">
+                        <i class="ph-bold ph-list"></i>
+                    </button>
+                    
+                    <!-- Center: Brand -->
+                    <div style="font-weight:800; font-size:1.2rem; cursor:pointer;" onclick="app.navigate('home')">
+                        Cronoshop
+                    </div>
+
+                    <!-- Right: Icons -->
+                    <div style="display:flex; gap:5px;">
+                        <button class="icon-btn" onclick="app.navigate('wishlist')">
+                            <i class="ph-bold ph-heart"></i>
+                        </button>
+                        <button class="icon-btn" style="position:relative;" onclick="app.navigate('cart')">
+                            <i class="ph-bold ph-shopping-cart"></i>
+                            <span class="cart-badge" style="position:absolute; top:5px; right:5px; width:10px; height:10px; background:red; border-radius:50%; display:none;"></span>
+                        </button>
+                        <button class="icon-btn" onclick="UI.toggleMenu('right')">
+                            <i class="ph-bold ph-gear"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- Dynamic Content Container -->
+                <div id="dynamic-menu-content" class="dynamic-menu"></div>
+            </div>
+        </div>
+        `;
+    }
+}
+customElements.define('crono-navbar', CronoNavbar);
+
+// Avvio UI V7
+document.addEventListener('DOMContentLoaded', () => UI.init());
