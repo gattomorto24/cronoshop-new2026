@@ -155,48 +155,278 @@
         .badge { background: #FF3B30; color: white; font-size: 0.75em; padding: 2px 8px; border-radius: 12px; margin-left: auto; display: none; font-weight: 600; box-shadow: 0 2px 5px rgba(255, 59, 48, 0.4); }
         
         /* MAIN */
-        .main-wrapper { flex: 1; height: 100%; overflow-y: auto; padding: 20px; position: relative; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
+        .main-wrapper { flex: 1; height: 100%; overflow-y: auto; padding: 80px 20px 20px 20px; position: relative; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
         
-        /* Enhanced header with proper iOS glass morphism */
+        /* Dynamic Bar (CronoNavbar) */
         .ios-header {
-            position: sticky;
-            top: 0;
-            z-index: 90;
-            background-color: var(--glass-bg);
-            backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-            -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-            margin: 0 0 20px 0;
-            padding: 14px 20px;
-            border-radius: 0 0 20px 20px;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-radius: 50px;
+            padding: 12px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border: 1px solid var(--glass-border);
-            border-top: none;
-            box-shadow: var(--glass-shadow);
-            transition: background 0.3s, border 0.3s, box-shadow 0.3s;
+            gap: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            width: fit-content;
+            min-width: 300px;
+        }
+
+        .ios-header .nav-btn {
+            background: none;
+            border: none;
+            font-size: 1.2em;
+            color: var(--text-main);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .ios-header .nav-btn:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .ios-header .ios-search {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 8px 12px;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .ios-header .ios-search i {
+            color: var(--text-sec);
+        }
+
+        .ios-header .ios-search input {
+            border: none;
+            background: none;
+            outline: none;
+            color: var(--text-main);
+            flex: 1;
+            font-size: 16px;
+        }
+
+        .nav-divider {
+            height: 1px;
+            background: var(--separator);
+            margin: 10px 0;
+        }
+
+        .crono-id-widget {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--glass-bg);
+            border-radius: 12px;
+            border: 1px solid var(--separator);
+        }
+
+        .crono-id-widget .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .crono-id-widget .user-info {
+            flex: 1;
+        }
+
+        .crono-id-widget .user-name {
+            font-weight: 600;
+        }
+
+        .crono-id-widget .user-id {
+            font-size: 0.9em;
+            color: var(--text-sec);
+        }
+
+        .settings-section h4 {
+            margin: 0 0 10px 0;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .toggle-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .ios-toggle {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            cursor: pointer;
+        }
+
+        .theme-grid h4 {
+            margin: 10px 0 10px 0;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .theme-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .theme-btn {
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .theme-btn.light { background: #f2f2f7; color: #000; }
+        .theme-btn.dark { background: #1c1c1e; color: #fff; }
+        .theme-btn.gold { background: linear-gradient(45deg, #000, #ffd700); color: #fff; }
+        .theme-btn.cyber { background: linear-gradient(45deg, #000, #ff00ff, #00ffff); color: #fff; }
+
+        .ios-header .right-icons {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ios-header .cart-btn {
+            position: relative;
+        }
+
+        .ios-header .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.8em;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        /* Expanded States */
+        .ios-header.expanded-left {
+            border-radius: 20px;
+            width: 80vw;
+            max-width: 400px;
+            padding: 20px;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .ios-header.expanded-right {
+            border-radius: 20px;
+            width: 80vw;
+            max-width: 400px;
+            padding: 20px;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .nav-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .nav-backdrop.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .expanded-menu {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(-50%) translateY(-20px);
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            width: 80vw;
+            max-width: 400px;
+        }
+
+        .expanded-menu.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .expanded-menu .nav-item {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--separator);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .expanded-menu .nav-item:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .expanded-menu .nav-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Minimal Mode */
+        .old-design-mode .ios-header {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Opaque Mode */
+        .ios-header.opaque {
+            background-color: var(--bg-base);
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            border: 1px solid var(--separator);
         }
         
-        @media (max-width: 768px) {
-            .ios-header {
-                position: -webkit-sticky;
-                position: sticky;
-                top: 0;
-                margin: 0;
-                padding: max(env(safe-area-inset-top), 12px) 16px 12px 16px;
-                border-radius: 0 0 24px 24px;
-                gap: 12px;
-            }
-            
-            .header-title {
-                font-size: 1.3em !important;
-                font-weight: 800 !important;
-            }
-            
-            .main-wrapper {
-                padding: 0 16px 16px 16px;
-            }
-        }
+
         
         .mobile-menu-btn { display: none; font-size: 1.6em; color: var(--primary); background: none; border: none; padding: 8px; min-width: 44px; min-height: 44px; }
         @media (max-width: 1024px) { .mobile-menu-btn { display: flex; align-items: center; justify-content: center; } }
@@ -405,6 +635,31 @@
         .modal-scrim.open, .sidebar-scrim.active { opacity: 1; pointer-events: auto; }
         
         .sidebar-scrim { z-index: 99; }
+        .right-sidebar-scrim { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 2000; opacity: 0; pointer-events: none; transition: 0.3s; backdrop-filter: blur(8px); }
+        .right-sidebar-scrim.active { opacity: 1; pointer-events: auto; }
+        
+        .right-sidebar {
+            width: 320px;
+            height: 100%;
+            flex-shrink: 0;
+            background-color: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+            -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+            border-left: 1px solid var(--glass-border);
+            padding: 20px 16px;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            transition: transform 0.3s var(--ease), background 0.3s, border 0.3s;
+            position: fixed;
+            top: 0;
+            right: 0;
+            transform: translateX(100%);
+        }
+        
+        .right-sidebar.active {
+            transform: translateX(0);
+        }
         
         .ios-modal { 
             background: var(--glass-bg); width: 95%; max-width: 500px; border-radius: 24px; padding: 24px; max-height: 90vh; overflow-y: auto;
@@ -511,33 +766,116 @@
         <div class="menu-group">
             <div class="menu-label">Navigazione</div>
             <div class="nav-item ios-touch active" id="nav-home" onclick="app.navigate('home')"><i class="ph ph-house"></i> Home</div>
-            <div class="nav-item ios-touch" id="nav-products" onclick="app.navigate('products')"><i class="ph ph-bag"></i> Prodotti</div>
+            <div class="nav-item ios-touch" id="nav-products" onclick="app.navigate('catalog')"><i class="ph ph-bag"></i> Catalogo Prodotti</div>
             <div class="nav-item ios-touch" id="nav-apple" onclick="app.navigate('apple')"><i class="ph ph-apple-logo"></i> Apple Store</div>
-            <div class="nav-item ios-touch" id="nav-samsung" onclick="app.navigate('samsung')"><i class="ph-bold ph-samsung-logo"></i> Samsung Store</div>
+            <div class="nav-item ios-touch" id="nav-samsung" onclick="app.navigate('samsung')"><i class="ph-bold ph-samsung-logo"></i> Samsung Hub</div>
             <div class="nav-item ios-touch" onclick="app.toggleChat()"><i class="ph-fill ph-sparkle" style="color: var(--primary);"></i> CronoAI</div>
         </div>
         <div class="menu-group">
             <div class="menu-label">Personale</div>
             <div class="nav-item ios-touch" id="nav-wishlist" onclick="app.navigate('wishlist')"><i class="ph ph-heart"></i> Preferiti <span class="badge" id="badge-wishlist">0</span></div>
             <div class="nav-item ios-touch" id="nav-cart" onclick="app.navigate('cart')"><i class="ph ph-shopping-cart"></i> Carrello <span class="badge" id="badge-cart">0</span></div>
-            <div class="nav-item ios-touch" id="nav-settings" onclick="app.navigate('settings')"><i class="ph ph-gear"></i> Impostazioni</div>
+            <div class="nav-item ios-touch" id="nav-profile" onclick="app.navigate('profile')"><i class="ph ph-user"></i> Profilo</div>
+        </div>
+    </aside>
+    <div class="right-sidebar-scrim" id="rightSidebarScrim" onclick="app.toggleRightSidebar()"></div>
+    <aside class="right-sidebar" id="right-sidebar">
+        <div class="crono-id-widget">
+            <div class="avatar">F</div>
+            <div class="user-info">
+                <div class="user-name">Francesco</div>
+                <div class="user-id">CronoID: 12345</div>
+            </div>
+        </div>
+        <div class="nav-divider"></div>
+        <div class="settings-section">
+            <h4>Interfaccia</h4>
+            <div class="toggle-item">
+                <span>Modalità Minimale</span>
+                <button class="ios-toggle" onclick="Prefs.minimal = !Prefs.minimal; Prefs.save();">Toggle</button>
+            </div>
+            <div class="toggle-item">
+                <span>Animazioni BETA</span>
+                <button class="ios-toggle" onclick="Prefs.beta = !Prefs.beta; Prefs.save();">Toggle</button>
+            </div>
+            <div class="toggle-item">
+                <span>Barra Opaca</span>
+                <button class="ios-toggle" onclick="app.toggleOpaque();">Toggle</button>
+            </div>
+        </div>
+        <div class="nav-divider"></div>
+        <div class="theme-grid">
+            <h4>Temi</h4>
+            <div class="theme-buttons">
+                <button class="theme-btn light" onclick="Prefs.theme = 'light'; Prefs.save();">Light</button>
+                <button class="theme-btn dark" onclick="Prefs.theme = 'dark'; Prefs.save();">Dark</button>
+                <button class="theme-btn gold" onclick="Prefs.theme = 'gold'; Prefs.save();">Gold</button>
+                <button class="theme-btn cyber" onclick="Prefs.theme = 'cyber'; Prefs.save();">Cyber</button>
+            </div>
         </div>
     </aside>
     <main class="main-wrapper">
-        <header class="ios-header">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <button class="mobile-menu-btn" onclick="app.toggleSidebar()"><i class="ph ph-list"></i></button>
-                <span class="header-title" id="pageTitle" style="font-weight: 700; font-size: 1.25em;">Home</span>
-            </div>
+        <header class="ios-header" id="crono-navbar">
+            <button class="nav-btn menu-btn" onclick="app.toggleNavMenu()"><i class="ph ph-list"></i></button>
             <div class="ios-search" id="globalSearchContainer">
                 <i class="ph ph-magnifying-glass"></i>
                 <input type="text" id="globalSearchInput" placeholder="Cerca...">
             </div>
-            <div class="ios-touch" onclick="app.navigate('cart')" style="color: var(--primary); font-size: 1.5em; position: relative;">
-                <i class="ph ph-shopping-cart"></i>
-                <span class="badge" id="header-badge-cart" style="position: absolute; top: -5px; right: -5px; display: flex;">0</span>
+            <div class="right-icons">
+                <button class="nav-btn" onclick="app.navigate('wishlist')"><i class="ph ph-heart"></i></button>
+                <button class="nav-btn cart-btn" onclick="app.navigate('cart')">
+                    <i class="ph ph-shopping-cart"></i>
+                    <span class="badge" id="header-badge-cart">0</span>
+                </button>
+                <button class="nav-btn settings-btn" onclick="app.toggleUserPanel()"><i class="ph ph-gear"></i></button>
             </div>
         </header>
+        <div class="nav-backdrop" id="nav-backdrop" onclick="app.closeNav()"></div>
+        <div class="nav-menu expanded-menu" id="nav-menu">
+            <div class="nav-item" onclick="app.navigate('home')">Home</div>
+            <div class="nav-item" onclick="app.navigate('catalog')">Catalogo Prodotti</div>
+            <div class="nav-item" onclick="app.navigate('apple')">Apple Store</div>
+            <div class="nav-item" onclick="app.navigate('samsung')">Samsung Hub</div>
+            <div class="nav-divider"></div>
+            <div class="nav-item" onclick="app.navigate('wishlist')">Preferiti</div>
+            <div class="nav-item" onclick="app.navigate('cart')">Carrello</div>
+            <div class="nav-item" onclick="app.navigate('profile')">Profilo</div>
+        </div>
+        <div class="user-panel expanded-menu" id="user-panel">
+            <div class="crono-id-widget">
+                <div class="avatar">F</div>
+                <div class="user-info">
+                    <div class="user-name">Francesco</div>
+                    <div class="user-id">CronoID: 12345</div>
+                </div>
+            </div>
+            <div class="nav-divider"></div>
+            <div class="settings-section">
+                <h4>Interfaccia</h4>
+                <div class="toggle-item">
+                    <span>Modalità Minimale</span>
+                    <button class="ios-toggle" onclick="Prefs.minimal = !Prefs.minimal; Prefs.save(); app.closeNav();">Toggle</button>
+                </div>
+                <div class="toggle-item">
+                    <span>Animazioni BETA</span>
+                    <button class="ios-toggle" onclick="Prefs.beta = !Prefs.beta; Prefs.save(); app.closeNav();">Toggle</button>
+                </div>
+                <div class="toggle-item">
+                    <span>Barra Opaca</span>
+                    <button class="ios-toggle" onclick="app.toggleOpaque(); app.closeNav();">Toggle</button>
+                </div>
+            </div>
+            <div class="nav-divider"></div>
+            <div class="theme-grid">
+                <h4>Temi</h4>
+                <div class="theme-buttons">
+                    <button class="theme-btn light" onclick="Prefs.theme = 'light'; Prefs.save(); app.closeNav();">Light</button>
+                    <button class="theme-btn dark" onclick="Prefs.theme = 'dark'; Prefs.save(); app.closeNav();">Dark</button>
+                    <button class="theme-btn gold" onclick="Prefs.theme = 'gold'; Prefs.save(); app.closeNav();">Gold</button>
+                    <button class="theme-btn cyber" onclick="Prefs.theme = 'cyber'; Prefs.save(); app.closeNav();">Cyber</button>
+                </div>
+            </div>
+        </div>
         <!-- HOME -->
         <!-- HERO iPhone 17 -->
 <div class="hero-card ios-touch" onclick="app.navigate('apple')"
