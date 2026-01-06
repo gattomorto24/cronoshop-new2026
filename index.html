@@ -13,45 +13,41 @@
            1. CSS VARIABLES ENGINE
            ========================================= */
         :root {
-            /* Default RGB Values (Light) */
-            --primary-rgb: 0, 122, 255;      /* #007AFF */
-            --bg-rgb: 242, 242, 247;         /* #F2F2F7 */
-            --card-rgb: 255, 255, 255;       /* #FFFFFF */
-            --text-rgb: 0, 0, 0;             /* #000000 */
-            --accent-rgb: 88, 86, 214;       /* #5856D6 */
+            --primary-rgb: 0, 122, 255;
+            --bg-rgb: 242, 242, 247;
+            --card-rgb: 255, 255, 255;
+            --text-rgb: 0, 0, 0;
+            --accent-rgb: 88, 86, 214;
             
-            /* Derived Colors */
             --primary: rgb(var(--primary-rgb));
             --bg-base: rgb(var(--bg-rgb));
             
-            /* Glass Engine Defaults (No Glass - Solid) */
             --glass-bg: rgb(var(--card-rgb));
             --glass-border: rgba(var(--text-rgb), 0.08);
             --glass-blur: 0px;
             --glass-shadow: 0px 4px 12px rgba(0,0,0,0.05);
             --glass-saturate: 100%;
             
-            /* Text Colors */
+            /* Aggiunta variabile per card solide */
+            --card-solid-bg: rgb(var(--card-rgb));
+            
             --text-main: rgb(var(--text-rgb));
             --text-sec: rgba(var(--text-rgb), 0.6);
             --separator: rgba(var(--text-rgb), 0.12);
             
-            /* Typography */
             --font-main: 'Inter', sans-serif;
             --base-size: 17px;
             --font-weight-normal: 400;
             --font-weight-bold: 600;
             
-            /* UI Utils */
             --radius-md: 20px;
             --ease: cubic-bezier(0.25, 1, 0.5, 1);
         }
         
-        /* ULTRA GLASS MODE (Attivata da JS) */
         body.glass-active {
             --glass-bg: rgba(var(--card-rgb), 0.35);
             --glass-border: rgba(255, 255, 255, 0.4);
-            --glass-blur: 30px;
+            --glass-blur: 40px;
             --glass-saturate: 180%;
             --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
         }
@@ -61,11 +57,44 @@
             --glass-border: rgba(255, 255, 255, 0.15);
         }
         
-        body.theme-dark {
-            --glass-shadow: 0px 4px 20px rgba(0, 0, 0, 0.3);
+        /* Nav minimale con effetto glass blur invece di trasparente */
+        body.minimal-mode .ios-header {
+            background: rgba(var(--card-rgb), 0.6);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border-radius: 0px;
+            width: 100%;
+            top: 0px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* O 'center' a seconda del contenuto*/
+}
+        }
+
+        body.minimal-mode.scrolled .ios-header {
+            background: rgba(var(--card-rgb), 0.85);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
         }
         
-        /* RESET */
+        /* Dark mode per minimal */
+        body.theme-dark.minimal-mode .ios-header {
+            background: rgba(28, 28, 30, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        body.theme-dark.minimal-mode.scrolled .ios-header {
+            background: rgba(28, 28, 30, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
         body {
@@ -93,12 +122,10 @@
                 radial-gradient(at 50% 50%, rgba(var(--card-rgb), 0.1) 0px, transparent 50%);
         }
         
-        /* UTILS */
         .ios-touch { cursor: pointer; transition: transform 0.1s; }
         .ios-touch:active { transform: scale(0.96); opacity: 0.8; }
         .hidden { display: none !important; }
         
-        /* LAYOUT */
         .app-container { display: flex; height: 100vh; overflow: hidden; }
         
         /* SIDEBAR */
@@ -141,6 +168,7 @@
             border-radius: 16px; color: var(--text-main); font-weight: var(--font-weight-normal);
             transition: 0.2s;
             min-height: 48px;
+            cursor: pointer;
         }
         .nav-item:hover { background-color: rgba(var(--text-rgb), 0.05); }
         .nav-item.active { 
@@ -157,27 +185,67 @@
         /* MAIN */
         .main-wrapper { flex: 1; height: 100%; overflow-y: auto; padding: 80px 20px 20px 20px; position: relative; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
         
-        /* Dynamic Bar (CronoNavbar) */
+        /* Dynamic Bar completamente ridisegnata per essere coerente con il design vetro */
         .ios-header {
             position: fixed;
-            top: 20px;
+            top: 16px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 1000;
-            background-color: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border-radius: 50px;
-            padding: 12px 20px;
+            background-color: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+            -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+            border-radius: var(--radius-md);
+            padding: 10px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            gap: 12px;
+            box-shadow: var(--glass-shadow);
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s var(--ease);
             width: fit-content;
-            min-width: 300px;
+            min-width: 280px;
+            max-width: calc(100vw - 32px);
+        }
+
+        /* No-glass mode per dynamic bar - usa stile solido coerente */
+        body.no-glass .ios-header {
+            background-color: var(--card-solid-bg);
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            border: 1px solid var(--separator);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        /* No-glass mode per sidebar - sfondo solido */
+        body.no-glass .sidebar,
+        body.no-glass .right-sidebar {
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            background-color: var(--card-solid-bg);
+            border-color: var(--separator);
+        }
+
+        body.no-glass .modal-scrim,
+        body.no-glass .sidebar-scrim,
+        body.no-glass .right-sidebar-scrim {
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            background: rgba(0,0,0,0.4);
+        }
+
+        body.no-glass .btn-secondary {
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            background: rgba(var(--text-rgb), 0.08);
+        }
+
+        .brand-center {
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-main);
+            flex-shrink: 0;
         }
 
         .ios-header .nav-btn {
@@ -187,27 +255,34 @@
             color: var(--text-main);
             cursor: pointer;
             padding: 8px;
-            border-radius: 50%;
+            border-radius: 12px;
             transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
+            min-height: 40px;
         }
 
         .ios-header .nav-btn:hover {
-            background: rgba(0, 0, 0, 0.1);
+            background: rgba(var(--text-rgb), 0.08);
         }
 
         .ios-header .ios-search {
             display: flex;
             align-items: center;
             gap: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
+            background: rgba(var(--text-rgb), 0.06);
+            border-radius: 12px;
             padding: 8px 12px;
             flex: 1;
-            max-width: 300px;
+            max-width: 200px;
+            min-width: 120px;
         }
 
         .ios-header .ios-search i {
             color: var(--text-sec);
+            font-size: 1em;
         }
 
         .ios-header .ios-search input {
@@ -216,7 +291,8 @@
             outline: none;
             color: var(--text-main);
             flex: 1;
-            font-size: 16px;
+            font-size: 15px;
+            width: 100%;
         }
 
         .nav-divider {
@@ -230,7 +306,7 @@
             align-items: center;
             gap: 12px;
             padding: 12px;
-            background: var(--glass-bg);
+            background: rgba(var(--text-rgb), 0.04);
             border-radius: 12px;
             border: 1px solid var(--separator);
         }
@@ -308,11 +384,24 @@
         .theme-btn.dark { background: #1c1c1e; color: #fff; }
         .theme-btn.gold { background: linear-gradient(45deg, #000, #ffd700); color: #fff; }
         .theme-btn.cyber { background: linear-gradient(45deg, #000, #ff00ff, #00ffff); color: #fff; }
+        .theme-btn.rose { background: linear-gradient(45deg, #fff1f2, #fb7185); color: #881337; }
+        .theme-btn.sunset { background: linear-gradient(45deg, #fff7ed, #ea580c); color: #431407; }
+        .theme-btn.forest { background: linear-gradient(45deg, #022c22, #10b981); color: #ecfdf5; }
+        .theme-btn.midnight { background: linear-gradient(45deg, #0f0f23, #6366f1); color: #e0e7ff; }
+        .theme-btn.slate { background: linear-gradient(45deg, #f8fafc, #64748b); color: #0f172a; }
+        .theme-btn.ocean { background: linear-gradient(45deg, #0f172a, #38bdf8); color: #f0f9ff; }
+        .theme-btn.latte { background: linear-gradient(45deg, #fef7ed, #f97316); color: #9a3412; }
+        .theme-btn.graphite { background: linear-gradient(45deg, #374151, #9ca3af); color: #f9fafb; }
+        .theme-btn.desert { background: linear-gradient(45deg, #78350f, #fcd34d); color: #fef3c7; }
+        .theme-btn.aurora { background: linear-gradient(45deg, #0c0a09, #00d4ff); color: #f5f5f4; }
+        .theme-btn.solar { background: linear-gradient(45deg, #ffffff, #f59e0b); color: #0f172a; }
+        .theme-btn.cherry { background: linear-gradient(45deg, #fff1f2, #dc2626); color: #be123c; }
+        .theme-btn.highcontrast { background: linear-gradient(45deg, #000000, #ffffff); color: #000000; }
 
         .ios-header .right-icons {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 4px;
         }
 
         .ios-header .cart-btn {
@@ -321,37 +410,18 @@
 
         .ios-header .badge {
             position: absolute;
-            top: -5px;
-            right: -5px;
+            top: -2px;
+            right: -2px;
             background: var(--primary);
             color: white;
             border-radius: 50%;
             width: 18px;
             height: 18px;
-            font-size: 0.8em;
+            font-size: 0.75em;
             display: none;
             align-items: center;
             justify-content: center;
             font-weight: 600;
-        }
-
-        /* Expanded States */
-        .ios-header.expanded-left {
-            border-radius: 20px;
-            width: 80vw;
-            max-width: 400px;
-            padding: 20px;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .ios-header.expanded-right {
-            border-radius: 20px;
-            width: 80vw;
-            max-width: 400px;
-            padding: 20px;
-            flex-direction: column;
-            gap: 15px;
         }
 
         .nav-backdrop {
@@ -372,23 +442,43 @@
             visibility: visible;
         }
 
+        /* Expanded menu ridisegnato con scrolling e stile vetro coerente */
         .expanded-menu {
             position: fixed;
-            top: 100px;
+            top: 80px;
             left: 50%;
             transform: translateX(-50%);
             background: var(--glass-bg);
-            backdrop-filter: blur(30px);
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+            -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+            border-radius: var(--radius-md);
+            padding: 16px;
+            box-shadow: var(--glass-shadow);
+            border: 1px solid var(--glass-border);
             z-index: 1001;
             opacity: 0;
             visibility: hidden;
-            transform: translateX(-50%) translateY(-20px);
-            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-            width: 80vw;
-            max-width: 400px;
+            transform: translateX(-50%) translateY(-10px);
+            transition: all 0.3s var(--ease);
+            width: calc(100vw - 32px);
+            max-width: 380px;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+            overscroll-behavior: contain;
+        }
+        
+        /* Scrollbar stilizzata per i menu */
+        .expanded-menu::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .expanded-menu::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .expanded-menu::-webkit-scrollbar-thumb {
+            background: rgba(var(--text-rgb), 0.2);
+            border-radius: 3px;
         }
 
         .expanded-menu.active {
@@ -398,61 +488,322 @@
         }
 
         .expanded-menu .nav-item {
-            padding: 12px 0;
-            border-bottom: 1px solid var(--separator);
+            padding: 12px 14px;
+            border-radius: 12px;
             cursor: pointer;
             transition: background 0.2s;
+            margin-bottom: 4px;
         }
 
         .expanded-menu .nav-item:hover {
-            background: rgba(0, 0, 0, 0.05);
+            background: rgba(var(--text-rgb), 0.06);
         }
 
         .expanded-menu .nav-item:last-child {
-            border-bottom: none;
+            margin-bottom: 0;
         }
-
-        /* Minimal Mode */
-        .old-design-mode .ios-header {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        /* Opaque Mode */
-        .ios-header.opaque {
-            background-color: var(--bg-base);
+        
+        /* No-glass per expanded menu */
+        body.no-glass .expanded-menu {
+            background: var(--card-solid-bg);
             backdrop-filter: none;
             -webkit-backdrop-filter: none;
             border: 1px solid var(--separator);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+        }
+
+        /* Espansione header con scrolling */
+        .ios-header.expanded-left,
+        .ios-header.expanded-right {
+            border-radius: var(--radius-md);
+            width: calc(100vw - 32px);
+            max-width: 400px;
+            max-height: calc(100vh - 80px);
+            padding: 16px;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+            overscroll-behavior: contain;
         }
         
-
+        .ios-header.expanded-left::-webkit-scrollbar,
+        .ios-header.expanded-right::-webkit-scrollbar {
+            width: 6px;
+        }
         
+        .ios-header.expanded-left::-webkit-scrollbar-track,
+        .ios-header.expanded-right::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .ios-header.expanded-left::-webkit-scrollbar-thumb,
+        .ios-header.expanded-right::-webkit-scrollbar-thumb {
+            background: rgba(var(--text-rgb), 0.2);
+            border-radius: 3px;
+        }
+
+        #expanded-content {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            width: 100%;
+        }
+
+        .ios-header.expanded-left #expanded-content,
+        .ios-header.expanded-right #expanded-content {
+            display: flex;
+        }
+
         .mobile-menu-btn { display: none; font-size: 1.6em; color: var(--primary); background: none; border: none; padding: 8px; min-width: 44px; min-height: 44px; }
         @media (max-width: 1024px) { .mobile-menu-btn { display: flex; align-items: center; justify-content: center; } }
+
+        /* FILTER CHIPS */
+        .filter-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+        .filter-scroll::-webkit-scrollbar { display: none; }
+        .ios-chip {
+            padding: 10px 20px; background-color: var(--glass-bg); border-radius: 50px; font-size: 0.9em; font-weight: 600;
+            box-shadow: var(--glass-shadow); white-space: nowrap; transition: 0.2s; 
+            border: 1px solid var(--glass-border); color: var(--text-main);
+            backdrop-filter: blur(var(--glass-blur));
+            cursor: pointer;
+        }
+        .ios-chip.active { 
+            background-color: var(--text-main); color: var(--bg-base); border-color: transparent;
+            box-shadow: 0 4px 12px rgba(var(--text-rgb), 0.3);
+        }
         
-        .ios-search {
-            flex: 1; max-width: 400px; background-color: rgba(var(--text-rgb), 0.05);
-            border-radius: 14px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; margin: 0 20px;
-            border: 1px solid transparent; transition: 0.2s;
+        /* No-glass per chips */
+        body.no-glass .ios-chip {
+            background-color: var(--card-solid-bg);
+            backdrop-filter: none;
+        }
+        
+        /* BUTTONS */
+        .ios-btn { width: 100%; padding: 16px; border-radius: 16px; font-size: 1em; font-weight: var(--font-weight-bold); cursor: pointer; border: none; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; min-height: 48px; }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.4); }
+        .btn-primary:active { opacity: 0.8; transform: scale(0.98); }
+        .btn-secondary { background: rgba(var(--text-rgb), 0.08); color: var(--text-main); backdrop-filter: blur(10px); }
+        .btn-magic { background: linear-gradient(135deg, #FF2D55, #5856D6); color: white; box-shadow: 0 4px 15px rgba(255, 45, 85, 0.4); }
+        .btn-text { background: transparent; color: var(--primary); box-shadow: none; font-size: 0.9em; margin-top: 10px; }
+        
+        /* SETTINGS & THEMES UI */
+        .settings-group { 
+            background: var(--glass-bg); border-radius: 20px; overflow: hidden; margin-bottom: 24px;
+            box-shadow: var(--glass-shadow); border: 1px solid var(--glass-border);
+            backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+        }
+        
+        /* No-glass per settings groups */
+        body.no-glass .settings-group {
+            background: var(--card-solid-bg);
+            backdrop-filter: none;
+        }
+        
+        .settings-row { 
+            display: flex; align-items: center; justify-content: space-between; padding: 18px 20px;
+            border-bottom: 1px solid var(--glass-border); cursor: pointer; transition: background 0.2s;
+            min-height: 60px;
+        }
+        .settings-row:last-child { border-bottom: none; }
+        .settings-row:hover { background: rgba(var(--text-rgb), 0.05); }
+        
+        .theme-grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+            gap: 12px;
+            padding: 20px;
+            max-height: none;
+            overflow: visible;
         }
         
         @media (max-width: 768px) {
-            .ios-search {
-                max-width: none;
-                margin: 0 12px;
-                padding: 8px 12px;
+            .theme-grid-container {
+                grid-template-columns: repeat(3, 1fr);
             }
         }
         
-        .ios-search:focus-within { 
-            background-color: rgba(var(--card-rgb), 0.6); 
-            border-color: var(--primary); 
-            box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.15); 
-            backdrop-filter: blur(10px);
+        .theme-circle {
+            width: 60px; height: 60px; border-radius: 50%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 8px;
+            border: 3px solid transparent;
+            transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
-        .ios-search input { border: none; background: transparent; font-size: 1em; width: 100%; outline: none; color: var(--text-main); font-family: inherit; }
+        .theme-circle:hover { transform: scale(1.1); }
+        .theme-circle.active { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(var(--primary-rgb), 0.3); }
+        .theme-name { text-align: center; font-size: 0.8em; color: var(--text-sec); }
         
+        /* SWITCH TOGGLE */
+        .switch-toggle { position: relative; width: 52px; height: 32px; display: inline-block; }
+        .switch-toggle input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; inset: 0; background: rgba(var(--text-rgb), 0.2); border-radius: 34px; transition: 0.4s; cursor: pointer; }
+        .slider:before { content: ''; position: absolute; width: 26px; height: 26px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.4s; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        input:checked + .slider { background: var(--primary); }
+        input:checked + .slider:before { transform: translateX(20px); }
+        
+        /* RIGHT SIDEBAR */
+        .right-sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 320px;
+            max-width: 85%;
+            background-color: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+            -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+            border-left: 1px solid var(--glass-border);
+            padding: 20px;
+            z-index: 101;
+            transform: translateX(100%);
+            transition: transform 0.3s var(--ease);
+            overflow-y: auto;
+        }
+        .right-sidebar.active { transform: translateX(0); }
+        
+        .sidebar-scrim, .right-sidebar-scrim {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            z-index: 99;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s;
+        }
+        .sidebar-scrim.active, .right-sidebar-scrim.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* MODAL */
+        .modal-scrim {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s;
+        }
+        .modal-scrim.open { opacity: 1; visibility: visible; }
+        .ios-modal {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            width: 100%;
+            max-width: 420px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 24px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+            transform: scale(0.9);
+            transition: 0.3s var(--ease);
+        }
+        .modal-scrim.open .ios-modal { transform: scale(1); }
+        
+        /* No-glass per modals */
+        body.no-glass .ios-modal {
+            background: var(--card-solid-bg);
+            backdrop-filter: none;
+        }
+        
+        /* CHAT */
+        .chat-btn-float {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), rgb(var(--accent-rgb)));
+            color: white;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(var(--primary-rgb), 0.4);
+            z-index: 1000;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .chat-btn-float:hover { transform: scale(1.1); }
+        
+        .chat-interface {
+            position: fixed;
+            bottom: 100px;
+            right: 24px;
+            width: 380px;
+            max-width: calc(100vw - 48px);
+            height: 500px;
+            max-height: calc(100vh - 150px);
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            z-index: 1001;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: 0.3s var(--ease);
+        }
+        .chat-interface.open { opacity: 1; visibility: visible; transform: translateY(0); }
+        
+        /* No-glass per chat */
+        body.no-glass .chat-interface {
+            background: var(--card-solid-bg);
+            backdrop-filter: none;
+        }
+        
+        /* Chat a schermo intero SOLO su mobile */
+        @media (max-width: 768px) {
+            .chat-interface {
+                bottom: 0;
+                right: 0;
+                left: 0;
+                top: 0;
+                width: 100%;
+                max-width: 100%;
+                height: 100%;
+                max-height: 100%;
+                border-radius: 0;
+            }
+            
+            .chat-interface.open {
+                transform: translateY(0);
+            }
+        }
+        
+        .chat-nav { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--glass-border); font-weight: 600; cursor: move; }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+        
+        .msg-bubble { max-width: 80%; padding: 12px 16px; border-radius: 20px; font-size: 0.95em; line-height: 1.5; margin-bottom: 10px; }
+        .msg-ai { background-color: rgba(var(--text-rgb), 0.06); color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 4px; backdrop-filter: blur(5px); }
+        .msg-user { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; box-shadow: 0 4px 10px rgba(var(--primary-rgb), 0.3); }
+        
+        /* USER PROFILE CARD IN SETTINGS */
+        .user-card-profile {
+            display: flex; align-items: center; gap: 15px; padding: 20px;
+        }
+        .user-avatar {
+            width: 60px; height: 60px; background: rgba(var(--text-rgb), 0.1); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 1.5em; color: var(--text-sec);
+        }
+        .new-badge { position: absolute; top: 10px; left: 10px; background: #FF3B30; color: #fff; padding: 6px 8px; border-radius: 10px; font-weight:700; font-size:0.75em; z-index: 5; }
+        .featured-badge { position: absolute; top: 10px; right: 10px; background: linear-gradient(135deg,#FFD66B,#FF7A7A); color: #111; padding: 6px 8px; border-radius: 10px; font-weight:700; font-size:0.9em; z-index: 5; }
+
         /* VIEWS */
         .view-section { display: none; animation: slideUp 0.4s var(--ease); }
         .view-section.active { display: block; }
@@ -475,7 +826,6 @@
         }
         .auth-input:focus { border-color: var(--primary); background: var(--glass-bg); box-shadow: 0 0 0 4px rgba(var(--primary-rgb), 0.1); }
         
-        /* Animazione Password Slide Down */
         .password-section {
             max-height: 0; overflow: hidden; opacity: 0; transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
         }
@@ -488,6 +838,13 @@
             border: 1px solid var(--glass-border);
             backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
         }
+        
+        /* No-glass per hero card */
+        body.no-glass .hero-card {
+            background-color: var(--card-solid-bg);
+            backdrop-filter: none;
+        }
+        
         .hero-overlay {
             position: absolute; inset: 0;
             background: linear-gradient(to top, rgba(0,0,0,0.8), transparent 60%);
@@ -510,610 +867,612 @@
             }
         }
         
+        /* Product card con sfondo SEMPRE solido, non vetro */
         .product-card {
-            background-color: var(--glass-bg); border-radius: var(--radius-md); overflow: hidden;
-            box-shadow: var(--glass-shadow); display: flex; flex-direction: column; cursor: pointer;
-            border: 1px solid var(--glass-border); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+            background-color: var(--card-solid-bg);
+            border-radius: var(--radius-md); 
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            display: flex; 
+            flex-direction: column; 
+            cursor: pointer;
+            border: 1px solid var(--separator);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s;
             position: relative;
         }
-        .product-card:hover { transform: translateY(-6px) scale(1.02); z-index: 10; }
+        
+        .product-card:hover { 
+            transform: translateY(-6px) scale(1.02); 
+            z-index: 10;
+            box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+        }
+        
         .product-img-wrap { padding-top: 100%; position: relative; background-color: rgba(var(--text-rgb), 0.03); }
         .product-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; padding: 20px; transition: transform 0.3s; }
         .product-card:hover .product-img { transform: scale(1.1); }
         .product-details { padding: 16px; }
         .product-name { font-size: 1em; font-weight: var(--font-weight-bold); margin-bottom: 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 2.8em; }
         .product-price { color: var(--primary); font-weight: var(--font-weight-bold); font-size: 1.1em; }
+
+        .section-title { font-size: 1.5em; font-weight: var(--font-weight-bold); margin: 30px 0 20px 0; }
         
-        /* CHIPS */
-        .filter-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
-        .filter-scroll::-webkit-scrollbar { display: none; }
-        .ios-chip {
-            padding: 10px 20px; background-color: var(--glass-bg); border-radius: 50px; font-size: 0.9em; font-weight: 600;
-            box-shadow: var(--glass-shadow); white-space: nowrap; transition: 0.2s; 
-            border: 1px solid var(--glass-border); color: var(--text-main);
-            backdrop-filter: blur(var(--glass-blur));
+        /* UI Backdrop */
+        .ui-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 998;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
         }
-        .ios-chip.active { 
-            background-color: var(--text-main); color: var(--bg-base); border-color: transparent;
-            box-shadow: 0 4px 12px rgba(var(--text-rgb), 0.3);
+        .ui-backdrop.active {
+            opacity: 1;
+            visibility: visible;
         }
-        
-        /* BUTTONS */
-        .ios-btn { width: 100%; padding: 16px; border-radius: 16px; font-size: 1em; font-weight: var(--font-weight-bold); cursor: pointer; border: none; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; min-height: 48px; }
-        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.4); }
-        .btn-primary:active { opacity: 0.8; transform: scale(0.98); }
-        .btn-secondary { background: rgba(var(--text-rgb), 0.08); color: var(--text-main); backdrop-filter: blur(10px); }
-        .btn-magic { background: linear-gradient(135deg, #FF2D55, #5856D6); color: white; box-shadow: 0 4px 15px rgba(255, 45, 85, 0.4); }
-        .btn-text { background: transparent; color: var(--primary); box-shadow: none; font-size: 0.9em; margin-top: 10px; }
-        
-        /* SETTINGS & THEMES UI */
-        .settings-group { 
-            background: var(--glass-bg); border-radius: 20px; overflow: hidden; margin-bottom: 24px;
-            box-shadow: var(--glass-shadow); border: 1px solid var(--glass-border);
-            backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+
+        /* ACCESSIBILITY CLASSES */
+        body.show-borders * {
+            border: 1px solid red !important;
         }
-        .settings-row { 
-            display: flex; align-items: center; justify-content: space-between; padding: 18px 20px;
-            border-bottom: 1px solid var(--glass-border); cursor: pointer; transition: background 0.2s;
-            min-height: 60px;
-        }
-        .settings-row:last-child { border-bottom: none; }
-        .settings-row:hover { background: rgba(var(--text-rgb), 0.05); }
-        
-        /* Fixed theme grid to display all 12 themes properly */
-        .theme-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
-            gap: 12px;
-            padding: 20px;
-            max-height: none;
-            overflow: visible;
-        }
-        
-        @media (max-width: 768px) {
-            .theme-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 10px;
-                padding: 16px;
-            }
-        }
-        
-        .theme-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            padding: 10px 8px;
-            border-radius: 14px;
-            border: 2px solid transparent;
-            transition: 0.2s;
-            min-height: 90px;
-        }
-        
-        .theme-item.active {
-            border-color: var(--primary);
-            background: rgba(var(--primary-rgb), 0.1);
-            backdrop-filter: blur(5px);
-        }
-        
-        .theme-preview {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            border: 3px solid rgba(255,255,255,0.3);
-            position: relative;
-        }
-        
-        @media (max-width: 768px) {
-            .theme-preview {
-                width: 44px;
-                height: 44px;
-            }
-        }
-        
-        .theme-name {
-            font-size: 0.75em;
-            text-align: center;
-            color: var(--text-sec);
+
+        body.bold-text {
             font-weight: 600;
-            line-height: 1.2;
+        }
+
+        body.saturated-colors {
+            filter: saturate(150%);
+        }
+
+        body.grayscale {
+            filter: grayscale(100%);
+        }
+
+        body.reduce-motion * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+
+        body.high-contrast {
+            filter: contrast(150%);
         }
         
-        /* TOGGLES */
-        .switch-toggle { position: relative; width: 52px; height: 32px; }
-        .switch-toggle input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; inset: 0; background-color: rgba(var(--text-rgb), 0.2); border-radius: 34px; transition: .4s; }
-        .slider:before { position: absolute; content: ""; height: 24px; width: 24px; left: 4px; bottom: 4px; background-color: white; border-radius: 50%; transition: .4s; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        input:checked + .slider { background-color: var(--primary); }
-        input:checked + .slider:before { transform: translateX(20px); }
-        
-        /* MODALS & OVERLAYS */
-        .modal-scrim, .sidebar-scrim { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 2000; opacity: 0; pointer-events: none; transition: 0.3s; backdrop-filter: blur(8px); }
-        .modal-scrim.open, .sidebar-scrim.active { opacity: 1; pointer-events: auto; }
-        
-        .sidebar-scrim { z-index: 99; }
-        .right-sidebar-scrim { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 2000; opacity: 0; pointer-events: none; transition: 0.3s; backdrop-filter: blur(8px); }
-        .right-sidebar-scrim.active { opacity: 1; pointer-events: auto; }
-        
-        .right-sidebar {
-            width: 320px;
-            height: 100%;
-            flex-shrink: 0;
-            background-color: var(--glass-bg);
-            backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-            -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-            border-left: 1px solid var(--glass-border);
-            padding: 20px 16px;
-            display: flex;
-            flex-direction: column;
-            z-index: 100;
-            transition: transform 0.3s var(--ease), background 0.3s, border 0.3s;
+        /* Menu a schermo intero SOLO per mobile, slide panel per desktop */
+        .full-menu-overlay {
             position: fixed;
             top: 0;
+            left: 0;
             right: 0;
-            transform: translateX(100%);
-        }
-        
-        .right-sidebar.active {
-            transform: translateX(0);
-        }
-        
-        .ios-modal { 
-            background: var(--glass-bg); width: 95%; max-width: 500px; border-radius: 24px; padding: 24px; max-height: 90vh; overflow-y: auto;
-            transform: scale(0.9); transition: 0.3s var(--ease); box-shadow: var(--glass-shadow); position: absolute; top: 50%; left: 50%; translate: -50% -50%;
-            border: 1px solid var(--glass-border); backdrop-filter: blur(40px) saturate(150%);
-        }
-        .modal-scrim.open .ios-modal { transform: scale(1); }
-        
-        /* CHATBOT */
-        .chat-btn-float { 
-            position: fixed; bottom: 24px; right: 24px; width: 64px; height: 64px;
-            background: linear-gradient(135deg, var(--primary), rgb(var(--accent-rgb)));
-            border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center;
-            font-size: 32px; box-shadow: 0 10px 30px rgba(var(--primary-rgb), 0.4);
-            border: none; z-index: 900; transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .chat-btn-float:active { transform: scale(0.9); }
-        
-        @media (max-width: 768px) {
-            .chat-btn-float {
-                bottom: max(env(safe-area-inset-bottom), 16px);
-                right: 16px;
-                width: 56px;
-                height: 56px;
-                font-size: 28px;
-            }
-        }
-        
-        .chat-interface { 
-            position: fixed; bottom: 100px; right: 24px; width: 360px; height: 550px;
+            bottom: 0;
             background: var(--glass-bg);
-            backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%);
-            border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-            z-index: 900; opacity: 0; pointer-events: none; transform: scale(0.9);
-            transition: opacity 0.3s, transform 0.3s;
-            display: flex; flex-direction: column; border: 1px solid var(--glass-border);
-            overflow: hidden; resize: both; min-width: 300px; min-height: 400px;
-        }
-        .chat-interface.open { opacity: 1; pointer-events: auto; transform: scale(1); }
-        
-        @media (max-width: 768px) {
-            .chat-interface {
-                position: fixed;
-                inset: 0;
-                width: 100%;
-                height: 100%;
-                bottom: 0;
-                right: 0;
-                border-radius: 0;
-                resize: none;
-                min-width: auto;
-                min-height: auto;
-            }
-        }
-        
-        .chat-nav { 
-            padding: 16px; cursor: move; user-select: none;
-            background: rgba(var(--text-rgb), 0.03); border-bottom: 1px solid var(--glass-border);
-            display: flex; justify-content: space-between; align-items: center; font-weight: 600;
-        }
-        
-        @media (max-width: 768px) {
-            .chat-nav {
-                cursor: default;
-                padding: max(env(safe-area-inset-top), 16px) 16px 16px 16px;
-            }
-        }
-        
-        .chat-messages {
-            flex: 1;
-            padding: 20px;
+            backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+            -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s var(--ease);
             overflow-y: auto;
+            padding: 20px;
+            padding-top: max(env(safe-area-inset-top), 20px);
+        }
+        
+        .full-menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Su desktop (>768px) il menu diventa uno slide panel dal bordo sinistro */
+        @media (min-width: 769px) {
+            .full-menu-overlay {
+                width: 380px;
+                max-width: 380px;
+                right: auto;
+                transform: translateX(-100%);
+                opacity: 1;
+                visibility: hidden;
+                border-right: 1px solid var(--glass-border);
+                box-shadow: 5px 0 30px rgba(0,0,0,0.15);
+            }
+            
+            .full-menu-overlay.active {
+                transform: translateX(0);
+                visibility: visible;
+            }
+        }
+        
+        body.no-glass .full-menu-overlay {
+            background: var(--card-solid-bg);
+            backdrop-filter: none;
+        }
+        
+        .full-menu-header {
             display: flex;
-            flex-direction: column;
-            -webkit-overflow-scrolling: touch;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--separator);
         }
         
-        .msg-bubble { max-width: 80%; padding: 12px 16px; border-radius: 20px; font-size: 0.95em; line-height: 1.5; margin-bottom: 10px; }
-        .msg-ai { background-color: rgba(var(--text-rgb), 0.06); color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 4px; backdrop-filter: blur(5px); }
-        .msg-user { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; box-shadow: 0 4px 10px rgba(var(--primary-rgb), 0.3); }
-        
-        /* USER PROFILE CARD IN SETTINGS */
-        .user-card-profile {
-            display: flex; align-items: center; gap: 15px; padding: 20px;
+        .full-menu-header h2 {
+            font-size: 1.4em;
+            font-weight: 700;
         }
-        .user-avatar {
-            width: 60px; height: 60px; background: rgba(var(--text-rgb), 0.1); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; font-size: 1.5em; color: var(--text-sec);
-        }
-        .new-badge { position: absolute; top: 10px; left: 10px; background: #FF3B30; color: #fff; padding: 6px 8px; border-radius: 10px; font-weight:700; font-size:0.75em; }
-        .featured-badge { position: absolute; top: 10px; right: 10px; background: linear-gradient(135deg,#FFD66B,#FF7A7A); color: #111; padding: 6px 8px; border-radius: 10px; font-weight:700; font-size:0.9em; }
-
         
+        .full-menu-close {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(var(--text-rgb), 0.1);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2em;
+            color: var(--text-main);
+        }
+        
+        .full-menu-section {
+            margin-bottom: 24px;
+        }
+        
+        .full-menu-section h4 {
+            font-size: 0.85em;
+            text-transform: uppercase;
+            color: var(--text-sec);
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+        
+        .full-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+            color: var(--text-main);
+        }
+        
+        .full-menu-item:hover {
+            background: rgba(var(--text-rgb), 0.06);
+        }
+        
+        .full-menu-item i {
+            font-size: 1.3em;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .full-menu-item.active {
+            background: rgba(var(--primary-rgb), 0.12);
+            color: var(--primary);
+        }
+        
+        .full-menu-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            border-radius: 14px;
+            margin-bottom: 6px;
+            background: rgba(var(--text-rgb), 0.03);
+        }
+        
+        .full-menu-themes {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        
+        .full-menu-theme-btn {
+            aspect-ratio: 1;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.7em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .full-menu-theme-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .full-menu-theme-btn.active {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.2);
+        }
+        
+        /* Scrim/backdrop per il menu slide su desktop */
+        .full-menu-scrim {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            z-index: 1999;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s var(--ease);
+        }
+        
+        .full-menu-scrim.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        body.no-glass .full-menu-scrim {
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
     </style>
 </head>
 <body>
 <div class="app-container">
-    <div class="sidebar-scrim" id="sidebarScrim" onclick="app.toggleSidebar()"></div>
+    <!-- SIDEBAR SCRIM -->
+    <div class="sidebar-scrim" id="sidebarScrim"></div>
+    
+    <!-- LEFT SIDEBAR -->
     <aside class="sidebar" id="sidebar">
         <div class="brand-area">
             <div class="brand-logo"><i class="ph-bold ph-lightning"></i></div>
             <span class="brand-title">Cronoshop</span>
         </div>
-        <div class="menu-group">
-            <div class="menu-label">Navigazione</div>
-            <div class="nav-item ios-touch active" id="nav-home" onclick="app.navigate('home')"><i class="ph ph-house"></i> Home</div>
-            <div class="nav-item ios-touch" id="nav-products" onclick="app.navigate('catalog')"><i class="ph ph-bag"></i> Catalogo Prodotti</div>
-            <div class="nav-item ios-touch" id="nav-apple" onclick="app.navigate('apple')"><i class="ph ph-apple-logo"></i> Apple Store</div>
-            <div class="nav-item ios-touch" id="nav-samsung" onclick="app.navigate('samsung')"><i class="ph-bold ph-samsung-logo"></i> Samsung Hub</div>
-            <div class="nav-item ios-touch" onclick="app.toggleChat()"><i class="ph-fill ph-sparkle" style="color: var(--primary);"></i> CronoAI</div>
-        </div>
-        <div class="menu-group">
-            <div class="menu-label">Personale</div>
-            <div class="nav-item ios-touch" id="nav-wishlist" onclick="app.navigate('wishlist')"><i class="ph ph-heart"></i> Preferiti <span class="badge" id="badge-wishlist">0</span></div>
-            <div class="nav-item ios-touch" id="nav-cart" onclick="app.navigate('cart')"><i class="ph ph-shopping-cart"></i> Carrello <span class="badge" id="badge-cart">0</span></div>
-            <div class="nav-item ios-touch" id="nav-profile" onclick="app.navigate('profile')"><i class="ph ph-user"></i> Profilo</div>
-        </div>
+        
+        <div class="menu-label">Menu</div>
+        <div class="nav-item active" data-view="home"><i class="ph ph-house"></i> Home</div>
+        <div class="nav-item" data-view="catalog"><i class="ph ph-bag"></i> Catalogo Prodotti</div>
+        <div class="nav-item" data-view="apple"><i class="ph ph-apple-logo"></i> Apple Store</div>
+        <div class="nav-item" data-view="samsung"><i class="ph ph-device-mobile"></i> Samsung Hub</div>
+        
+        <div class="menu-label">Personale</div>
+        <div class="nav-item" data-view="wishlist"><i class="ph ph-heart"></i> Preferiti <span class="badge" id="wishBadge">0</span></div>
+        <div class="nav-item" data-view="cart"><i class="ph ph-shopping-cart"></i> Carrello <span class="badge" id="cartBadge">0</span></div>
+        <div class="nav-item" data-view="settings"><i class="ph ph-user"></i> Profilo</div>
+        
+        <div style="flex:1;"></div>
+        <div class="nav-item" id="chatBtn"><i class="ph-fill ph-sparkle"></i> CronoAI</div>
     </aside>
-    <div class="right-sidebar-scrim" id="rightSidebarScrim" onclick="app.toggleRightSidebar()"></div>
-    <aside class="right-sidebar" id="right-sidebar">
-        <div class="crono-id-widget">
-            <div class="avatar">F</div>
-            <div class="user-info">
-                <div class="user-name">Francesco</div>
-                <div class="user-id">CronoID: 12345</div>
-            </div>
+    
+    <!-- DYNAMIC BAR -->
+    <nav class="ios-header" id="crono-navbar">
+        <button class="nav-btn" id="menuBtn"><i class="ph ph-list"></i></button>
+        <div class="ios-search">
+            <i class="ph ph-magnifying-glass"></i>
+            <input type="text" placeholder="Cerca..." id="searchInput">
         </div>
-        <div class="nav-divider"></div>
-        <div class="settings-section">
-            <h4>Interfaccia</h4>
-            <div class="toggle-item">
-                <span>Modalità Minimale</span>
-                <button class="ios-toggle" onclick="Prefs.minimal = !Prefs.minimal; Prefs.save();">Toggle</button>
-            </div>
-            <div class="toggle-item">
-                <span>Animazioni BETA</span>
-                <button class="ios-toggle" onclick="Prefs.beta = !Prefs.beta; Prefs.save();">Toggle</button>
-            </div>
-            <div class="toggle-item">
-                <span>Barra Opaca</span>
-                <button class="ios-toggle" onclick="app.toggleOpaque();">Toggle</button>
-            </div>
+        <span class="brand-center" id="brandTitle">Cronoshop</span>
+        <div class="right-icons">
+            <button class="nav-btn cart-btn" id="cartBtn">
+                <i class="ph ph-shopping-cart"></i>
+                <span class="badge" id="navCartBadge">0</span>
+            </button>
+            <button class="nav-btn" id="userBtn"><i class="ph ph-user-circle"></i></button>
         </div>
-        <div class="nav-divider"></div>
-        <div class="theme-grid">
-            <h4>Temi</h4>
-            <div class="theme-buttons">
-                <button class="theme-btn light" onclick="Prefs.theme = 'light'; Prefs.save();">Light</button>
-                <button class="theme-btn dark" onclick="Prefs.theme = 'dark'; Prefs.save();">Dark</button>
-                <button class="theme-btn gold" onclick="Prefs.theme = 'gold'; Prefs.save();">Gold</button>
-                <button class="theme-btn cyber" onclick="Prefs.theme = 'cyber'; Prefs.save();">Cyber</button>
-            </div>
-        </div>
-    </aside>
-    <main class="main-wrapper">
-        <header class="ios-header" id="crono-navbar">
-            <button class="nav-btn menu-btn" onclick="app.toggleNavMenu()"><i class="ph ph-list"></i></button>
-            <div class="ios-search" id="globalSearchContainer">
-                <i class="ph ph-magnifying-glass"></i>
-                <input type="text" id="globalSearchInput" placeholder="Cerca...">
-            </div>
-            <div class="right-icons">
-                <button class="nav-btn" onclick="app.navigate('wishlist')"><i class="ph ph-heart"></i></button>
-                <button class="nav-btn cart-btn" onclick="app.navigate('cart')">
-                    <i class="ph ph-shopping-cart"></i>
-                    <span class="badge" id="header-badge-cart">0</span>
-                </button>
-                <button class="nav-btn settings-btn" onclick="app.toggleUserPanel()"><i class="ph ph-gear"></i></button>
-            </div>
-        </header>
-        <div class="nav-backdrop" id="nav-backdrop" onclick="app.closeNav()"></div>
-        <div class="nav-menu expanded-menu" id="nav-menu">
-            <div class="nav-item" onclick="app.navigate('home')">Home</div>
-            <div class="nav-item" onclick="app.navigate('catalog')">Catalogo Prodotti</div>
-            <div class="nav-item" onclick="app.navigate('apple')">Apple Store</div>
-            <div class="nav-item" onclick="app.navigate('samsung')">Samsung Hub</div>
-            <div class="nav-divider"></div>
-            <div class="nav-item" onclick="app.navigate('wishlist')">Preferiti</div>
-            <div class="nav-item" onclick="app.navigate('cart')">Carrello</div>
-            <div class="nav-item" onclick="app.navigate('profile')">Profilo</div>
-        </div>
-        <div class="user-panel expanded-menu" id="user-panel">
-            <div class="crono-id-widget">
-                <div class="avatar">F</div>
-                <div class="user-info">
-                    <div class="user-name">Francesco</div>
-                    <div class="user-id">CronoID: 12345</div>
-                </div>
-            </div>
-            <div class="nav-divider"></div>
+        <div id="expanded-content"></div>
+    </nav>
+    
+    <!-- UI Backdrop for expanded menus -->
+    <div class="ui-backdrop" id="uiBackdrop"></div>
+    
+    <!-- MAIN CONTENT -->
+    <main class="main-wrapper" id="mainWrapper">
+        <!-- Expanded Menus -->
+        <div class="expanded-menu" id="nav-menu"></div>
+        <div class="expanded-menu" id="user-panel"></div>
+        
+        <!-- Settings Section in Expanded -->
+        <div id="expanded-settings" class="hidden">
             <div class="settings-section">
-                <h4>Interfaccia</h4>
-                <div class="toggle-item">
-                    <span>Modalità Minimale</span>
-                    <button class="ios-toggle" onclick="Prefs.minimal = !Prefs.minimal; Prefs.save(); app.closeNav();">Toggle</button>
-                </div>
-                <div class="toggle-item">
-                    <span>Animazioni BETA</span>
-                    <button class="ios-toggle" onclick="Prefs.beta = !Prefs.beta; Prefs.save(); app.closeNav();">Toggle</button>
-                </div>
-                <div class="toggle-item">
-                    <span>Barra Opaca</span>
-                    <button class="ios-toggle" onclick="app.toggleOpaque(); app.closeNav();">Toggle</button>
-                </div>
-            </div>
-            <div class="nav-divider"></div>
-            <div class="theme-grid">
-                <h4>Temi</h4>
+                <h4>Account</h4>
                 <div class="theme-buttons">
-                    <button class="theme-btn light" onclick="Prefs.theme = 'light'; Prefs.save(); app.closeNav();">Light</button>
-                    <button class="theme-btn dark" onclick="Prefs.theme = 'dark'; Prefs.save(); app.closeNav();">Dark</button>
-                    <button class="theme-btn gold" onclick="Prefs.theme = 'gold'; Prefs.save(); app.closeNav();">Gold</button>
-                    <button class="theme-btn cyber" onclick="Prefs.theme = 'cyber'; Prefs.save(); app.closeNav();">Cyber</button>
+                    <button class="theme-btn light" onclick="app.applyTheme('light'); app.closeAll()">Light</button>
+                    <button class="theme-btn dark" onclick="app.applyTheme('dark'); app.closeAll()">Dark</button>
+                    <button class="theme-btn gold" onclick="app.applyTheme('luxury'); app.closeAll()">Gold</button>
+                    <button class="theme-btn cyber" onclick="app.applyTheme('cyber'); app.closeAll()">Cyber</button>
                 </div>
             </div>
         </div>
-        <!-- HOME -->
-        <!-- HERO iPhone 17 -->
-<div class="hero-card ios-touch" onclick="app.navigate('apple')"
-     style="height:360px; position:relative;">
-
-    <img src="https://andreagaleazzi.com/wp-content/uploads/2025/09/iphone17_pro_air-1-1024x576.jpg"
-         class="hero-img"
-         style="width:100%; height:100%; object-fit:cover;">
-
-    <div class="hero-overlay"
-         style="
-         background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.2), transparent 70%);
-         padding:30px;
-         display:flex;
-         flex-direction:column;
-         justify-content:flex-end;
-         ">
-
-        <span style="
-            background:rgba(255,255,255,0.25);
-            backdrop-filter:blur(10px);
-            padding:6px 12px;
-            border-radius:8px;
-            font-size:0.75em;
-            font-weight:700;
-            text-transform:uppercase;
-            margin-bottom:10px;">
-            Novità 2025
-        </span>
-
-        <h2 style="
-            font-size:2.1em;
-            font-weight:800;
-            margin:0;
-            line-height:1.1;">
-            Scopri la Serie iPhone 17
-        </h2>
-
-        <p style="
-            margin:10px 0 18px;
-            font-size:1.05em;
-            opacity:.9;">
-            A partire da <b>€899</b>. Lineup completa: iPhone 17, 17 Pro, Pro Max e Air.
-        </p>
-
-        <button class="ios-btn btn-primary"
-                style="width:auto; padding:12px 28px; border-radius:18px;">
-            <i class="ph-bold ph-arrow-up-right"></i> Scopri Ora
-        </button>
-    </div>
-</div>
-
+        
+        <!-- VIEW: HOME -->
         <section id="view-home" class="view-section active">
-            <div class="hero-card ios-touch" onclick="app.openProductModal('labubu-special')">
-                <img src="https://m.media-amazon.com/images/I/717VqkMEolL._AC_SX679_.jpg" class="hero-img" style="width:100%; height:320px; object-fit:cover;" alt="Labubu">
-                <div class="hero-overlay">
-                    <span style="background: rgba(255,255,255,0.25); backdrop-filter: blur(10px); padding: 6px 12px; border-radius: 8px; font-size: 0.8em; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; display: inline-block;">Esclusiva</span>
-                    <h2 style="font-size: 2.2em; font-weight: 800; margin: 0; line-height: 1.1;">Collezione Labubu</h2>
-                    <p style="margin: 8px 0 16px; font-size: 1.1em; opacity: 0.9;">I peluche più virali del 2025.</p>
-                    <button class="ios-btn btn-primary" style="width: auto; padding: 10px 24px;">Scopri Ora</button>
+            <!-- HERO iPhone 17 -->
+            <div class="hero-card ios-touch" id="heroApple" style="height:360px; position:relative;">
+                <img src="https://andreagaleazzi.com/wp-content/uploads/2025/09/iphone17_pro_air-1-1024x576.jpg" style="width:100%; height:100%; object-fit:cover;">
+                <div class="hero-overlay" style="background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.2), transparent 70%); padding:30px; display:flex; flex-direction:column; justify-content:flex-end;">
+                    <span style="background:rgba(255,255,255,0.25); backdrop-filter:blur(10px); padding:6px 12px; border-radius:8px; font-size:0.75em; font-weight:700; text-transform:uppercase; margin-bottom:10px;">Novità 2025</span>
+                    <h2 style="font-size:2.1em; font-weight:800; margin:0; line-height:1.1;">Scopri la Serie iPhone 17</h2>
+                    <p style="margin:10px 0 18px; font-size:1.05em; opacity:.9;">A partire da <b>€899</b>. Lineup completa: iPhone 17, 17 Pro, Pro Max e Air.</p>
+                    <button class="ios-btn btn-primary" style="width:auto; padding:12px 28px; border-radius:18px;"><i class="ph-bold ph-arrow-up-right"></i> Scopri Ora</button>
                 </div>
             </div>
-            <h2 style="margin-bottom: 16px; padding-left: 4px;">In Evidenza</h2>
+            
+            <h2 class="section-title">Prodotti in Evidenza</h2>
             <div class="grid-layout" id="homeGrid"></div>
         </section>
-        <!-- PRODUCTS -->
-        <section id="view-products" class="view-section">
-            <div class="filter-scroll">
-                <div class="ios-chip active" onclick="app.filterProducts('all', this)">Tutti</div>
-                <div class="ios-chip" onclick="app.filterProducts('smartphone', this)">Smartphone</div>
-                <div class="ios-chip" onclick="app.filterProducts('tech', this)">Tech</div>
-                <div class="ios-chip" onclick="app.filterProducts('fashion', this)">Moda</div>
+        
+        <!-- VIEW: CATALOG -->
+        <section id="view-catalog" class="view-section">
+            <h2 class="section-title">Catalogo Prodotti</h2>
+            <div class="filter-scroll" id="filterChips">
+                <span class="ios-chip active" data-cat="all">Tutti</span>
+                <span class="ios-chip" data-cat="smartphone">Smartphone</span>
+                <span class="ios-chip" data-cat="tech">Tech</span>
+                <span class="ios-chip" data-cat="fashion">Fashion</span>
+                <span class="ios-chip" data-cat="casa">Casa</span>
+                <span class="ios-chip" data-cat="salute">Salute</span>
+                <span class="ios-chip" data-cat="giocattoli">Giocattoli</span>
             </div>
             <div class="grid-layout" id="productsGrid"></div>
         </section>
-        <!-- APPLE STORE (embedded) -->
+        
+        <!-- VIEW: APPLE -->
         <section id="view-apple" class="view-section">
-            <h2 style="margin-bottom:16px;">Apple Store</h2>
-            <div class="grid-layout" id="appleGrid"></div>
+            <h2 class="section-title"><i class="ph ph-apple-logo"></i> Apple Store</h2>
+            <div id="appleGrid"></div>
         </section>
-        <!-- SAMSUNG STORE (embedded) -->
+        
+        <!-- VIEW: SAMSUNG -->
         <section id="view-samsung" class="view-section">
-            <h2 style="margin-bottom:16px;">Samsung Store</h2>
-            <div class="grid-layout" id="samsungGrid"></div>
+            <h2 class="section-title"><i class="ph ph-device-mobile"></i> Samsung Hub</h2>
+            <div id="samsungGrid"></div>
         </section>
-        <!-- CART -->
+        
+        <!-- VIEW: WISHLIST -->
+        <section id="view-wishlist" class="view-section">
+            <h2 class="section-title"><i class="ph ph-heart"></i> I Tuoi Preferiti</h2>
+            <div id="wishlistContainer"></div>
+        </section>
+        
+        <!-- VIEW: CART -->
         <section id="view-cart" class="view-section">
+            <h2 class="section-title"><i class="ph ph-shopping-cart"></i> Il Tuo Carrello</h2>
             <div id="cartListContainer"></div>
-            <div id="aiCartSuggestion" style="background:var(--glass-bg); padding:20px; border-radius:16px; margin: 20px 0; display:none; border:1px solid var(--primary);"></div>
-            <div id="cartSummary" class="settings-group" style="padding: 24px; display:none;">
-                <button class="ios-btn btn-magic" onclick="app.generateCartMix()"><i class="ph-fill ph-sparkle"></i> Crea Mix con AI</button>
-                <div style="height:1px; background:var(--separator); margin: 20px 0;"></div>
-                <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span>Subtotale</span><span id="cartSubtotal">€0.00</span></div>
-                <div style="display:flex; justify-content:space-between; font-weight:800; font-size:1.4em;"><span>Totale</span><span id="cartTotal">€0.00</span></div>
-                <button class="ios-btn btn-primary" style="margin-top:20px;" onclick="alert('Checkout simulato!')">Paga Ora</button>
+            <div id="cartSummary" style="display:none; margin-top:24px; padding:20px; background:var(--card-solid-bg); border-radius:var(--radius-md); border:1px solid var(--separator);">
+                <div style="display:flex; justify-content:space-between; font-size:1.2em; font-weight:700; margin-bottom:16px;">
+                    <span>Totale:</span>
+                    <span id="cartTotal">€0.00</span>
+                </div>
+                <button class="ios-btn btn-primary" id="checkoutBtn"><i class="ph ph-credit-card"></i> Procedi al Checkout</button>
+                <button class="ios-btn btn-magic" style="margin-top:10px;" id="aiMixBtn"><i class="ph-fill ph-sparkle"></i> Genera Mix AI</button>
             </div>
         </section>
-        <!-- WISHLIST -->
-        <section id="view-wishlist" class="view-section">
-            <h2 style="margin-bottom:20px;">I miei preferiti</h2>
-            <div id="wishlistContainer" class="grid-layout"></div>
-        </section>
-        <!-- SETTINGS -->
-        <section id="view-settings" class="view-section" style="max-width:700px; margin:0 auto;">
+        
+        <!-- VIEW: SETTINGS -->
+        <section id="view-settings" class="view-section">
+            <h2 class="section-title"><i class="ph ph-user"></i> Profilo & Impostazioni</h2>
             
-            <div class="menu-label">Profilo</div>
             <div class="settings-group">
                 <div class="user-card-profile" id="userProfileCard">
-                    <!-- Iniettato via JS -->
+                    <div class="user-avatar"><i class="ph ph-user"></i></div>
+                    <div>
+                        <div style="font-weight:700; font-size:1.1em;">Ospite</div>
+                        <div style="color:var(--text-sec); font-size:0.9em;">Non hai effettuato l'accesso</div>
+                    </div>
+                </div>
+                <div class="settings-row" id="loginLogoutBtn">
+                    <span><i class="ph ph-sign-in"></i> Accedi / Registrati</span>
+                    <i class="ph ph-caret-right"></i>
                 </div>
             </div>
-            <div class="menu-label">Stile & Temi</div>
+            
             <div class="settings-group">
-                <div class="settings-row" onclick="app.openAiPrompt('theme')">
-                    <div style="display:flex; align-items:center; gap:12px;">
-                        <div style="width:32px; height:32px; background:linear-gradient(135deg, #FF0080, #7928CA); border-radius:8px; display:flex; align-items:center; justify-content:center; color:white;"><i class="ph-bold ph-paint-brush"></i></div>
-                        <span style="font-weight:600;">Crea Tema con AI</span>
-                    </div>
-                    <i class="ph-bold ph-caret-right" style="color:var(--text-sec);"></i>
-                </div>
-                <div class="theme-grid" id="themeSelector"></div>
-            </div>
-            <div class="menu-label">Accessibilità & Display</div>
-            <div class="settings-group">
-                <div class="settings-row" onclick="app.openAiPrompt('visual')">
-                    <div style="display:flex; align-items:center; gap:12px;">
-                        <div style="width:32px; height:32px; background:var(--primary); border-radius:8px; display:flex; align-items:center; justify-content:center; color:white;"><i class="ph-bold ph-eye"></i></div>
-                        <span style="font-weight:600;">AI Visual Advisor</span>
-                    </div>
-                    <span style="font-size:0.9em; color:var(--text-sec);">Ottimizza per me</span>
-                </div>
-                <div class="settings-row" style="cursor:default;">
-                    <span>Effetto Vetro</span>
-                    <label class="switch-toggle"><input type="checkbox" id="glassToggle" onchange="app.toggleGlass()"><span class="slider"></span></label>
-                </div>
-                
-                <div class="settings-row" style="cursor:default;">
-                    <span>Testo Grande</span>
-                    <label class="switch-toggle"><input type="checkbox" id="boldToggle" onchange="app.toggleBold()"><span class="slider"></span></label>
+                <div class="settings-row">
+                    <span><i class="ph ph-sparkle"></i> Effetto Glass</span>
+                    <label class="switch-toggle">
+                        <input type="checkbox" id="glassToggle">
+                        <span class="slider"></span>
+                    </label>
                 </div>
                 <div class="settings-row">
-                    <span>Dimensione</span>
-                    <div style="display:flex; gap:8px;">
-                        <button class="ios-btn btn-secondary" style="width:40px; padding:0;" onclick="app.adjustSize(-1)">A-</button>
-                        <button class="ios-btn btn-secondary" style="width:40px; padding:0;" onclick="app.adjustSize(1)">A+</button>
+                    <span><i class="ph ph-text-b"></i> Testo Bold</span>
+                    <label class="switch-toggle">
+                        <input type="checkbox" id="boldToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="settings-row">
+                    <span><i class="ph ph-text-aa"></i> Dimensione Testo</span>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <button class="ios-btn btn-secondary" style="width:40px; height:40px; padding:0;" id="sizeDown">-</button>
+                        <span id="sizeValue">17</span>
+                        <button class="ios-btn btn-secondary" style="width:40px; height:40px; padding:0;" id="sizeUp">+</button>
                     </div>
                 </div>
             </div>
             
-            <button class="ios-btn btn-secondary" style="color: #FF3B30; margin-top:20px;" onclick="app.logout()">Esci dall'account</button>
+            <div class="settings-group">
+                <div style="padding:16px;">
+                    <h4 style="margin-bottom:16px;"><i class="ph ph-palette"></i> Scegli Tema</h4>
+                    <div class="theme-grid-container" id="themeSelector"></div>
+                </div>
+            </div>
+            
+            <div class="settings-group">
+                <div class="settings-row" id="aiThemeBtn">
+                    <span><i class="ph-fill ph-sparkle"></i> Crea Tema con AI</span>
+                    <i class="ph ph-caret-right"></i>
+                </div>
+                <div class="settings-row" id="aiDisplayBtn">
+                    <span><i class="ph ph-eye"></i> Ottimizzazione Visiva AI</span>
+                    <i class="ph ph-caret-right"></i>
+                </div>
+            </div>
         </section>
     </main>
 </div>
-<!-- AUTH MODAL (NEW) -->
-<div class="modal-scrim" id="authDialog">
-    <div class="ios-modal" style="text-align: center;">
-        <div class="auth-logo-area">
-            <div class="auth-logo-icon"><i class="ph-bold ph-lightning"></i></div>
-            <h2 id="authTitle" style="font-weight:800; font-size:1.6em; margin-bottom:8px;">Accedi</h2>
-            <p id="authSubtitle" style="color:var(--text-sec);">Usa il tuo account Crono ID per accedere.</p>
-        </div>
-        <!-- Login / Email Check View -->
-        <div id="authStep1">
-            <input type="text" id="authInputIdentity" class="auth-input" placeholder="Email o Nome utente">
-            
-            <!-- Password scivola qui se l'account esiste -->
-            <div id="authPasswordSection" class="password-section">
-                <input type="password" id="authInputPassword" class="auth-input" placeholder="Password">
+
+<!-- Aggiunto scrim per menu slide su desktop -->
+<div class="full-menu-scrim" id="fullMenuScrim"></div>
+
+<!-- Full Menu Overlay per modalità minimale -->
+<div class="full-menu-overlay" id="fullMenuOverlay">
+    <div class="full-menu-header">
+        <h2>Menu</h2>
+        <button class="full-menu-close" id="closeFullMenu"><i class="ph ph-x"></i></button>
+    </div>
+    
+    <div class="full-menu-section">
+        <h4>Navigazione</h4>
+        <div class="full-menu-item" data-view="home"><i class="ph ph-house"></i> Home</div>
+        <div class="full-menu-item" data-view="catalog"><i class="ph ph-bag"></i> Catalogo Prodotti</div>
+        <div class="full-menu-item" data-view="apple"><i class="ph ph-apple-logo"></i> Apple Store</div>
+        <div class="full-menu-item" data-view="samsung"><i class="ph ph-device-mobile"></i> Samsung Hub</div>
+        <div class="full-menu-item" id="fullMenuChatBtn"><i class="ph-fill ph-sparkle"></i> CronoAI</div>
+    </div>
+    
+    <div class="full-menu-section">
+        <h4>Personale</h4>
+        <div class="full-menu-item" data-view="wishlist"><i class="ph ph-heart"></i> Preferiti</div>
+        <div class="full-menu-item" data-view="cart"><i class="ph ph-shopping-cart"></i> Carrello</div>
+        <div class="full-menu-item" data-view="settings"><i class="ph ph-user"></i> Profilo</div>
+    </div>
+    
+    <div class="full-menu-section">
+        <h4>Account</h4>
+        <div class="crono-id-widget" id="fullMenuUserWidget">
+            <div class="avatar">?</div>
+            <div class="user-info">
+                <div class="user-name">Ospite</div>
+                <div class="user-id">Non connesso</div>
             </div>
-            <button class="ios-btn btn-primary" onclick="app.handleAuthStep()" style="margin-top:20px;">Continua</button>
-        </div>
-        <!-- Register View (Overlay stile) -->
-        <div id="authStep2" style="display:none; text-align:left;">
-            <p style="color:var(--text-sec); margin-bottom:20px; text-align:center;">Crea un nuovo Crono ID per accedere alle impostazioni.</p>
-            
-            <div class="auth-input-group"><input type="text" id="regUser" class="auth-input" placeholder="Nome Utente"></div>
-            <div class="auth-input-group"><input type="email" id="regEmail" class="auth-input" placeholder="Email"></div>
-            <div class="auth-input-group"><input type="tel" id="regPhone" class="auth-input" placeholder="Numero di telefono (opzionale)"></div>
-            <div class="auth-input-group"><input type="password" id="regPass" class="auth-input" placeholder="Password"></div>
-            <div class="auth-input-group"><input type="password" id="regConfirm" class="auth-input" placeholder="Conferma Password"></div>
-            <button class="ios-btn btn-primary" onclick="app.finalizeRegistration()" style="margin-top:10px;">Crea Account</button>
-            <button class="ios-btn btn-text" onclick="app.resetAuthUI()">Indietro</button>
         </div>
     </div>
-</div>
-<!-- AI PROMPT MODAL -->
-<div class="modal-scrim" id="aiPromptOverlay">
-    <div class="ios-modal ai-prompt-card">
-        <h3 style="margin-bottom:10px; display:flex; align-items:center; gap:8px;"><i class="ph-fill ph-sparkle" style="color:var(--primary);"></i> <span id="aiPromptTitle">AI Generator</span></h3>
-        <p style="color:var(--text-sec); margin-bottom:20px; line-height:1.4;" id="aiPromptDesc">Descrivi cosa vuoi...</p>
-        <textarea id="aiPromptInput" style="width:100%; height:100px; border-radius:12px; border:1px solid var(--separator); background:var(--bg-base); padding:12px; color:var(--text-main); font-family:inherit; resize:none; margin-bottom:20px;" placeholder="Es: 'Foresta autunnale al tramonto'"></textarea>
-        <div style="display:flex; gap:10px;">
-            <button class="ios-btn btn-secondary" onclick="app.closeAiPrompt()">Annulla</button>
-            <button class="ios-btn btn-primary" onclick="app.submitAiPrompt()">Genera</button>
+    
+    <div class="full-menu-section">
+        <h4>Layout</h4>
+        <div class="full-menu-toggle">
+            <span>Modalità Minimale</span>
+            <button class="ios-toggle" id="fullMenuMinimalToggle">Toggle</button>
+        </div>
+        <div class="full-menu-toggle">
+            <span>Rimuovi Trasparenza</span>
+            <button class="ios-toggle" id="fullMenuGlassToggle">Toggle</button>
+        </div>
+        <div class="full-menu-toggle">
+            <span>Testo in Grassetto</span>
+            <button class="ios-toggle" id="fullMenuBoldToggle">Toggle</button>
         </div>
     </div>
-</div>
-<!-- PRODUCT MODAL -->
-<div class="modal-scrim" id="productDialog" onclick="if(event.target===this) app.closeModal()">
-    <div class="ios-modal">
-        <div style="width:40px; height:5px; background:var(--separator); border-radius:3px; margin: -10px auto 20px;"></div>
-        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-            <h2 id="modalTitle" style="font-size:1.5em; max-width:85%;"></h2>
-            <button onclick="app.closeModal()" style="background:rgba(var(--text-rgb),0.1); border:none; width:32px; height:32px; border-radius:50%;"><i class="ph-bold ph-x"></i></button>
+    
+    <div class="full-menu-section">
+        <h4>Accessibilità</h4>
+        <div class="full-menu-toggle">
+            <span>Mostra Bordi</span>
+            <button class="ios-toggle" id="fullMenuBordersToggle">Toggle</button>
         </div>
-        <h3 id="modalPrice" style="color:var(--primary); font-size:1.4em; font-weight:800; margin-bottom:16px;"></h3>
-        <p id="modalDesc" style="color:var(--text-sec); line-height:1.6; margin-bottom:24px;"></p>
-        
-        <div id="aiResponse" style="background:var(--bg-base); padding:16px; border-radius:12px; margin-bottom:20px; display:none; border-left: 3px solid var(--primary);"></div>
-        <button id="btnBuyAmazon" class="ios-btn btn-primary" style="margin-bottom:12px;">
-    <i class="ph-bold ph-amazon-logo"></i> Acquista su Amazon
-        </button>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
-            <button id="btnAddToCart" class="ios-btn btn-secondary"><i class="ph-bold ph-shopping-cart"></i> Aggiungi</button>
-            <button id="btnAddToWish" class="ios-btn btn-secondary"><i class="ph-bold ph-heart"></i> Preferiti</button>
+        <div class="full-menu-toggle">
+            <span>Colori Saturi</span>
+            <button class="ios-toggle" id="fullMenuSaturatedToggle">Toggle</button>
         </div>
-        <button class="ios-btn btn-magic" onclick="app.askAI()"><i class="ph-fill ph-sparkle"></i> Chiedi all'AI</button>
+        <div class="full-menu-toggle">
+            <span>Scala di Grigi</span>
+            <button class="ios-toggle" id="fullMenuGrayscaleToggle">Toggle</button>
+        </div>
+        <div class="full-menu-toggle">
+            <span>Riduci Movimento</span>
+            <button class="ios-toggle" id="fullMenuMotionToggle">Toggle</button>
+        </div>
+        <div class="full-menu-toggle">
+            <span>Contrasto Elevato</span>
+            <button class="ios-toggle" id="fullMenuContrastToggle">Toggle</button>
+        </div>
+    </div>
+    
+    <div class="full-menu-section">
+        <h4>Temi</h4>
+        <div class="full-menu-themes" id="fullMenuThemes"></div>
     </div>
 </div>
-<!-- CHATBOT -->
-<button class="chat-btn-float ios-touch" onclick="app.toggleChat()"><i class="ph-fill ph-chat-teardrop-text"></i></button>
+
+<!-- CHAT BUTTON -->
+<button class="chat-btn-float" id="chatFloatBtn">
+    <i class="ph-fill ph-sparkle"></i>
+</button>
+
+<!-- CHAT INTERFACE -->
 <div class="chat-interface" id="chatOverlay">
     <div class="chat-nav" id="chatHeader">
         <div style="display:flex; align-items:center; gap:8px;"><i class="ph-fill ph-sparkle" style="color:var(--primary);"></i> CronoAI</div>
-        <div style="color:var(--primary); cursor:pointer;" onclick="app.toggleChat()">Chiudi</div>
+        <div style="color:var(--primary); cursor:pointer;" id="closeChatBtn">Chiudi</div>
     </div>
     <div class="chat-messages" id="chatBody">
-        <div class="msg-bubble msg-ai">Ciao! Sono qui per aiutarti. Puoi chiedermi di cambiare tema, aggiungere prodotti al carrello o consigli per i regali.</div>
+        <div class="msg-bubble msg-ai">Ciao! Sono CronoAI. Posso cambiare tema, aggiungere prodotti al carrello o darti consigli. Prova: "Cambia tema in scuro" o "Aggiungi iPhone al carrello"</div>
     </div>
-    <div style="padding:16px; background:var(--glass-bg); border-top:1px solid var(--glass-border); display:flex; gap:10px;">
-        <input type="text" id="chatInput" placeholder="Chiedi..." style="flex:1; height:44px; border-radius:22px; border:1px solid var(--separator); padding:0 16px; background:var(--bg-base); color:var(--text-main); outline:none;" onkeypress="if(event.key==='Enter') app.sendChat()">
-        <button onclick="app.sendChat()" style="width:44px; height:44px; border-radius:50%; background:var(--primary); color:white; border:none; display:flex; align-items:center; justify-content:center;"><i class="ph-bold ph-paper-plane-right"></i></button>
+    <div style="padding:16px; background:var(--card-solid-bg); border-top:1px solid var(--separator); display:flex; gap:10px;">
+        <input type="text" id="chatInput" placeholder="Scrivi un messaggio..." style="flex:1; height:44px; border-radius:22px; border:1px solid var(--separator); padding:0 16px; background:var(--bg-base); color:var(--text-main); outline:none; font-size:16px;">
+        <button id="sendChatBtn" style="width:44px; height:44px; border-radius:50%; background:var(--primary); color:white; border:none; display:flex; align-items:center; justify-content:center; cursor:pointer;"><i class="ph-bold ph-paper-plane-right"></i></button>
     </div>
 </div>
+
+<!-- PRODUCT MODAL -->
+<div class="modal-scrim" id="productDialog">
+    <div class="ios-modal">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <h2 id="modalTitle" style="font-size:1.3em;">Prodotto</h2>
+            <button class="nav-btn" id="closeProductModal"><i class="ph ph-x"></i></button>
+        </div>
+        <p id="modalDesc" style="color:var(--text-sec); margin-bottom:16px;"></p>
+        <p id="modalPrice" style="font-size:1.5em; font-weight:700; color:var(--primary); margin-bottom:20px;">€0</p>
+        <div id="aiResponse" style="display:none; background:rgba(var(--primary-rgb),0.1); padding:12px; border-radius:12px; margin-bottom:16px;"></div>
+        <button class="ios-btn btn-primary" id="btnAddToCart"><i class="ph ph-shopping-cart"></i> Aggiungi al Carrello</button>
+        <button class="ios-btn btn-secondary" style="margin-top:10px;" id="btnAddToWish"><i class="ph ph-heart"></i> Aggiungi ai Preferiti</button>
+        <button class="ios-btn btn-magic" style="margin-top:10px;" id="btnBuyAmazon"><i class="ph ph-amazon-logo"></i> Acquista su Amazon</button>
+        <button class="ios-btn btn-text" id="btnAskAI"><i class="ph-fill ph-sparkle"></i> Chiedi a CronoAI</button>
+    </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="modal-scrim" id="authDialog">
+    <div class="ios-modal" style="max-width:400px;">
+        <div class="auth-logo-area">
+            <div class="auth-logo-icon"><i class="ph-bold ph-lightning"></i></div>
+            <h2>Benvenuto</h2>
+            <p style="color:var(--text-sec);">Accedi o crea un account</p>
+        </div>
+        <div class="auth-input-group">
+            <input type="email" id="authEmail" class="auth-input" placeholder="Email">
+        </div>
+        <div class="password-section" id="passwordSection">
+            <input type="password" id="authPassword" class="auth-input" placeholder="Password">
+        </div>
+        <button class="ios-btn btn-primary" style="margin-top:16px;" id="authContinueBtn">Continua</button>
+        
+        <div id="registerSection" style="display:none; margin-top:16px;">
+            <div class="auth-input-group">
+                <input type="text" id="authUsername" class="auth-input" placeholder="Username">
+            </div>
+            <button class="ios-btn btn-magic" id="registerBtn">Crea Account</button>
+            <button class="ios-btn btn-text" id="backToLoginBtn">Torna al login</button>
+        </div>
+        
+        <button class="ios-btn btn-text" id="closeAuthBtn">Annulla</button>
+    </div>
+</div>
+
+<!-- AI PROMPT MODAL -->
+<div class="modal-scrim" id="aiPromptOverlay">
+    <div class="ios-modal" style="max-width:400px;">
+        <h2 id="aiPromptTitle" style="margin-bottom:8px;">Prompt AI</h2>
+        <p id="aiPromptDesc" style="color:var(--text-sec); margin-bottom:16px;"></p>
+        <input type="text" id="aiPromptInput" class="auth-input" placeholder="Descrivi...">
+        <button class="ios-btn btn-magic" style="margin-top:16px;" id="submitAiPromptBtn"><i class="ph-fill ph-sparkle"></i> Genera</button>
+        <button class="ios-btn btn-text" id="closeAiPromptBtn">Annulla</button>
+    </div>
+</div>
+
 <script>
-    /* --- CONFIG --- */
-    const apiKey = "AIzaSyA0XCo1e2VyEDtA3ijXGm65rjRiMDrcQ1c";
-    /* --- DATA --- */
+/* =========================================
+   PRODUCTS DATABASE
+   ========================================= */
 const products = [
   {
     id: "labubu-special",
@@ -2225,606 +2584,1151 @@ const products = [
         sconto: 33,
         descrizione: "Samsung Galaxy A16 Smartphone Android 14, Display Super AMOLED 6.7\" FHD+, 4GB RAM, 128GB, Batteria 5.000 mAh, Resistenza IP54.",
         categoria: "smartphone"
-    },
-    {
-        id: "prod33",
-        link: "https://www.amazon.it/5G-smartphone-antracite-aggiornamento-operativo/dp/B0F1FRL5HX?tag=tony64010a-21",
-        img: "https://m.media-amazon.com/images/I/616+oTRo6-L._AC_SL1500_.jpg?tag=tony64010a-21",
-        nome: "Samsung Galaxy A56 5G (256 GB)",
-        prezzo: 342.68,
-        prezzo_originale: 499.90,
-        sconto: 31,
-        descrizione: "Samsung Galaxy A56 5G, smartphone Android, 256 GB di memoria, 8 GB di RAM, antracite, grande schermo, lunga durata della batteria.",
-        categoria: "smartphone"
-    },
-    {
-        id: "prod34",
-        link: "https://www.amazon.it/Samsung-A266-GALAXY-A26-6-7/dp/B0F2YYRB36?tag=tony64010a-21",
-        img: "https://m.media-amazon.com/images/I/61waTtq8hCL._AC_SL1500_.jpg?tag=tony64010a-21",
-        nome: "GALAXY A26 5G – 8GB + 256GB - Black",
-        prezzo: 234.69,
-        prezzo_originale: 319.90,
-        sconto: 27,
-        descrizione: "Smartphone GALAXY A26 5G con 8GB di RAM e 256GB di memoria interna. Ottimo rapporto qualità-prezzo.",
-        categoria: "smartphone"
-    },
-    {
-        id: "prod20",
-        link: "https://www.amazon.it/Samsung-GALAXY-S24-ULTRA-BLACK/dp/B0CSVS3FNK?crid=1YNP4E6YBVVU2&dib=eyJ2IjoiMSJ9.R2Q2KSfPVJB6x-ihhBVzG-K7kO_8XZ9komxlHIr-cOL1QDwwFZ7dpPYFzqDHpdwah7jm40glBa-fX86tBmLb3PXKghNuNmfrARerscNgDgIkIHK2NGnV4StP_yKulywyvHJS4hSo1mofVEi2mVuLPlt7foh2DZXFcDVeyMOA9ZRReqYQBONb3xzOnHwVH3nwJzBAOXRgDPG-8IrMZjbRA5PijKtKBn-sqW669cvWuej3f0rToI7uI_VFL7urY4lxrx9VQidDqzCaD8md9bCBaJDlMeeylADQCmK_L7KSJkM.qJ4vnFivRFdPgcIp-O7qG41KV7pwJ4PbDfIftbCr9F8&dib_tag=tony64010a-21&keywords=s24+ultra&qid=1748454164&sprefix=S2,aps,148&sr=8-8&ufe=app_do:amzn1.fos.9d4f9b77-768c-4a4e-94ad-33674c20ab35&linkCode=sl1&tag=tony64010a-21&linkId=69fbb7c017a32a098ba727a0723bd465&language=it_IT&ref_=as_li_ss_tl",
-        img: "https://m.media-amazon.com/images/I/31SLM5sJK4L.__AC_SY300_SX300_QL70_ML2_.jpg?tag=tony64010a-21",
-        nome: "Samsung Galaxy S24 Ultra – 12GB / 256GB - Black",
-        prezzo: 864.90,
-        prezzo_originale: 1499.00,
-        sconto: 42,
-        descrizione: "Smartphone top di gamma Samsung, 12GB RAM, 256GB memoria. Prestazioni estreme e design premium in colorazione Phantom Black.",
-        categoria: "smartphone"
     }
 ];
-    /* --- THEMES (HEX) --- */
-    const presets = {
-        'light': { name: 'Chiaro', bg: '#F2F2F7', card: '#FFFFFF', text: '#000000', primary: '#007AFF', accent: '#5856D6' },
-        'dark': { name: 'Scuro', bg: '#000000', card: '#1C1C1E', text: '#FFFFFF', primary: '#0A84FF', accent: '#BF5AF2' },
-        'sunset': { name: 'Tramonto', bg: '#FFF7ED', card: '#FFFFFF', text: '#431407', primary: '#EA580C', accent: '#F97316' },
-        'forest': { name: 'Foresta', bg: '#022C22', card: '#064E3B', text: '#ECFDF5', primary: '#10B981', accent: '#34D399' },
-        'ocean': { name: 'Oceano', bg: '#0F172A', card: '#1E293B', text: '#F0F9FF', primary: '#38BDF8', accent: '#7DD3FC' },
-        'cyber': { name: 'Cyberpunk', bg: '#09090B', card: '#18181B', text: '#E4E4E7', primary: '#F472B6', accent: '#22D3EE' },
-        'luxury': { name: 'Lusso', bg: '#000000', card: '#111111', text: '#FAFAF9', primary: '#D4AF37', accent: '#EAB308' },
-        'rose': { name: 'Rosa', bg: '#FFF1F2', card: '#FFFFFF', text: '#881337', primary: '#FB7185', accent: '#F43F5E' },
-        'mint': { name: 'Menta', bg: '#F0FDF4', card: '#FFFFFF', text: '#14532D', primary: '#22C55E', accent: '#86EFAC' },
-        'desert': { name: 'Dune', bg: '#78350F', card: '#92400E', text: '#FEF3C7', primary: '#FCD34D', accent: '#F59E0B' },
-        'slate': { name: 'Ardesia', bg: '#F8FAFC', card: '#FFFFFF', text: '#0F172A', primary: '#64748B', accent: '#94A3B8' },
-        'nebula': { name: 'Nebulosa', bg: '#2E1065', card: '#4C1D95', text: '#F5F3FF', primary: '#A78BFA', accent: '#C084FC' }
-    };
-    /* --- APP LOGIC --- */
-    class App {
-        constructor() {
-            this.state = {
-                theme: 'light',
-                glass: false,
-                bold: false,
-                size: 17,
-                cart: [],
-                wishlist: [],
-                view: 'home',
-                promptType: null,
-                users: [],
-                currentUser: null
-            };
-            this.init();
+
+/* =========================================
+   THEME PRESETS
+   ========================================= */
+const presets = {
+    light: { name: 'Light', bg: '242, 242, 247', card: '255, 255, 255', text: '0, 0, 0', primary: '0, 122, 255', accent: '88, 86, 214' },
+    dark: { name: 'Dark', bg: '0, 0, 0', card: '28, 28, 30', text: '255, 255, 255', primary: '10, 132, 255', accent: '94, 92, 230' },
+    sunset: { name: 'Sunset', bg: '255, 247, 237', card: '255, 255, 255', text: '67, 20, 7', primary: '234, 88, 12', accent: '251, 146, 60' },
+    forest: { name: 'Forest', bg: '2, 44, 34', card: '6, 78, 59', text: '236, 253, 245', primary: '16, 185, 129', accent: '52, 211, 153' },
+    ocean: { name: 'Ocean', bg: '15, 23, 42', card: '30, 41, 59', text: '240, 249, 255', primary: '56, 189, 248', accent: '14, 165, 233' },
+    cyber: { name: 'Cyber', bg: '0, 0, 0', card: '20, 20, 30', text: '255, 255, 255', primary: '255, 0, 255', accent: '0, 255, 255' },
+    luxury: { name: 'Luxury', bg: '0, 0, 0', card: '28, 28, 28', text: '255, 215, 0', primary: '218, 165, 32', accent: '255, 223, 0' },
+    rose: { name: 'Rose', bg: '255, 241, 242', card: '255, 255, 255', text: '136, 19, 55', primary: '251, 113, 133', accent: '244, 63, 94' },
+    mint: { name: 'Mint', bg: '236, 253, 245', card: '255, 255, 255', text: '6, 78, 59', primary: '16, 185, 129', accent: '52, 211, 153' },
+    midnight: { name: 'Midnight', bg: '15, 15, 35', card: '25, 25, 50', text: '224, 231, 255', primary: '99, 102, 241', accent: '129, 140, 248' },
+    slate: { name: 'Slate', bg: '248, 250, 252', card: '255, 255, 255', text: '15, 23, 42', primary: '100, 116, 139', accent: '148, 163, 184' },
+    latte: { name: 'Latte', bg: '254, 247, 237', card: '255, 255, 255', text: '154, 52, 18', primary: '249, 115, 22', accent: '251, 146, 60' },
+    graphite: { name: 'Graphite', bg: '55, 65, 81', card: '75, 85, 99', text: '249, 250, 251', primary: '156, 163, 175', accent: '209, 213, 219' },
+    desert: { name: 'Desert', bg: '120, 53, 15', card: '146, 64, 14', text: '254, 243, 199', primary: '252, 211, 77', accent: '251, 191, 36' },
+    aurora: { name: 'Aurora', bg: '12, 10, 9', card: '28, 25, 23', text: '245, 245, 244', primary: '0, 212, 255', accent: '138, 43, 226' },
+    solar: { name: 'Solar', bg: '255, 255, 255', card: '255, 251, 235', text: '15, 23, 42', primary: '245, 158, 11', accent: '251, 191, 36' },
+    cherry: { name: 'Cherry', bg: '255, 241, 242', card: '255, 255, 255', text: '190, 18, 60', primary: '220, 38, 38', accent: '239, 68, 68' },
+    highcontrast: { name: 'High Contrast', bg: '0, 0, 0', card: '0, 0, 0', text: '255, 255, 255', primary: '255, 255, 0', accent: '0, 255, 0' }
+};
+
+/* =========================================
+   PREFERENCES MANAGER
+   ========================================= */
+const Prefs = {
+    minimal: false,
+    beta: false,
+    guest: true,
+    newAnimations: false,
+    fluidEngine: false,
+    bottomBar: false,
+    showBorders: false,
+    boldText: false,
+    saturatedColors: false,
+    grayscale: false,
+    reduceMotion: false,
+    highContrast: false,
+    
+    load() {
+        const saved = localStorage.getItem('cronoshop_prefs');
+        if (saved) {
+            Object.assign(this, JSON.parse(saved));
         }
-        init() {
-            if(localStorage.getItem('crono_state')) {
-                const saved = JSON.parse(localStorage.getItem('crono_state'));
-                this.state = { ...this.state, ...saved };
+    },
+    
+    save() {
+        localStorage.setItem('cronoshop_prefs', JSON.stringify({
+            minimal: this.minimal,
+            beta: this.beta,
+            guest: this.guest,
+            newAnimations: this.newAnimations,
+            fluidEngine: this.fluidEngine,
+            bottomBar: this.bottomBar,
+            showBorders: this.showBorders,
+            boldText: this.boldText,
+            saturatedColors: this.saturatedColors,
+            grayscale: this.grayscale,
+            reduceMotion: this.reduceMotion,
+            highContrast: this.highContrast
+        }));
+    }
+};
+
+/* =========================================
+   MAIN APPLICATION CLASS
+   ========================================= */
+class CronoshopApp {
+    constructor() {
+        this.apiKey = 'AIzaSyBS8u0v-ZhXr9LHIjTdmFNqtTbv5rM9IH4';
+        this.state = {
+            cart: [],
+            wishlist: [],
+            view: 'home',
+            theme: 'light',
+            glass: true,
+            bold: false,
+            size: 17,
+            currentUser: null,
+            users: [],
+            chatX: null,
+            chatY: null
+        };
+        this.currentProduct = null;
+        this.loadState();
+        Prefs.load();
+        this.init();
+    }
+
+    loadState() {
+        const saved = localStorage.getItem('cronoshop_state');
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            this.state = { ...this.state, ...parsed };
+        }
+    }
+
+    saveState() {
+        localStorage.setItem('cronoshop_state', JSON.stringify(this.state));
+    }
+
+    init() {
+        this.renderProducts();
+        this.bindEvents();
+        this.applyTheme(this.state.theme);
+        this.applyDisplaySettings();
+        this.updateBadges();
+        this.initDraggableChat();
+        this.applyChatPosition();
+        this.renderThemeSelector();
+        this.renderFullMenuThemes();
+        this.updateProfileUI();
+        
+        // Apply saved preferences
+        document.body.classList.toggle('minimal-mode', Prefs.minimal);
+        document.body.classList.toggle('show-borders', Prefs.showBorders);
+        document.body.classList.toggle('bold-text', Prefs.boldText);
+        document.body.classList.toggle('saturated-colors', Prefs.saturatedColors);
+        document.body.classList.toggle('grayscale', Prefs.grayscale);
+        document.body.classList.toggle('reduce-motion', Prefs.reduceMotion);
+        document.body.classList.toggle('high-contrast', Prefs.highContrast);
+        
+        // Initialize full menu events
+        this.initFullMenuEvents();
+    }
+
+    renderProducts() {
+        // Home grid - featured products
+        const homeGrid = document.getElementById('homeGrid');
+        const featured = products.filter(p => p.featured || p.isNew).slice(0, 6);
+        homeGrid.innerHTML = featured.map(p => this.productCard(p)).join('');
+        
+        // All products grid
+        const productsGrid = document.getElementById('productsGrid');
+        productsGrid.innerHTML = products.map(p => this.productCard(p)).join('');
+    }
+
+    productCard(p) {
+        return `
+            <div class="product-card ios-touch" onclick="app.openProduct('${p.id}')">
+                ${p.isNew ? '<span class="new-badge">Nuovo</span>' : ''}
+                ${p.featured ? '<span class="featured-badge">⭐ Top</span>' : ''}
+                <div class="product-img-wrap">
+                    <img class="product-img" src="${p.img}" alt="${p.nome}" loading="lazy">
+                </div>
+                <div class="product-details">
+                    <div class="product-name">${p.nome}</div>
+                    <div class="product-price">€${p.prezzo.toFixed(2)}</div>
+                    ${p.sconto ? `<span style="font-size:0.8em; color:var(--text-sec); text-decoration:line-through;">€${p.prezzo_originale.toFixed(2)}</span> <span style="color:#FF3B30; font-size:0.8em; font-weight:600;">-${p.sconto}%</span>` : ''}
+                </div>
+            </div>
+        `;
+    }
+
+    bindEvents() {
+        // Navigation
+        document.querySelectorAll('.nav-item[data-view]').forEach(item => {
+            item.addEventListener('click', () => this.navigate(item.dataset.view));
+        });
+        
+        // Filter chips
+        document.querySelectorAll('.ios-chip').forEach(chip => {
+            chip.addEventListener('click', () => this.filterProducts(chip.dataset.cat));
+        });
+        
+        // Sidebar
+        document.getElementById('sidebarScrim').addEventListener('click', () => this.closeSidebar());
+        
+        // Dynamic bar buttons
+        document.getElementById('menuBtn').addEventListener('click', () => this.toggleLeftMenu());
+        document.getElementById('userBtn').addEventListener('click', () => this.toggleRightMenu());
+        document.getElementById('cartBtn').addEventListener('click', () => this.navigate('cart'));
+        document.getElementById('brandTitle').addEventListener('click', () => this.navigate('home'));
+        document.getElementById('uiBackdrop').addEventListener('click', () => this.closeAll());
+        
+        // Chat
+        document.getElementById('chatBtn').addEventListener('click', () => this.toggleChat());
+        document.getElementById('chatFloatBtn').addEventListener('click', () => this.toggleChat());
+        document.getElementById('closeChatBtn').addEventListener('click', () => this.toggleChat());
+        document.getElementById('sendChatBtn').addEventListener('click', () => this.sendChat());
+        document.getElementById('chatInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') this.sendChat();
+        });
+        
+        // Product modal
+        document.getElementById('closeProductModal').addEventListener('click', () => this.closeProductModal());
+        document.getElementById('btnAddToCart').addEventListener('click', () => {
+            if (this.currentProduct) {
+                this.addToCart(this.currentProduct.id);
+                this.closeProductModal();
             }
-            
-            this.applyTheme(this.state.theme);
+        });
+        document.getElementById('btnAddToWish').addEventListener('click', () => {
+            if (this.currentProduct) {
+                this.addToWishlist(this.currentProduct.id);
+                this.closeProductModal();
+            }
+        });
+        document.getElementById('btnBuyAmazon').addEventListener('click', () => {
+            if (this.currentProduct) {
+                window.open(this.currentProduct.link, '_blank');
+            }
+        });
+        document.getElementById('btnAskAI').addEventListener('click', () => this.askAI());
+        
+        // Settings
+        document.getElementById('glassToggle').addEventListener('change', (e) => {
+            this.state.glass = e.target.checked;
             this.applyDisplaySettings();
-            this.renderProducts();
-            this.renderThemes();
-            this.updateBadges();
-            this.initDraggableChat();
-            
-            if(this.state.view === 'settings' && !this.state.currentUser) {
-                this.state.view = 'home';
-            }
-            this.navigate(this.state.view);
-            document.getElementById('globalSearchInput').addEventListener('input', (e) => {
-                const val = e.target.value.toLowerCase();
-                const filtered = products.filter(p => p.nome.toLowerCase().includes(val));
-                const target = this.state.view === 'home' ? 'homeGrid' : 'productsGrid';
-                this.renderGrid(filtered, target);
-            });
-        }
-        saveState() {
-            localStorage.setItem('crono_state', JSON.stringify(this.state));
-        }
-        /* --- AUTH ENGINE --- */
-        openAuth() {
-            this.resetAuthUI();
-            document.getElementById('authDialog').classList.add('open');
-        }
-        resetAuthUI() {
-            document.getElementById('authStep1').style.display = 'block';
-            document.getElementById('authStep2').style.display = 'none';
-            document.getElementById('authPasswordSection').classList.remove('open');
-            document.getElementById('authInputIdentity').value = '';
-            document.getElementById('authInputPassword').value = '';
-            document.getElementById('authTitle').innerText = 'Accedi';
-            document.getElementById('authSubtitle').innerText = 'Usa il tuo account Crono ID per accedere.';
-            this.pendingUser = null;
-        }
-        handleAuthStep() {
-            const identity = document.getElementById('authInputIdentity').value.trim();
-            const passField = document.getElementById('authPasswordSection');
-            const passInput = document.getElementById('authInputPassword');
-            if(!identity) return this.showNotification('Inserisci email o nome utente', 'error');
-            if(passField.classList.contains('open')) {
-                const password = passInput.value.trim();
-                if(!password) return this.showNotification('Inserisci la password', 'error');
-                
-                const user = this.state.users.find(u => (u.username === identity || u.email === identity) && u.password === password);
-                
-                if(user) {
-                    this.login(user);
-                } else {
-                    this.showNotification('Password non corretta', 'error');
-                }
-                return;
-            }
-            const userExists = this.state.users.find(u => u.username === identity || u.email === identity);
-            if(userExists) {
-                passField.classList.add('open');
-                this.pendingUser = userExists;
-            } else {
-                this.showRegistrationOverlay(identity);
-            }
-        }
-        showRegistrationOverlay(prefill) {
-            document.getElementById('authStep1').style.display = 'none';
-            document.getElementById('authStep2').style.display = 'block';
-            document.getElementById('authTitle').innerText = 'Crea ID';
-            document.getElementById('authSubtitle').innerText = '';
-            
-            if(prefill.includes('@')) document.getElementById('regEmail').value = prefill;
-            else document.getElementById('regUser').value = prefill;
-        }
-        finalizeRegistration() {
-            const username = document.getElementById('regUser').value.trim();
-            const email = document.getElementById('regEmail').value.trim();
-            const phone = document.getElementById('regPhone').value.trim();
-            const pass = document.getElementById('regPass').value.trim();
-            const confirm = document.getElementById('regConfirm').value.trim();
-            if(!username || !email || !pass) return this.showNotification('Compila i campi obbligatori', 'error');
-            if(pass !== confirm) return this.showNotification('Le password non coincidono', 'error');
-            const newUser = { username, email, phone, password: pass, avatar: username.charAt(0).toUpperCase() };
-            this.state.users.push(newUser);
             this.saveState();
-            
-            this.showNotification('Account creato!', 'success');
-            this.login(newUser);
+        });
+        document.getElementById('boldToggle').addEventListener('change', (e) => {
+            this.state.bold = e.target.checked;
+            this.applyDisplaySettings();
+            this.saveState();
+        });
+        document.getElementById('sizeUp').addEventListener('click', () => this.changeSize(1));
+        document.getElementById('sizeDown').addEventListener('click', () => this.changeSize(-1));
+        
+        // Auth
+        document.getElementById('loginLogoutBtn').addEventListener('click', () => {
+            if (this.state.currentUser) {
+                this.logout();
+            } else {
+                this.openAuth();
+            }
+        });
+        document.getElementById('authContinueBtn').addEventListener('click', () => this.handleAuthStep());
+        document.getElementById('registerBtn').addEventListener('click', () => this.finalizeRegistration());
+        document.getElementById('backToLoginBtn').addEventListener('click', () => this.resetAuthUI());
+        document.getElementById('closeAuthBtn').addEventListener('click', () => this.closeAuth());
+        
+        // AI Prompts
+        document.getElementById('aiThemeBtn').addEventListener('click', () => this.openAiPrompt('theme'));
+        document.getElementById('aiDisplayBtn').addEventListener('click', () => this.openAiPrompt('display'));
+        document.getElementById('submitAiPromptBtn').addEventListener('click', () => this.submitAiPrompt());
+        document.getElementById('closeAiPromptBtn').addEventListener('click', () => this.closeAiPrompt());
+        
+        // Search
+        document.getElementById('searchInput').addEventListener('input', (e) => this.search(e.target.value));
+        
+        // Scroll detection for minimal mode
+        document.getElementById('mainWrapper').addEventListener('scroll', (e) => {
+            if (e.target.scrollTop > 50) {
+                document.body.classList.add('scrolled');
+            } else {
+                document.body.classList.remove('scrolled');
+            }
+        });
+        
+        document.getElementById('fullMenuScrim').addEventListener('click', () => this.closeFullMenu());
+    }
+    
+    initFullMenuEvents() {
+        document.getElementById('closeFullMenu').addEventListener('click', () => this.closeFullMenu());
+        
+        // Navigation items
+        document.querySelectorAll('#fullMenuOverlay .full-menu-item[data-view]').forEach(item => {
+            item.addEventListener('click', () => {
+                this.navigate(item.dataset.view);
+                this.closeFullMenu();
+            });
+        });
+        
+        // Chat button
+        document.getElementById('fullMenuChatBtn').addEventListener('click', () => {
+            this.closeFullMenu();
+            this.toggleChat();
+        });
+        
+        // Toggle buttons
+        document.getElementById('fullMenuMinimalToggle').addEventListener('click', () => this.toggleMinimal());
+        document.getElementById('fullMenuGlassToggle').addEventListener('click', () => this.toggleGlass());
+        document.getElementById('fullMenuBoldToggle').addEventListener('click', () => this.toggleBoldText());
+        document.getElementById('fullMenuBordersToggle').addEventListener('click', () => this.toggleShowBorders());
+        document.getElementById('fullMenuSaturatedToggle').addEventListener('click', () => this.toggleSaturatedColors());
+        document.getElementById('fullMenuGrayscaleToggle').addEventListener('click', () => this.toggleGrayscale());
+        document.getElementById('fullMenuMotionToggle').addEventListener('click', () => this.toggleReduceMotion());
+        document.getElementById('fullMenuContrastToggle').addEventListener('click', () => this.toggleHighContrast());
+    }
+    
+    openFullMenu() {
+        document.getElementById('fullMenuOverlay').classList.add('active');
+        document.getElementById('fullMenuScrim').classList.add('active');
+        this.updateFullMenuUser();
+    }
+    
+    closeFullMenu() {
+        document.getElementById('fullMenuOverlay').classList.remove('active');
+        document.getElementById('fullMenuScrim').classList.remove('active');
+    }
+    
+    updateFullMenuUser() {
+        const container = document.getElementById('fullMenuUserWidget');
+        if (this.state.currentUser) {
+            container.innerHTML = `
+                <div class="avatar" style="background:var(--primary); color:white;">${this.state.currentUser.avatar}</div>
+                <div class="user-info">
+                    <div class="user-name">${this.state.currentUser.username}</div>
+                    <div class="user-id">${this.state.currentUser.email}</div>
+                </div>
+            `;
+        } else {
+            container.innerHTML = `
+                <div class="avatar">?</div>
+                <div class="user-info">
+                    <div class="user-name">Ospite</div>
+                    <div class="user-id">Non connesso</div>
+                </div>
+            `;
         }
-        login(user) {
+    }
+    
+    renderFullMenuThemes() {
+        const container = document.getElementById('fullMenuThemes');
+        container.innerHTML = Object.entries(presets).map(([key, theme]) => `
+            <button class="full-menu-theme-btn ${this.state.theme === key ? 'active' : ''}" 
+                    style="background: linear-gradient(135deg, rgb(${theme.bg}), rgb(${theme.primary})); color: rgb(${theme.text});"
+                    onclick="app.applyTheme('${key}')">${theme.name.substring(0, 3)}</button>
+        `).join('');
+    }
+
+    navigate(view) {
+        document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+        document.getElementById(`view-${view}`).classList.add('active');
+        
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.querySelectorAll(`.nav-item[data-view="${view}"]`).forEach(n => n.classList.add('active'));
+        
+        this.state.view = view;
+        this.saveState();
+        
+        // Render dynamic content
+        if (view === 'wishlist') this.renderWishlist();
+        if (view === 'cart') this.renderCart();
+        
+        document.getElementById('mainWrapper').scrollTop = 0;
+        this.closeSidebar();
+    }
+
+    filterProducts(category) {
+        document.querySelectorAll('.ios-chip').forEach(c => c.classList.remove('active'));
+        document.querySelector(`.ios-chip[data-cat="${category}"]`).classList.add('active');
+        
+        const grid = document.getElementById('productsGrid');
+        const filtered = category === 'all' ? products : products.filter(p => p.categoria === category);
+        grid.innerHTML = filtered.map(p => this.productCard(p)).join('');
+    }
+
+    search(query) {
+        const q = query.toLowerCase();
+        const grid = document.getElementById('productsGrid');
+        const filtered = products.filter(p => 
+            p.nome.toLowerCase().includes(q) || 
+            p.descrizione.toLowerCase().includes(q) ||
+            p.categoria.toLowerCase().includes(q)
+        );
+        grid.innerHTML = filtered.map(p => this.productCard(p)).join('');
+        
+        if (this.state.view !== 'catalog') {
+            this.navigate('catalog');
+        }
+    }
+
+    openProduct(id) {
+        const p = products.find(prod => prod.id === id);
+        if (!p) return;
+        
+        this.currentProduct = p;
+        document.getElementById('modalTitle').innerText = p.nome;
+        document.getElementById('modalDesc').innerText = p.descrizione;
+        document.getElementById('modalPrice').innerText = `€${p.prezzo.toFixed(2)}`;
+        document.getElementById('aiResponse').style.display = 'none';
+        document.getElementById('productDialog').classList.add('open');
+    }
+
+    closeProductModal() {
+        document.getElementById('productDialog').classList.remove('open');
+        this.currentProduct = null;
+    }
+
+    addToCart(id) {
+        if (!this.state.cart.includes(id)) {
+            this.state.cart.push(id);
+            this.saveState();
+            this.updateBadges();
+            this.showNotification('Aggiunto al carrello!', 'success');
+        }
+    }
+
+    addToWishlist(id) {
+        if (!this.state.wishlist.includes(id)) {
+            this.state.wishlist.push(id);
+            this.saveState();
+            this.updateBadges();
+            this.showNotification('Aggiunto ai preferiti!', 'success');
+        }
+    }
+
+    removeFromCart(id) {
+        this.state.cart = this.state.cart.filter(i => i !== id);
+        this.saveState();
+        this.updateBadges();
+        this.renderCart();
+    }
+
+    removeFromWishlist(id) {
+        this.state.wishlist = this.state.wishlist.filter(i => i !== id);
+        this.saveState();
+        this.updateBadges();
+        this.renderWishlist();
+    }
+
+    updateBadges() {
+        const cartCount = this.state.cart.length;
+        const wishCount = this.state.wishlist.length;
+        
+        document.getElementById('cartBadge').innerText = cartCount;
+        document.getElementById('cartBadge').style.display = cartCount > 0 ? 'block' : 'none';
+        document.getElementById('navCartBadge').innerText = cartCount;
+        document.getElementById('navCartBadge').style.display = cartCount > 0 ? 'flex' : 'none';
+        document.getElementById('wishBadge').innerText = wishCount;
+        document.getElementById('wishBadge').style.display = wishCount > 0 ? 'block' : 'none';
+    }
+
+    renderCart() {
+        const container = document.getElementById('cartListContainer');
+        const summary = document.getElementById('cartSummary');
+        
+        if (this.state.cart.length === 0) {
+            container.innerHTML = '<p style="color:var(--text-sec); text-align:center; padding:40px 0;">Il tuo carrello è vuoto</p>';
+            summary.style.display = 'none';
+            return;
+        }
+        
+        const items = this.state.cart.map(id => products.find(p => p.id === id)).filter(Boolean);
+        container.innerHTML = items.map(p => `
+            <div style="display:flex; gap:16px; padding:16px; background:var(--card-solid-bg); border-radius:16px; margin-bottom:12px; border:1px solid var(--separator);">
+                <img src="${p.img}" style="width:80px; height:80px; object-fit:contain; border-radius:12px; background:rgba(var(--text-rgb),0.03);">
+                <div style="flex:1;">
+                    <div style="font-weight:600; margin-bottom:4px;">${p.nome}</div>
+                    <div style="color:var(--primary); font-weight:700;">€${p.prezzo.toFixed(2)}</div>
+                </div>
+                <button onclick="app.removeFromCart('${p.id}')" style="background:none; border:none; color:#FF3B30; font-size:1.2em; cursor:pointer;"><i class="ph ph-trash"></i></button>
+            </div>
+        `).join('');
+        
+        const total = items.reduce((sum, p) => sum + p.prezzo, 0);
+        document.getElementById('cartTotal').innerText = `€${total.toFixed(2)}`;
+        summary.style.display = 'block';
+    }
+
+    renderWishlist() {
+        const container = document.getElementById('wishlistContainer');
+        
+        if (this.state.wishlist.length === 0) {
+            container.innerHTML = '<p style="color:var(--text-sec); text-align:center; padding:40px 0;">Nessun preferito salvato</p>';
+            return;
+        }
+        
+        const items = this.state.wishlist.map(id => products.find(p => p.id === id)).filter(Boolean);
+        container.innerHTML = `<div class="grid-layout">${items.map(p => `
+            <div class="product-card ios-touch" onclick="app.openProduct('${p.id}')">
+                <div class="product-img-wrap">
+                    <img class="product-img" src="${p.img}" alt="${p.nome}">
+                </div>
+                <div class="product-details">
+                    <div class="product-name">${p.nome}</div>
+                    <div class="product-price">€${p.prezzo.toFixed(2)}</div>
+                </div>
+                <button onclick="event.stopPropagation(); app.removeFromWishlist('${p.id}')" style="position:absolute; top:10px; right:10px; background:rgba(255,59,48,0.9); color:white; border:none; width:32px; height:32px; border-radius:50%; cursor:pointer;"><i class="ph ph-heart-break"></i></button>
+            </div>
+        `).join('')}</div>`;
+    }
+
+    renderThemeSelector() {
+        const container = document.getElementById('themeSelector');
+        container.innerHTML = Object.entries(presets).map(([key, theme]) => `
+            <div class="theme-option" onclick="app.applyTheme('${key}')">
+                <div class="theme-circle ${this.state.theme === key ? 'active' : ''}" 
+                     style="background: linear-gradient(135deg, rgb(${theme.bg}), rgb(${theme.primary}));">
+                </div>
+                <div class="theme-name">${theme.name}</div>
+            </div>
+        `).join('');
+    }
+
+    applyTheme(themeKey) {
+        let theme;
+        if (typeof themeKey === 'string' && presets[themeKey]) {
+            theme = presets[themeKey];
+            this.state.theme = themeKey;
+        } else if (typeof themeKey === 'object') {
+            // Custom AI theme
+            const hexToRgb = (hex) => {
+                const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '0, 0, 0';
+            };
+            theme = {
+                bg: hexToRgb(themeKey.bg),
+                card: hexToRgb(themeKey.card),
+                text: hexToRgb(themeKey.text),
+                primary: hexToRgb(themeKey.primary),
+                accent: hexToRgb(themeKey.accent)
+            };
+            this.state.theme = 'custom';
+        } else {
+            return;
+        }
+        
+        document.documentElement.style.setProperty('--bg-rgb', theme.bg);
+        document.documentElement.style.setProperty('--card-rgb', theme.card);
+        document.documentElement.style.setProperty('--text-rgb', theme.text);
+        document.documentElement.style.setProperty('--primary-rgb', theme.primary);
+        document.documentElement.style.setProperty('--accent-rgb', theme.accent || theme.primary);
+        
+        // Check if dark theme
+        const bgValues = theme.bg.split(',').map(Number);
+        const isDark = (bgValues[0] + bgValues[1] + bgValues[2]) / 3 < 128;
+        document.body.classList.toggle('theme-dark', isDark);
+        
+        this.saveState();
+        this.renderThemeSelector();
+        this.renderFullMenuThemes();
+    }
+
+    applyDisplaySettings() {
+        document.body.classList.toggle('glass-active', this.state.glass);
+        document.body.classList.toggle('no-glass', !this.state.glass);
+        document.body.style.fontSize = this.state.size + 'px';
+        document.body.classList.toggle('bold-text', this.state.bold);
+        
+        document.getElementById('glassToggle').checked = this.state.glass;
+        document.getElementById('boldToggle').checked = this.state.bold;
+        document.getElementById('sizeValue').innerText = this.state.size;
+    }
+
+    changeSize(delta) {
+        this.state.size = Math.max(14, Math.min(24, this.state.size + delta));
+        this.saveState();
+        this.applyDisplaySettings();
+    }
+
+    toggleGlass() {
+        this.state.glass = !this.state.glass;
+        this.saveState();
+        this.applyDisplaySettings();
+    }
+
+    // AUTH
+    openAuth() {
+        document.getElementById('authDialog').classList.add('open');
+    }
+
+    closeAuth() {
+        document.getElementById('authDialog').classList.remove('open');
+        this.resetAuthUI();
+    }
+
+    resetAuthUI() {
+        document.getElementById('passwordSection').classList.remove('open');
+        document.getElementById('registerSection').style.display = 'none';
+        document.getElementById('authEmail').value = '';
+        document.getElementById('authPassword').value = '';
+    }
+
+    handleAuthStep() {
+        const email = document.getElementById('authEmail').value.trim();
+        if (!email) {
+            this.showNotification('Inserisci un\'email valida', 'error');
+            return;
+        }
+        
+        const existingUser = this.state.users.find(u => u.email === email);
+        document.getElementById('passwordSection').classList.add('open');
+        
+        if (!existingUser) {
+            // New user - show registration
+            setTimeout(() => {
+                document.getElementById('registerSection').style.display = 'block';
+            }, 300);
+        } else {
+            // Existing user - login
+            document.getElementById('authContinueBtn').onclick = () => this.loginUser(email);
+        }
+    }
+
+    loginUser(email) {
+        const pwd = document.getElementById('authPassword').value;
+        const user = this.state.users.find(u => u.email === email);
+        if (user && user.password === pwd) {
             this.state.currentUser = user;
             this.saveState();
-            document.getElementById('authDialog').classList.remove('open');
-            this.showNotification(`Benvenuto, ${user.username}!`, 'success');
-            
+            this.closeAuth();
             this.updateProfileUI();
-            
-            this.navigate('settings');
+            this.showNotification(`Bentornato, ${user.username}!`, 'success');
+        } else {
+            this.showNotification('Password errata', 'error');
         }
-        logout() {
-            this.state.currentUser = null;
-            this.saveState();
-            this.navigate('home');
-            this.showNotification('Disconnesso', 'info');
+    }
+
+    finalizeRegistration() {
+        const email = document.getElementById('authEmail').value.trim();
+        const pwd = document.getElementById('authPassword').value;
+        const username = document.getElementById('authUsername').value.trim();
+        
+        if (!username || !pwd) {
+            this.showNotification('Compila tutti i campi', 'error');
+            return;
         }
-        updateProfileUI() {
-            if(!this.state.currentUser) return;
-            const u = this.state.currentUser;
-            document.getElementById('userProfileCard').innerHTML = `
-                <div class="user-avatar">${u.avatar}</div>
+        
+        const newUser = {
+            email,
+            password: pwd,
+            username,
+            avatar: username.charAt(0).toUpperCase()
+        };
+        
+        this.state.users.push(newUser);
+        this.state.currentUser = newUser;
+        this.saveState();
+        this.closeAuth();
+        this.updateProfileUI();
+        this.showNotification(`Benvenuto, ${username}!`, 'success');
+    }
+
+    logout() {
+        this.state.currentUser = null;
+        this.saveState();
+        this.updateProfileUI();
+        this.showNotification('Logout effettuato');
+    }
+
+    updateProfileUI() {
+        const card = document.getElementById('userProfileCard');
+        const btn = document.getElementById('loginLogoutBtn');
+        
+        if (this.state.currentUser) {
+            card.innerHTML = `
+                <div class="user-avatar" style="background:var(--primary); color:white;">${this.state.currentUser.avatar}</div>
                 <div>
-                    <div style="font-weight:700; font-size:1.1em;">${u.username}</div>
-                    <div style="color:var(--text-sec); font-size:0.9em;">${u.email}</div>
-                    <div style="color:var(--text-sec); font-size:0.8em; margin-top:2px;">Crono ID</div>
+                    <div style="font-weight:700; font-size:1.1em;">${this.state.currentUser.username}</div>
+                    <div style="color:var(--text-sec); font-size:0.9em;">${this.state.currentUser.email}</div>
                 </div>
             `;
-        }
-        /* --- THEME ENGINE (HEX TO RGB) --- */
-        hexToRgb(hex) {
-            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-            return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '0,0,0';
-        }
-        applyTheme(keyOrObj) {
-            let t = typeof keyOrObj === 'string' ? presets[keyOrObj] : keyOrObj;
-            if(!t) t = presets['light'];
-            const root = document.documentElement.style;
-            root.setProperty('--bg-rgb', this.hexToRgb(t.bg));
-            root.setProperty('--card-rgb', this.hexToRgb(t.card));
-            root.setProperty('--text-rgb', this.hexToRgb(t.text));
-            root.setProperty('--primary-rgb', this.hexToRgb(t.primary));
-            root.setProperty('--accent-rgb', this.hexToRgb(t.accent || t.primary));
-            if (typeof keyOrObj === 'string') this.state.theme = keyOrObj;
-            this.saveState();
-            this.renderThemes();
-        }
-        renderThemes() {
-            const container = document.getElementById('themeSelector');
-            container.innerHTML = Object.entries(presets).map(([k, t]) => `
-                <div class="theme-item ${this.state.theme === k ? 'active' : ''}" onclick="app.applyTheme('${k}')">
-                    <div class="theme-preview" style="background:${t.bg}; display:flex; justify-content:center; align-items:center;">
-                        <div style="width:22px; height:22px; background:${t.primary}; border-radius:50%; box-shadow: 0 2px 8px rgba(0,0,0,0.2);"></div>
-                    </div>
-                    <div class="theme-name">${t.name}</div>
+            btn.innerHTML = '<span><i class="ph ph-sign-out"></i> Esci</span><i class="ph ph-caret-right"></i>';
+        } else {
+            card.innerHTML = `
+                <div class="user-avatar"><i class="ph ph-user"></i></div>
+                <div>
+                    <div style="font-weight:700; font-size:1.1em;">Ospite</div>
+                    <div style="color:var(--text-sec); font-size:0.9em;">Non hai effettuato l'accesso</div>
                 </div>
-            `).join('');
-        }
-        /* --- DISPLAY SETTINGS --- */
-        applyDisplaySettings() {
-            const r = document.documentElement.style;
-            r.setProperty('--base-size', this.state.size + 'px');
-            r.setProperty('--font-weight-normal', this.state.bold ? '600' : '400');
-            r.setProperty('--font-weight-bold', this.state.bold ? '800' : '600');
-            document.body.classList.toggle('glass-active', this.state.glass);
-            
-            document.getElementById('glassToggle').checked = this.state.glass;
-            document.getElementById('boldToggle').checked = this.state.bold;
-        }
-        toggleGlass() { this.state.glass = !this.state.glass; this.applyDisplaySettings(); this.saveState(); }
-        toggleBold() { this.state.bold = !this.state.bold; this.applyDisplaySettings(); this.saveState(); }
-        adjustSize(d) { this.state.size = Math.max(12, Math.min(24, this.state.size + d)); this.applyDisplaySettings(); this.saveState(); }
-        /* --- AI FUNCTIONS --- */
-        async callGemini(prompt) {
-            try {
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-                    method: 'POST', headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                });
-                const data = await res.json();
-                return data.candidates?.[0]?.content?.parts?.[0]?.text;
-            } catch { return null; }
-        }
-        async sendChat() {
-            const inp = document.getElementById('chatInput'); 
-            const txt = inp.value; 
-            if(!txt) return;
-            
-            document.getElementById('chatBody').innerHTML += `<div class="msg-bubble msg-user">${txt}</div>`;
-            inp.value = '';
-            
-            const systemContext = `
-                Sei CronoAI, l'assistente di sistema di Cronoshop.
-                PUOI ESEGUIRE AZIONI REALI SULL'APP.
-                
-                Se l'utente chiede di fare qualcosa (es. "cambia tema in scuro", "aggiungi iphone al carrello", "svuota carrello"),
-                 DEVI rispondere SOLO con un JSON in questo formato:
-                {"action": "set_theme", "value": "dark"}  // value: light, dark, sunset, forest, ocean, cyber
-                {"action": "add_cart", "query": "iphone"} // query: nome prodotto da cercare
-                {"action": "clear_cart"}
-                
-                Se l'utente chiede info o consigli, rispondi normalmente in italiano.
             `;
-            const res = await this.callGemini(`${systemContext}\nUtente: "${txt}"`);
+            btn.innerHTML = '<span><i class="ph ph-sign-in"></i> Accedi / Registrati</span><i class="ph ph-caret-right"></i>';
+        }
+    }
+
+    // AI INTEGRATION
+    async callGemini(prompt) {
+        try {
+            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${this.apiKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }]
+                })
+            });
+            const data = await res.json();
+            return data.candidates?.[0]?.content?.parts?.[0]?.text || null;
+        } catch (e) {
+            console.error('AI Error:', e);
+            return null;
+        }
+    }
+
+    toggleChat() {
+        document.getElementById('chatOverlay').classList.toggle('open');
+    }
+
+    async sendChat() {
+        const inp = document.getElementById('chatInput');
+        const txt = inp.value.trim();
+        if (!txt) return;
+        
+        document.getElementById('chatBody').innerHTML += `<div class="msg-bubble msg-user">${txt}</div>`;
+        inp.value = '';
+        
+        // Scroll to bottom
+        const chatBody = document.getElementById('chatBody');
+        chatBody.scrollTop = chatBody.scrollHeight;
+        
+        const systemContext = `
+            Sei CronoAI, l'assistente di Cronoshop.
+            PUOI ESEGUIRE AZIONI REALI SULL'APP.
             
+            Se l'utente chiede di fare qualcosa (es. "cambia tema in scuro", "aggiungi iphone al carrello", "svuota carrello"),
+            DEVI rispondere SOLO con un JSON in questo formato:
+            {"action": "set_theme", "value": "dark"}
+            {"action": "add_cart", "query": "iphone"}
+            {"action": "clear_cart"}
+            
+            Temi disponibili: light, dark, sunset, forest, ocean, cyber, luxury, rose, mint, desert, slate, nebula
+            
+            Se l'utente chiede info o consigli, rispondi normalmente in italiano, breve e amichevole.
+        `;
+        
+        const res = await this.callGemini(`${systemContext}\nUtente: "${txt}"`);
+        
+        if (res) {
             try {
                 const jsonMatch = res.match(/\{.*"action":.*\}/s);
-                if(jsonMatch) {
+                if (jsonMatch) {
                     const command = JSON.parse(jsonMatch[0]);
                     this.executeCommand(command);
-                    document.getElementById('chatBody').innerHTML += `<div class="msg-bubble msg-ai">Fatto!</div>`;
+                    document.getElementById('chatBody').innerHTML += `<div class="msg-bubble msg-ai">Fatto! ✨</div>`;
                 } else {
                     document.getElementById('chatBody').innerHTML += `<div class="msg-bubble msg-ai">${res}</div>`;
                 }
             } catch {
                 document.getElementById('chatBody').innerHTML += `<div class="msg-bubble msg-ai">${res}</div>`;
             }
-        }
-        executeCommand(cmd) {
-            if(cmd.action === 'set_theme') {
-                if(presets[cmd.value]) this.applyTheme(cmd.value);
-                else this.showNotification("Tema non trovato", "error");
-            }
-            if(cmd.action === 'add_cart') {
-                const p = products.find(prod => prod.nome.toLowerCase().includes(cmd.query.toLowerCase()));
-                if(p) this.addToCart(p.id);
-                else this.showNotification("Prodotto non trovato", "error");
-            }
-            if(cmd.action === 'clear_cart') {
-                this.state.cart = [];
-                this.saveState(); this.updateBadges(); this.refreshViews();
-                this.showNotification("Carrello svuotato", "info");
-            }
-        }
-        /* --- THEME & VISUAL GENERATORS --- */
-        openAiPrompt(type) {
-            this.state.promptType = type;
-            document.getElementById('aiPromptTitle').innerText = type === 'theme' ? 'Crea un Tema' : 'Ottimizzazione Visiva';
-            document.getElementById('aiPromptDesc').innerText = type === 'theme' ? 'Descrivi l\'atmosfera (es. "Tramonto Cyberpunk")' : 'Descrivi le tue esigenze (es. "Fatico a leggere di notte")';
-            document.getElementById('aiPromptOverlay').classList.add('open');
-        }
-        closeAiPrompt() { document.getElementById('aiPromptOverlay').classList.remove('open'); }
-        async submitAiPrompt() {
-            const txt = document.getElementById('aiPromptInput').value;
-            if(!txt) return;
-            this.closeAiPrompt();
-            this.showNotification("L'AI sta lavorando...", "info");
-            if (this.state.promptType === 'theme') {
-                const prompt = `Genera un JSON valido (senza markdown) per un tema UI basato su: "${txt}". Keys: bg, card, text, primary, accent. Usa colori HEX.`;
-                const res = await this.callGemini(prompt);
-                try {
-                    const jsonStr = res.replace(/```json|```/g, '').trim();
-                    const theme = JSON.parse(jsonStr);
-                    this.applyTheme(theme);
-                    this.showNotification("Tema Creato!", "success");
-                } catch { this.showNotification("Errore creazione tema", "error"); }
-            } else {
-                const prompt = `Utente dice: "${txt}". Suggerisci JSON valido (senza markdown) per settings UI: size (int 14-22), bold (bool), highContrast (bool).`;
-                const res = await this.callGemini(prompt);
-                try {
-                    const jsonStr = res.replace(/```json|```/g, '').trim();
-                    const settings = JSON.parse(jsonStr);
-                    this.state.size = settings.size || 17;
-                    this.state.bold = settings.bold || false;
-                    this.applyDisplaySettings();
-                    this.showNotification("Display Ottimizzato!", "success");
-                } catch { this.showNotification("Errore ottimizzazione", "error"); }
-            }
-        }
-        /* --- SHOPPING --- */
-        addToCart(id) {
-            const p = products.find(x=>x.id===id);
-            const exist = this.state.cart.find(x=>x.id===id);
-            if(exist) exist.qty++; else this.state.cart.push({...p, qty:1});
-            this.saveState(); this.updateBadges(); this.showNotification("Aggiunto al carrello", "success");
+        } else {
+            document.getElementById('chatBody').innerHTML += `<div class="msg-bubble msg-ai">Mi dispiace, non sono riuscito a rispondere. Riprova!</div>`;
         }
         
-        generateCartMix() {
-            if(!this.state.cart.length) return alert('Carrello vuoto!');
-            const items = this.state.cart.map(x=>x.nome).join(', ');
-            this.callGemini(`Ho nel carrello: ${items}. Dammi un consiglio creativo su come usarli insieme. Max 20 parole.`).then(res => alert(res));
-        }
-        toggleWishlist(id) {
-            const idx = this.state.wishlist.findIndex(x => x.id === id);
-            if(idx > -1) {
-                this.state.wishlist.splice(idx, 1);
-                this.showNotification("Rimosso dai preferiti");
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    executeCommand(cmd) {
+        if (cmd.action === 'set_theme') {
+            if (presets[cmd.value]) {
+                this.applyTheme(cmd.value);
+                this.showNotification(`Tema cambiato in ${presets[cmd.value].name}`, 'success');
             } else {
-                const p = products.find(x => x.id === id);
-                if(p) {
-                    this.state.wishlist.push(p);
-                    this.showNotification("Aggiunto ai preferiti", "success");
-                }
+                this.showNotification('Tema non trovato', 'error');
             }
+        }
+        if (cmd.action === 'add_cart') {
+            const p = products.find(prod => prod.nome.toLowerCase().includes(cmd.query.toLowerCase()));
+            if (p) {
+                this.addToCart(p.id);
+            } else {
+                this.showNotification('Prodotto non trovato', 'error');
+            }
+        }
+        if (cmd.action === 'clear_cart') {
+            this.state.cart = [];
             this.saveState();
             this.updateBadges();
-            if(this.state.view === 'wishlist') this.renderWishlist();
-            this.updateModalHeart(id);
-        }
-        updateModalHeart(id) {
-            const btn = document.getElementById('btnAddToWish');
-            if(!btn) return;
-            const inWish = this.state.wishlist.some(x => x.id === id);
-            const icon = btn.querySelector('i');
-            if(inWish) {
-                icon.classList.remove('ph'); icon.classList.add('ph-fill');
-                icon.style.color = '#FF3B30';
-                btn.style.color = '#FF3B30';
-            } else {
-                icon.classList.remove('ph-fill'); icon.classList.add('ph');
-                icon.style.color = 'inherit';
-                btn.style.color = 'inherit';
-            }
-        }
-        updateQty(id, delta) {
-            const item = this.state.cart.find(x => x.id === id);
-            if(item) {
-                item.qty = (item.qty || 1) + delta;
-                if(item.qty <= 0) this.state.cart = this.state.cart.filter(x => x.id !== id);
-                this.saveState();
-                this.renderCart(); 
-                this.updateBadges();
-            }
-        }
-        updateBadges() { 
-            const qty = this.state.cart.reduce((a,b)=>a+(b.qty||1),0);
-            document.querySelectorAll('#badge-cart, #header-badge-cart').forEach(e => { e.innerText = qty; e.style.display = qty ? 'block':'none'; });
-            
-            const wQty = this.state.wishlist.length;
-            const wBadge = document.getElementById('badge-wishlist');
-            if(wBadge) { wBadge.innerText = wQty; wBadge.style.display = wQty ? 'block':'none'; }
-        }
-        /* --- NAVIGATION & UI --- */
-        navigate(view) {
-            if(view === 'settings' && !this.state.currentUser) {
-                this.openAuth();
-                return;
-            }
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            const target = document.getElementById('view-'+view);
-            if(target) target.classList.add('active');
-            this.state.view = view;
-            
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            const nav = document.getElementById('nav-'+view); if(nav) nav.classList.add('active');
-            
-            document.getElementById('pageTitle').innerText = view.charAt(0).toUpperCase() + view.slice(1);
-            document.getElementById('sidebar').classList.remove('active');
-            document.getElementById('sidebarScrim').classList.remove('active');
-            
-            if(view === 'cart') this.renderCart();
-            if(view === 'wishlist') this.renderWishlist();
-            if(view === 'settings') this.updateProfileUI();
-            // If navigating to apple/samsung, ensure grids are fresh
-            if(view === 'apple') this.renderGrid(products.filter(p => (p.nome||'').toLowerCase().includes('iphone') || (p.nome||'').toLowerCase().includes('apple')), 'appleGrid');
-            if(view === 'samsung') this.renderGrid(products.filter(p => (p.nome||'').toLowerCase().includes('samsung') || (p.nome||'').toLowerCase().includes('galaxy')), 'samsungGrid');
-        }
-        renderProducts() { 
-            this.renderGrid(products, 'homeGrid'); 
-            this.renderGrid(products, 'productsGrid'); 
-            // Render Apple Store with categories
-            this.renderAppleStore();
-            // Render Samsung Store with categories
-            this.renderSamsungStore();
-        }
-        renderAppleStore() {
-            const appleList = products.filter(p => (p.nome || '').toLowerCase().includes('iphone') || (p.nome || '').toLowerCase().includes('apple'));
-            
-            // Separate into categories
-            const iphone17New = appleList.filter(p => (p.id || '').startsWith('iphone17'));
-            const otherIphones = appleList.filter(p => !p.id.startsWith('iphone17') && (p.nome || '').toLowerCase().includes('iphone'));
-            const otherApple = appleList.filter(p => !(p.nome || '').toLowerCase().includes('iphone'));
-            
-            let html = '';
-            
-            if(iphone17New.length > 0) {
-                html += '<h3 style="margin: 24px 0 16px 0; font-size: 1.2em; font-weight: var(--font-weight-bold); color: var(--text-main);">🆕 Flagship - iPhone 17 Series</h3>';
-                html += '<div class="grid-layout">' + iphone17New.map(p => this.getProductCardHTML(p)).join('') + '</div>';
-            }
-            
-            if(otherIphones.length > 0) {
-                html += '<h3 style="margin: 24px 0 16px 0; font-size: 1.2em; font-weight: var(--font-weight-bold); color: var(--text-main);">Precedenti Modelli</h3>';
-                html += '<div class="grid-layout">' + otherIphones.map(p => this.getProductCardHTML(p)).join('') + '</div>';
-            }
-            
-            if(otherApple.length > 0) {
-                html += '<h3 style="margin: 24px 0 16px 0; font-size: 1.2em; font-weight: var(--font-weight-bold); color: var(--text-main);">Accessori Apple</h3>';
-                html += '<div class="grid-layout">' + otherApple.map(p => this.getProductCardHTML(p)).join('') + '</div>';
-            }
-            
-            document.getElementById('appleGrid').innerHTML = html;
-        }
-        renderSamsungStore() {
-            const samsungList = products.filter(p => (p.nome || '').toLowerCase().includes('samsung') || (p.nome || '').toLowerCase().includes('galaxy'));
-            
-            // Separate into categories
-            const s25Ultra = samsungList.filter(p => (p.nome || '').toLowerCase().includes('s25 ultra'));
-            const zFoldFlip = samsungList.filter(p => (p.nome || '').toLowerCase().includes('z fold') || (p.nome || '').toLowerCase().includes('z flip'));
-            const otherSamsung = samsungList.filter(p => 
-                !(p.nome || '').toLowerCase().includes('s25 ultra') && 
-                !(p.nome || '').toLowerCase().includes('z fold') && 
-                !(p.nome || '').toLowerCase().includes('z flip')
-            );
-            
-            let html = '';
-            
-            if(s25Ultra.length > 0) {
-                html += '<h3 style="margin: 24px 0 16px 0; font-size: 1.2em; font-weight: var(--font-weight-bold); color: var(--text-main);">🆕 Flagship - Galaxy S25 Ultra</h3>';
-                html += '<div class="grid-layout">' + s25Ultra.map(p => this.getProductCardHTML(p)).join('') + '</div>';
-            }
-            
-            if(zFoldFlip.length > 0) {
-                html += '<h3 style="margin: 24px 0 16px 0; font-size: 1.2em; font-weight: var(--font-weight-bold); color: var(--text-main);">Galaxy Z Fold & Flip</h3>';
-                html += '<div class="grid-layout">' + zFoldFlip.map(p => this.getProductCardHTML(p)).join('') + '</div>';
-            }
-            
-            if(otherSamsung.length > 0) {
-                html += '<h3 style="margin: 24px 0 16px 0; font-size: 1.2em; font-weight: var(--font-weight-bold); color: var(--text-main);">Altro Samsung</h3>';
-                html += '<div class="grid-layout">' + otherSamsung.map(p => this.getProductCardHTML(p)).join('') + '</div>';
-            }
-            
-            document.getElementById('samsungGrid').innerHTML = html;
-        }
-        getProductCardHTML(p) {
-            return `<div class="product-card" onclick="app.openProductModal('${p.id}')">
-                    <div class="product-img-wrap"><img src="${p.img}" class="product-img"></div>
-                    <div class="product-details">
-                        <div class="product-name">${p.nome}</div>
-                        <div class="product-price">€${p.prezzo}</div>
-                    </div>
-                    ${p.isNew ? '<div class="new-badge">NUOVO</div>' : (p.featured ? '<div class="featured-badge">★</div>' : '')}
-                </div>`;
-        }
-        renderGrid(list, target) {
-            document.getElementById(target).innerHTML = list.map(p => `
-                <div class="product-card" onclick="app.openProductModal('${p.id}')">
-                    <div class="product-img-wrap"><img src="${p.img}" class="product-img"></div>
-                    <div class="product-details">
-                        <div class="product-name">${p.nome}</div>
-                        <div class="product-price">€${p.prezzo}</div>
-                    </div>
-                    ${p.isNew ? '<div class="new-badge">NUOVO</div>' : (p.featured ? '<div class="featured-badge">★</div>' : '')}
-                </div>`).join('');
-        }
-        filterProducts(cat, btn) {
-            document.querySelectorAll('.ios-chip').forEach(c => c.classList.remove('active'));
-            btn.classList.add('active');
-            const filtered = cat === 'all' ? products : products.filter(p => p.categoria === cat);
-            this.renderGrid(filtered, 'productsGrid');
-        }
-        openProductModal(id) {
-            const p = products.find(x=>x.id===id);
-            if(!p) return;
-            this.currentProduct = p;
-            document.getElementById('modalTitle').innerText = p.nome;
-            document.getElementById('modalPrice').innerText = '€'+p.prezzo;
-            document.getElementById('modalDesc').innerText = p.descrizione;
-            document.getElementById('aiResponse').style.display = 'none';
-            
-            
-            document.getElementById('btnAddToCart').onclick = () => { this.addToCart(id); this.closeModal(); };
-            
-            const wishBtn = document.getElementById('btnAddToWish');
-            wishBtn.onclick = () => { this.toggleWishlist(id); };
-            this.updateModalHeart(id);
-            
-            const amazonBtn = document.getElementById("btnBuyAmazon");
-            amazonBtn.onclick = () => {
-            window.open(p.link, "_blank"); };
-            
-            document.getElementById('productDialog').classList.add('open');
-        }
-        closeModal() { document.getElementById('productDialog').classList.remove('open'); }
-        toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); document.getElementById('sidebarScrim').classList.toggle('active'); }
-        
-        showNotification(m, t) {
-            const d = document.createElement('div');
-            d.style.cssText = `position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:${t==='success'?'var(--primary)':(t==='error'?'#FF3B30':'#333')};color:white;padding:12px 24px;border-radius:50px;box-shadow:var(--glass-shadow);z-index:9999;font-weight:600;animation:slideUp 0.3s;font-size:0.9em;`;
-            d.innerText = m; document.body.appendChild(d); setTimeout(()=>d.remove(), 2500);
-        }
-        renderCart() {
-            const c = document.getElementById('cartListContainer');
-            if(!this.state.cart.length) { c.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-sec);">Vuoto</div>'; document.getElementById('cartSummary').style.display='none'; return; }
-            document.getElementById('cartSummary').style.display='block';
-            c.innerHTML = this.state.cart.map(i => `
-                <div style="display:flex; gap:15px; margin-bottom:15px; background:var(--glass-bg); padding:10px; border-radius:12px; border:1px solid var(--separator); align-items:center;">
-                    <img src="${i.img}" style="width:60px; height:60px; object-fit:contain;">
-                    <div style="flex:1;"><b>${i.nome}</b><br>€${i.prezzo}</div>
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <button class="ios-btn btn-secondary" style="width:30px; height:30px; padding:0;" onclick="app.updateQty('${i.id}', -1)">-</button>
-                        <span>${i.qty||1}</span>
-                        <button class="ios-btn btn-secondary" style="width:30px; height:30px; padding:0;" onclick="app.updateQty('${i.id}', 1)">+</button>
-                    </div>
-                </div>`).join('');
-            document.getElementById('cartTotal').innerText = '€'+this.state.cart.reduce((a,b)=>a+b.prezzo*(b.qty||1),0).toFixed(2);
-        }
-        renderWishlist() { 
-            const container = document.getElementById('wishlistContainer');
-            if(this.state.wishlist.length === 0) {
-                container.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-sec);">Nessun preferito</div>';
-            } else {
-                container.innerHTML = this.state.wishlist.map(p => `
-                    <div class="product-card">
-                        <div style="padding:15px; display:flex; align-items:center; gap:15px;">
-                            <img src="${p.img}" style="width:60px; height:60px; object-fit:contain;">
-                            <div style="flex:1;">
-                                <div class="product-name">${p.nome}</div>
-                                <div class="product-price">€${p.prezzo}</div>
-                            </div>
-                            <button class="ios-btn btn-secondary" style="width:auto; padding:8px;" onclick="app.addToCart('${p.id}'); app.toggleWishlist('${p.id}')"><i class="ph ph-shopping-cart"></i></button>
-                            <button class="ios-btn btn-secondary" style="width:auto; padding:8px; color:#FF3B30;" onclick="app.toggleWishlist('${p.id}')"><i class="ph-fill ph-trash"></i></button>
-                        </div>
-                    </div>
-                `).join('');
-            }
-        }
-        refreshViews() {
-            if(this.state.view === 'cart') this.renderCart();
-            if(this.state.view === 'wishlist') this.renderWishlist();
-        }
-        /* DRAGGABLE CHAT */
-        initDraggableChat() {
-            const isMobile = window.innerWidth <= 768;
-            if(isMobile) return;
-            
-            const el = document.getElementById('chatOverlay'); const h = document.getElementById('chatHeader');
-            let isDown = false, offX, offY;
-            h.addEventListener('mousedown', (e) => { isDown = true; offX = el.offsetLeft - e.clientX; offY = el.offsetTop - e.clientY; });
-            document.addEventListener('mouseup', () => isDown = false);
-            document.addEventListener('mousemove', (e) => {
-                if(!isDown) return; e.preventDefault();
-                el.style.left = (e.clientX + offX) + 'px'; el.style.top = (e.clientY + offY) + 'px';
-                el.style.bottom = 'auto'; el.style.right = 'auto';
-            });
-        }
-        toggleChat() { document.getElementById('chatOverlay').classList.toggle('open'); }
-        async askAI() {
-            const res = await this.callGemini(`Analizza brevemente il prodotto mostrato. Dammi 3 pro.`);
-            const box = document.getElementById('aiResponse'); box.style.display='block'; box.innerHTML = `<b>AI:</b> ${res}`;
+            if (this.state.view === 'cart') this.renderCart();
+            this.showNotification('Carrello svuotato', 'info');
         }
     }
-    const app = new App();
+
+    // AI Prompts
+    openAiPrompt(type) {
+        this.state.promptType = type;
+        document.getElementById('aiPromptTitle').innerText = type === 'theme' ? 'Crea un Tema con AI' : 'Ottimizzazione Visiva AI';
+        document.getElementById('aiPromptDesc').innerText = type === 'theme' 
+            ? 'Descrivi l\'atmosfera desiderata (es. "Tramonto cyberpunk", "Oceano profondo")' 
+            : 'Descrivi le tue esigenze (es. "Fatico a leggere di notte", "Voglio colori più vivaci")';
+        document.getElementById('aiPromptInput').value = '';
+        document.getElementById('aiPromptOverlay').classList.add('open');
+    }
+
+    closeAiPrompt() {
+        document.getElementById('aiPromptOverlay').classList.remove('open');
+    }
+
+    async submitAiPrompt() {
+        const txt = document.getElementById('aiPromptInput').value.trim();
+        if (!txt) return;
+        
+        this.closeAiPrompt();
+        this.showNotification('CronoAI sta creando...', 'info');
+        
+        if (this.state.promptType === 'theme') {
+            const prompt = `Genera un JSON valido (senza markdown, solo JSON puro) per un tema UI basato su: "${txt}". 
+            Keys richieste: bg (sfondo), card (card background), text (testo), primary (colore primario), accent (colore secondario). 
+            Tutti i valori devono essere colori HEX (es. #FF5733). Esempio: {"bg":"#000000","card":"#1a1a1a","text":"#ffffff","primary":"#00ff88","accent":"#ff00ff"}`;
+            
+            const res = await this.callGemini(prompt);
+            try {
+                const jsonStr = res.replace(/```json|```/g, '').trim();
+                const theme = JSON.parse(jsonStr);
+                this.applyTheme(theme);
+                this.showNotification('Tema personalizzato creato!', 'success');
+            } catch {
+                this.showNotification('Errore nella creazione del tema', 'error');
+            }
+        } else {
+            const prompt = `Utente dice: "${txt}". Suggerisci un JSON valido (senza markdown) per ottimizzare le impostazioni UI: size (int 14-22 per grandezza testo), bold (boolean per testo grassetto), glass (boolean per effetto glass). Esempio: {"size":18,"bold":true,"glass":false}`;
+            
+            const res = await this.callGemini(prompt);
+            try {
+                const jsonStr = res.replace(/```json|```/g, '').trim();
+                const settings = JSON.parse(jsonStr);
+                if (settings.size) this.state.size = settings.size;
+                if (typeof settings.bold === 'boolean') this.state.bold = settings.bold;
+                if (typeof settings.glass === 'boolean') this.state.glass = settings.glass;
+                this.applyDisplaySettings();
+                this.saveState();
+                this.showNotification('Display ottimizzato!', 'success');
+            } catch {
+                this.showNotification('Errore nell\'ottimizzazione', 'error');
+            }
+        }
+    }
+
+    async askAI() {
+        if (!this.currentProduct) return;
+        this.showNotification('CronoAI sta analizzando...', 'info');
+        const res = await this.callGemini(`Analizza brevemente il prodotto "${this.currentProduct.nome}". Dammi 3 pro principali in italiano, in modo conciso.`);
+        const box = document.getElementById('aiResponse');
+        box.style.display = 'block';
+        box.innerHTML = `<b><i class="ph-fill ph-sparkle"></i> CronoAI:</b><br>${res || 'Non sono riuscito ad analizzare il prodotto.'}`;
+    }
+
+    // DRAGGABLE CHAT
+    initDraggableChat() {
+        const isMobile = window.innerWidth <= 768;
+        if (isMobile) return;
+        
+        const el = document.getElementById('chatOverlay');
+        const h = document.getElementById('chatHeader');
+        let isDown = false, offX, offY;
+        
+        h.addEventListener('mousedown', (e) => {
+            isDown = true;
+            offX = el.offsetLeft - e.clientX;
+            offY = el.offsetTop - e.clientY;
+        });
+        
+        document.addEventListener('mouseup', () => {
+            isDown = false;
+            this.saveState();
+        });
+        
+        document.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const newX = e.clientX + offX;
+            const newY = e.clientY + offY;
+            el.style.left = newX + 'px';
+            el.style.top = newY + 'px';
+            el.style.bottom = 'auto';
+            el.style.right = 'auto';
+            this.state.chatX = newX;
+            this.state.chatY = newY;
+        });
+    }
+
+    applyChatPosition() {
+        const el = document.getElementById('chatOverlay');
+        if (this.state.chatX !== null && this.state.chatY !== null && window.innerWidth > 768) {
+            el.style.left = this.state.chatX + 'px';
+            el.style.top = this.state.chatY + 'px';
+            el.style.bottom = 'auto';
+            el.style.right = 'auto';
+        }
+    }
+
+    // MENU TOGGLES
+    toggleLeftMenu() {
+        if (Prefs.minimal) {
+            this.openFullMenu();
+        } else {
+            const header = document.getElementById('crono-navbar');
+            const content = document.getElementById('expanded-content');
+            const backdrop = document.getElementById('uiBackdrop');
+            if (header.classList.contains('expanded-left')) {
+                this.closeAll();
+            } else {
+                this.closeAll();
+                header.classList.add('expanded-left');
+                header.querySelector('.ios-search').style.display = 'none';
+                header.querySelector('.brand-center').style.display = 'none';
+                content.innerHTML = `
+                    <div class="nav-item" onclick="app.navigate('home'); app.closeAll()"><i class="ph ph-house"></i> Home</div>
+                    <div class="nav-item" onclick="app.navigate('catalog'); app.closeAll()"><i class="ph ph-bag"></i> Catalogo Prodotti</div>
+                    <div class="nav-item" onclick="app.navigate('apple'); app.closeAll()"><i class="ph ph-apple-logo"></i> Apple Store</div>
+                    <div class="nav-item" onclick="app.navigate('samsung'); app.closeAll()"><i class="ph ph-device-mobile"></i> Samsung Hub</div>
+                    <div class="nav-divider"></div>
+                    <div class="nav-item" onclick="app.navigate('wishlist'); app.closeAll()"><i class="ph ph-heart"></i> Preferiti</div>
+                    <div class="nav-item" onclick="app.navigate('cart'); app.closeAll()"><i class="ph ph-shopping-cart"></i> Carrello</div>
+                    <div class="nav-item" onclick="app.navigate('settings'); app.closeAll()"><i class="ph ph-user"></i> Profilo</div>
+                `;
+                content.style.display = 'flex';
+                backdrop.classList.add('active');
+            }
+        }
+    }
+
+    toggleRightMenu() {
+        if (Prefs.minimal) {
+            this.openFullMenu();
+        } else {
+            const header = document.getElementById('crono-navbar');
+            const content = document.getElementById('expanded-content');
+            const backdrop = document.getElementById('uiBackdrop');
+            if (header.classList.contains('expanded-right')) {
+                this.closeAll();
+            } else {
+                this.closeAll();
+                header.classList.add('expanded-right');
+                header.querySelector('.ios-search').style.display = 'none';
+                header.querySelector('.brand-center').style.display = 'none';
+                content.innerHTML = `
+                    <div class="crono-id-widget">
+                        <div class="avatar">${this.state.currentUser ? this.state.currentUser.avatar : '?'}</div>
+                        <div class="user-info">
+                            <div class="user-name">${this.state.currentUser ? this.state.currentUser.username : 'Ospite'}</div>
+                            <div class="user-id">${this.state.currentUser ? this.state.currentUser.email : 'Non connesso'}</div>
+                        </div>
+                    </div>
+                    <div class="nav-divider"></div>
+                    <div class="settings-section">
+                        <div class="toggle-item">
+                            <span>Ospite</span>
+                            <button class="ios-toggle" onclick="app.toggleGuest()">Toggle</button>
+                        </div>
+                        <div class="toggle-item">
+                            <span>Accedi a CronoID</span>
+                            <button class="ios-toggle" onclick="app.openAuth(); app.closeAll()">→</button>
+                        </div>
+                        <div class="toggle-item">
+                            <span>Nuove Animazioni BETA</span>
+                            <button class="ios-toggle" onclick="app.toggleNewAnimations()">Toggle</button>
+                        </div>
+                        <div class="toggle-item">
+                            <span>Engine più fluido</span>
+                            <button class="ios-toggle" onclick="app.toggleFluidEngine()">Toggle</button>
+                        </div>
+                    </div>
+                    <div class="nav-divider"></div>
+                    <div class="settings-section">
+                        <h4>Layout</h4>
+                        <div class="toggle-item">
+                            <span>Modalità minimale</span>
+                            <button class="ios-toggle" onclick="app.toggleMinimal()">Toggle</button>
+                        </div>
+                        <div class="toggle-item">
+                            <span>Barra in basso</span>
+                            <button class="ios-toggle" onclick="app.toggleBottomBar()">Toggle</button>
+                        </div>
+                    </div>
+                    <div class="nav-divider"></div>
+                    <div class="settings-section">
+                        <h4>Accessibilità</h4>
+                        <div class="toggle-item">
+                            <span>Rimuovi Trasparenza</span>
+                            <button class="ios-toggle" onclick="app.toggleGlass()">Toggle</button>
+                        </div>
+                        <div class="toggle-item">
+                            <span>Mostra Bordi</span>
+                            <button class="ios-toggle" onclick="app.toggleShowBorders()">Toggle</button>
+                        </div>
+                        <div class="toggle-item">
+                            <span>Testo in Grassetto</span>
+                            <button class="ios-toggle" onclick="app.toggleBoldText()">Toggle</button>
+                        </div>
+                        <div class="toggle-item">
+                            <span>Colori Saturi</span>
+                            <button class="ios-toggle" onclick="app.toggleSaturatedColors()">Toggle</button>
+                        </div>
+                        <div class="toggle-item">
+                            <span>Scala di Grigi</span>
+                            <button class="ios-toggle" onclick="app.toggleGrayscale()">Toggle</button>
+                        </div>
+                        <div class="toggle-item">
+                            <span>Riduci Movimento</span>
+                            <button class="ios-toggle" onclick="app.toggleReduceMotion()">Toggle</button>
+                        </div>
+                        <div class="toggle-item">
+                            <span>Contrasto Elevato</span>
+                            <button class="ios-toggle" onclick="app.toggleHighContrast()">Toggle</button>
+                        </div>
+                    </div>
+                    <div class="nav-divider"></div>
+                    <div class="theme-grid">
+                        <h4>Temi</h4>
+                        <div class="theme-buttons">
+                            <button class="theme-btn light" onclick="app.applyTheme('light'); app.closeAll()">Light</button>
+                            <button class="theme-btn dark" onclick="app.applyTheme('dark'); app.closeAll()">Dark</button>
+                            <button class="theme-btn gold" onclick="app.applyTheme('luxury'); app.closeAll()">Gold</button>
+                            <button class="theme-btn cyber" onclick="app.applyTheme('cyber'); app.closeAll()">Cyber</button>
+                            <button class="theme-btn midnight" onclick="app.applyTheme('midnight'); app.closeAll()">Midnight</button>
+                            <button class="theme-btn slate" onclick="app.applyTheme('slate'); app.closeAll()">Slate</button>
+                            <button class="theme-btn forest" onclick="app.applyTheme('forest'); app.closeAll()">Forest</button>
+                            <button class="theme-btn sunset" onclick="app.applyTheme('sunset'); app.closeAll()">Sunset</button>
+                            <button class="theme-btn ocean" onclick="app.applyTheme('ocean'); app.closeAll()">Ocean</button>
+                            <button class="theme-btn latte" onclick="app.applyTheme('latte'); app.closeAll()">Latte</button>
+                            <button class="theme-btn graphite" onclick="app.applyTheme('graphite'); app.closeAll()">Graphite</button>
+                            <button class="theme-btn desert" onclick="app.applyTheme('desert'); app.closeAll()">Desert</button>
+                            <button class="theme-btn rose" onclick="app.applyTheme('rose'); app.closeAll()">Rose</button>
+                            <button class="theme-btn aurora" onclick="app.applyTheme('aurora'); app.closeAll()">Aurora</button>
+                            <button class="theme-btn solar" onclick="app.applyTheme('solar'); app.closeAll()">Solar</button>
+                            <button class="theme-btn cherry" onclick="app.applyTheme('cherry'); app.closeAll()">Cherry</button>
+                            <button class="theme-btn highcontrast" onclick="app.applyTheme('highcontrast'); app.closeAll()">High Contrast</button>
+                        </div>
+                    </div>
+                `;
+                content.style.display = 'flex';
+                backdrop.classList.add('active');
+            }
+        }
+    }
+
+    closeAll() {
+        document.getElementById('crono-navbar').classList.remove('expanded-left', 'expanded-right');
+        document.getElementById('nav-menu').classList.remove('active');
+        document.getElementById('user-panel').classList.remove('active');
+        document.getElementById('uiBackdrop').classList.remove('active');
+        const content = document.getElementById('expanded-content');
+        content.style.display = 'none';
+        content.innerHTML = '';
+        document.querySelector('.ios-search').style.display = 'flex';
+        document.querySelector('.brand-center').style.display = 'block';
+        this.closeSidebar();
+        this.closeRightSidebar();
+        this.closeFullMenu();
+    }
+
+    closeSidebar() {
+        document.getElementById('sidebar').classList.remove('active');
+        document.getElementById('sidebarScrim').classList.remove('active');
+    }
+
+    closeRightSidebar() {
+        // Placeholder for right sidebar close if needed
+    }
+
+    toggleMinimal() {
+        Prefs.minimal = !Prefs.minimal;
+        Prefs.save();
+        document.body.classList.toggle('minimal-mode', Prefs.minimal);
+        this.closeAll();
+    }
+
+    toggleBeta() {
+        Prefs.beta = !Prefs.beta;
+        Prefs.save();
+        this.closeAll();
+    }
+
+    toggleGuest() {
+        Prefs.guest = !Prefs.guest;
+        Prefs.save();
+        this.closeAll();
+    }
+
+    toggleLogin() {
+        this.closeAll();
+        this.openAuth();
+    }
+
+    toggleNewAnimations() {
+        Prefs.newAnimations = !Prefs.newAnimations;
+        Prefs.save();
+        this.closeAll();
+    }
+
+    toggleFluidEngine() {
+        Prefs.fluidEngine = !Prefs.fluidEngine;
+        Prefs.save();
+        this.closeAll();
+    }
+
+    toggleBottomBar() {
+        Prefs.bottomBar = !Prefs.bottomBar;
+        Prefs.save();
+        this.closeAll();
+    }
+
+    toggleShowBorders() {
+        Prefs.showBorders = !Prefs.showBorders;
+        Prefs.save();
+        document.body.classList.toggle('show-borders', Prefs.showBorders);
+    }
+
+    toggleBoldText() {
+        Prefs.boldText = !Prefs.boldText;
+        Prefs.save();
+        document.body.classList.toggle('bold-text', Prefs.boldText);
+    }
+
+    toggleSaturatedColors() {
+        Prefs.saturatedColors = !Prefs.saturatedColors;
+        Prefs.save();
+        document.body.classList.toggle('saturated-colors', Prefs.saturatedColors);
+    }
+
+    toggleGrayscale() {
+        Prefs.grayscale = !Prefs.grayscale;
+        Prefs.save();
+        document.body.classList.toggle('grayscale', Prefs.grayscale);
+    }
+
+    toggleReduceMotion() {
+        Prefs.reduceMotion = !Prefs.reduceMotion;
+        Prefs.save();
+        document.body.classList.toggle('reduce-motion', Prefs.reduceMotion);
+    }
+
+    toggleHighContrast() {
+        Prefs.highContrast = !Prefs.highContrast;
+        Prefs.save();
+        document.body.classList.toggle('high-contrast', Prefs.highContrast);
+    }
+
+    // NOTIFICATIONS
+    showNotification(message, type = 'info') {
+        const d = document.createElement('div');
+        const bg = type === 'success' ? 'var(--primary)' : (type === 'error' ? '#FF3B30' : 'rgba(var(--text-rgb), 0.8)');
+        d.style.cssText = `
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: ${bg};
+            color: white;
+            padding: 14px 28px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 9999;
+            font-weight: 600;
+            font-size: 0.95em;
+            animation: slideUp 0.3s ease-out;
+            max-width: 90vw;
+            text-align: center;
+        `;
+        d.innerText = message;
+        document.body.appendChild(d);
+        setTimeout(() => d.remove(), 3000);
+    }
+}
+
+// Initialize app
+const app = new CronoshopApp();
 </script>
 </body>
 </html>
