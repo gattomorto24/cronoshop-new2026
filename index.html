@@ -28,7 +28,6 @@
             --glass-shadow: 0px 4px 12px rgba(0,0,0,0.05);
             --glass-saturate: 100%;
             
-            /* Aggiunta variabile per card solide */
             --card-solid-bg: rgb(var(--card-rgb));
             
             --text-main: rgb(var(--text-rgb));
@@ -42,22 +41,33 @@
             
             --radius-md: 20px;
             --ease: cubic-bezier(0.25, 1, 0.5, 1);
+            
+            /* iOS 26 Toggle Colors */
+            --toggle-on-bg: #34C759;
+            --toggle-off-bg: rgba(var(--text-rgb), 0.16);
+            --toggle-knob: #FFFFFF;
+            --toggle-shadow: 0 3px 8px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.12);
+            --toggle-inner-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.04);
         }
         
         body.glass-active {
-            --glass-bg: rgba(var(--card-rgb), 0.35);
-            --glass-border: rgba(255, 255, 255, 0.4);
+            --glass-bg: rgba(var(--card-rgb), 0.65);
+            --glass-border: rgba(255, 255, 255, 0.5);
             --glass-blur: 40px;
             --glass-saturate: 180%;
             --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
         }
         
         body.theme-dark.glass-active {
-            --glass-bg: rgba(30, 30, 30, 0.45);
+            --glass-bg: rgba(30, 30, 30, 0.65);
             --glass-border: rgba(255, 255, 255, 0.15);
         }
         
-        /* Nav minimale con effetto glass blur invece di trasparente */
+        body.theme-dark {
+            --toggle-off-bg: rgba(255, 255, 255, 0.25);
+        }
+        
+        /* Nav minimale con effetto glass blur */
         body.minimal-mode .ios-header {
             background: rgba(var(--card-rgb), 0.6);
             backdrop-filter: blur(20px) saturate(180%);
@@ -65,15 +75,14 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             border-radius: 0px;
-            width: 110%;
+            width: 100%;
             top: 0px;
-            left: 50%;
-            transform: translateX(-50%);
+            left: 0;
+            transform: none;
             padding: 15px 24px;
             display: flex;
             align-items: center;
-            justify-content: space-between; /* O 'center' a seconda del contenuto*/
-}
+            justify-content: space-between;
         }
 
         body.minimal-mode.scrolled .ios-header {
@@ -84,7 +93,6 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
         }
         
-        /* Dark mode per minimal */
         body.theme-dark.minimal-mode .ios-header {
             background: rgba(28, 28, 30, 0.85);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -128,7 +136,7 @@
         
         .app-container { display: flex; height: 100vh; overflow: hidden; }
         
-        /* SIDEBAR */
+        /* SIDEBAR - Hidden on mobile */
         .sidebar {
             width: 280px;
             height: 100%;
@@ -183,9 +191,24 @@
         .badge { background: #FF3B30; color: white; font-size: 0.75em; padding: 2px 8px; border-radius: 12px; margin-left: auto; display: none; font-weight: 600; box-shadow: 0 2px 5px rgba(255, 59, 48, 0.4); }
         
         /* MAIN */
-        .main-wrapper { flex: 1; height: 100%; overflow-y: auto; padding: 80px 20px 20px 20px; position: relative; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
+        .main-wrapper { 
+            flex: 1; 
+            height: 100%; 
+            overflow-y: auto; 
+            padding: 80px 20px 20px 20px; 
+            position: relative; 
+            scroll-behavior: smooth; 
+            -webkit-overflow-scrolling: touch; 
+        }
         
-        /* Dynamic Bar completamente ridisegnata per essere coerente con il design vetro */
+        /* Mobile padding for bottom bar */
+        @media (max-width: 768px) {
+            .main-wrapper {
+                padding-bottom: 100px;
+            }
+        }
+        
+        /* Dynamic Bar */
         .ios-header {
             position: fixed;
             top: 16px;
@@ -208,8 +231,14 @@
             min-width: 280px;
             max-width: calc(100vw - 32px);
         }
+        
+        /* Hide top header on mobile when bottom bar is active */
+        @media (max-width: 768px) {
+            .ios-header {
+                top: env(safe-area-inset-top, 16px);
+            }
+        }
 
-        /* No-glass mode per dynamic bar - usa stile solido coerente */
         body.no-glass .ios-header {
             background-color: var(--card-solid-bg);
             backdrop-filter: none;
@@ -218,7 +247,6 @@
             box-shadow: 0 2px 12px rgba(0,0,0,0.08);
         }
 
-        /* No-glass mode per sidebar - sfondo solido */
         body.no-glass .sidebar,
         body.no-glass .right-sidebar {
             backdrop-filter: none;
@@ -260,8 +288,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            min-width: 40px;
-            min-height: 40px;
+            min-width: 44px;
+            min-height: 44px;
         }
 
         .ios-header .nav-btn:hover {
@@ -291,7 +319,7 @@
             outline: none;
             color: var(--text-main);
             flex: 1;
-            font-size: 15px;
+            font-size: 16px;
             width: 100%;
         }
 
@@ -349,14 +377,89 @@
             padding: 8px 0;
         }
 
-        .ios-toggle {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.9em;
+        /* =========================================
+           iOS 26 STYLE TOGGLE SWITCH
+           3D glass effect with shadows
+           ========================================= */
+        .ios26-toggle {
+            position: relative;
+            width: 51px;
+            height: 31px;
+            display: inline-block;
             cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .ios26-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
+        
+        .ios26-toggle .toggle-track {
+            position: absolute;
+            inset: 0;
+            background: var(--toggle-off-bg);
+            border-radius: 31px;
+            transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            /* Glass inner effect */
+            box-shadow: 
+                inset 0 0 0 1px rgba(0, 0, 0, 0.04),
+                inset 0 2px 4px rgba(0, 0, 0, 0.06);
+        }
+        
+        .ios26-toggle input:checked + .toggle-track {
+            background: var(--toggle-on-bg);
+            box-shadow: 
+                inset 0 0 0 1px rgba(0, 0, 0, 0.02),
+                0 0 8px rgba(52, 199, 89, 0.3);
+        }
+        
+        .ios26-toggle .toggle-knob {
+            position: absolute;
+            width: 27px;
+            height: 27px;
+            left: 2px;
+            top: 2px;
+            background: var(--toggle-knob);
+            border-radius: 50%;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s;
+            /* 3D effect with multiple shadows */
+            box-shadow: 
+                0 3px 8px rgba(0, 0, 0, 0.15),
+                0 1px 3px rgba(0, 0, 0, 0.12),
+                0 0 0 0.5px rgba(0, 0, 0, 0.04);
+            /* Glass highlight */
+            background: linear-gradient(180deg, #FFFFFF 0%, #F5F5F5 100%);
+        }
+        
+        .ios26-toggle .toggle-knob::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 3px;
+            right: 3px;
+            height: 40%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 100%);
+            border-radius: 50% 50% 40% 40%;
+        }
+        
+        .ios26-toggle input:checked + .toggle-track .toggle-knob {
+            transform: translateX(20px);
+            box-shadow: 
+                0 3px 8px rgba(0, 0, 0, 0.15),
+                0 1px 3px rgba(0, 0, 0, 0.12),
+                0 0 0 0.5px rgba(0, 0, 0, 0.04),
+                0 0 0 1px rgba(52, 199, 89, 0.1);
+        }
+        
+        .ios26-toggle:active .toggle-knob {
+            width: 31px;
+        }
+        
+        .ios26-toggle input:checked:active + .toggle-track .toggle-knob {
+            transform: translateX(16px);
         }
 
         .theme-grid h4 {
@@ -378,10 +481,11 @@
             font-weight: 600;
             cursor: pointer;
             transition: 0.2s;
+            min-height: 44px;
         }
 
         .theme-btn.light { background: #f2f2f7; color: #000; }
-        .theme-btn.dark { background: #00000; color: #fff; }
+        .theme-btn.dark { background: #1c1c1e; color: #fff; }
         .theme-btn.gold { background: linear-gradient(45deg, #000, #ffd700); color: #fff; }
         .theme-btn.cyber { background: linear-gradient(45deg, #000, #ff00ff, #00ffff); color: #fff; }
         .theme-btn.rose { background: linear-gradient(45deg, #fff1f2, #fb7185); color: #881337; }
@@ -442,7 +546,94 @@
             visibility: visible;
         }
 
-        /* Expanded menu ridisegnato con scrolling e stile vetro coerente */
+        /* =========================================
+           MOBILE BOTTOM NAV BAR
+           ========================================= */
+        .mobile-bottom-bar {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border-top: 1px solid var(--glass-border);
+            padding: 8px 8px calc(env(safe-area-inset-bottom, 8px) + 8px) 8px;
+            z-index: 1000;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        body.no-glass .mobile-bottom-bar {
+            background: var(--card-solid-bg);
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-bottom-bar {
+                display: block;
+            }
+        }
+        
+        .bottom-bar-items {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .bottom-bar-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s var(--ease);
+            min-width: 60px;
+            position: relative;
+            color: var(--text-sec);
+        }
+        
+        .bottom-bar-item i {
+            font-size: 1.5em;
+            margin-bottom: 2px;
+            transition: transform 0.2s;
+        }
+        
+        .bottom-bar-item span {
+            font-size: 0.7em;
+            font-weight: 500;
+            opacity: 0.8;
+        }
+        
+        .bottom-bar-item.active {
+            color: var(--primary);
+            background: rgba(var(--primary-rgb), 0.1);
+        }
+        
+        .bottom-bar-item.active i {
+            transform: scale(1.1);
+        }
+        
+        .bottom-bar-item .bottom-badge {
+            position: absolute;
+            top: 2px;
+            right: 8px;
+            background: #FF3B30;
+            color: white;
+            font-size: 0.65em;
+            padding: 2px 5px;
+            border-radius: 10px;
+            font-weight: 700;
+            min-width: 16px;
+            text-align: center;
+            display: none;
+        }
+
+        /* Expanded menu con scrolling e stile vetro coerente */
         .expanded-menu {
             position: fixed;
             top: 80px;
@@ -467,7 +658,6 @@
             overscroll-behavior: contain;
         }
         
-        /* Scrollbar stilizzata per i menu */
         .expanded-menu::-webkit-scrollbar {
             width: 6px;
         }
@@ -503,7 +693,6 @@
             margin-bottom: 0;
         }
         
-        /* No-glass per expanded menu */
         body.no-glass .expanded-menu {
             background: var(--card-solid-bg);
             backdrop-filter: none;
@@ -512,7 +701,6 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.12);
         }
 
-        /* Espansione header con scrolling */
         .ios-header.expanded-left,
         .ios-header.expanded-right {
             border-radius: var(--radius-md);
@@ -566,13 +754,15 @@
             border: 1px solid var(--glass-border); color: var(--text-main);
             backdrop-filter: blur(var(--glass-blur));
             cursor: pointer;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
         }
         .ios-chip.active { 
             background-color: var(--text-main); color: var(--bg-base); border-color: transparent;
             box-shadow: 0 4px 12px rgba(var(--text-rgb), 0.3);
         }
         
-        /* No-glass per chips */
         body.no-glass .ios-chip {
             background-color: var(--card-solid-bg);
             backdrop-filter: none;
@@ -593,7 +783,6 @@
             backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
         }
         
-        /* No-glass per settings groups */
         body.no-glass .settings-group {
             background: var(--card-solid-bg);
             backdrop-filter: none;
@@ -634,7 +823,7 @@
         .theme-circle.active { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(var(--primary-rgb), 0.3); }
         .theme-name { text-align: center; font-size: 0.8em; color: var(--text-sec); }
         
-        /* SWITCH TOGGLE */
+        /* LEGACY SWITCH TOGGLE (fallback) */
         .switch-toggle { position: relative; width: 52px; height: 32px; display: inline-block; }
         .switch-toggle input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; inset: 0; background: rgba(var(--text-rgb), 0.2); border-radius: 34px; transition: 0.4s; cursor: pointer; }
@@ -709,7 +898,6 @@
         }
         .modal-scrim.open .ios-modal { transform: scale(1); }
         
-        /* No-glass per modals */
         body.no-glass .ios-modal {
             background: var(--card-solid-bg);
             backdrop-filter: none;
@@ -729,13 +917,20 @@
             font-size: 1.5em;
             cursor: pointer;
             box-shadow: 0 8px 25px rgba(var(--primary-rgb), 0.4);
-            z-index: 1000;
+            z-index: 999;
             transition: 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
         }
         .chat-btn-float:hover { transform: scale(1.1); }
+        
+        /* Hide float button on mobile with bottom bar */
+        @media (max-width: 768px) {
+            .chat-btn-float {
+                bottom: 90px;
+            }
+        }
         
         .chat-interface {
             position: fixed;
@@ -761,7 +956,6 @@
         }
         .chat-interface.open { opacity: 1; visibility: visible; transform: translateY(0); }
         
-        /* No-glass per chat */
         body.no-glass .chat-interface {
             background: var(--card-solid-bg);
             backdrop-filter: none;
@@ -822,7 +1016,7 @@
         .auth-input-group { position: relative; width: 100%; margin-bottom: 12px; }
         .auth-input {
             width: 100%; padding: 16px; border-radius: 12px; border: 1px solid var(--separator);
-            background: rgba(var(--text-rgb), 0.02); color: var(--text-main); font-size: 1em; outline: none; transition: 0.3s;
+            background: rgba(var(--text-rgb), 0.02); color: var(--text-main); font-size: 16px; outline: none; transition: 0.3s;
         }
         .auth-input:focus { border-color: var(--primary); background: var(--glass-bg); box-shadow: 0 0 0 4px rgba(var(--primary-rgb), 0.1); }
         
@@ -839,7 +1033,6 @@
             backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
         }
         
-        /* No-glass per hero card */
         body.no-glass .hero-card {
             background-color: var(--card-solid-bg);
             backdrop-filter: none;
@@ -867,7 +1060,6 @@
             }
         }
         
-        /* Product card con sfondo SEMPRE solido, non vetro */
         .product-card {
             background-color: var(--card-solid-bg);
             border-radius: var(--radius-md); 
@@ -962,7 +1154,6 @@
             visibility: visible;
         }
         
-        /* Su desktop (>768px) il menu diventa uno slide panel dal bordo sinistro */
         @media (min-width: 769px) {
             .full-menu-overlay {
                 width: 380px;
@@ -1012,6 +1203,8 @@
             cursor: pointer;
             font-size: 1.2em;
             color: var(--text-main);
+            min-width: 44px;
+            min-height: 44px;
         }
         
         .full-menu-section {
@@ -1035,7 +1228,8 @@
             margin-bottom: 6px;
             cursor: pointer;
             transition: background 0.2s;
-            color: var(--text-main);
+            font-weight: 500;
+            min-height: 48px;
         }
         
         .full-menu-item:hover {
@@ -1044,64 +1238,71 @@
         
         .full-menu-item i {
             font-size: 1.3em;
-            width: 24px;
+            width: 28px;
             text-align: center;
-        }
-        
-        .full-menu-item.active {
-            background: rgba(var(--primary-rgb), 0.12);
-            color: var(--primary);
         }
         
         .full-menu-toggle {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 14px 16px;
+            padding: 12px 16px;
             border-radius: 14px;
             margin-bottom: 6px;
             background: rgba(var(--text-rgb), 0.03);
+            min-height: 52px;
         }
         
         .full-menu-themes {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            gap: 12px;
         }
         
-        .full-menu-theme-btn {
-            aspect-ratio: 1;
-            border-radius: 12px;
-            border: 2px solid transparent;
-            cursor: pointer;
-            transition: 0.2s;
-            font-size: 0.7em;
-            font-weight: 600;
+        .full-menu-theme-item {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 12px;
+            transition: 0.2s;
         }
         
-        .full-menu-theme-btn:hover {
-            transform: scale(1.05);
+        .full-menu-theme-item:hover {
+            background: rgba(var(--text-rgb), 0.06);
         }
         
-        .full-menu-theme-btn.active {
+        .full-menu-theme-circle {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            margin-bottom: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            border: 2px solid transparent;
+            transition: 0.2s;
+        }
+        
+        .full-menu-theme-circle.active {
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.2);
+            box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.3);
         }
         
-        /* Scrim/backdrop per il menu slide su desktop */
+        .full-menu-theme-name {
+            font-size: 0.7em;
+            color: var(--text-sec);
+            text-align: center;
+        }
+
         .full-menu-scrim {
             position: fixed;
             inset: 0;
             background: rgba(0,0,0,0.5);
             backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
             z-index: 1999;
             opacity: 0;
             visibility: hidden;
-            transition: 0.3s var(--ease);
+            transition: 0.3s;
         }
         
         .full-menu-scrim.active {
@@ -1109,27 +1310,100 @@
             visibility: visible;
         }
         
-        body.no-glass .full-menu-scrim {
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
+        /* =========================================
+           MODE SELECTOR - Compact, Focus, Dynamic
+           ========================================= */
+        .mode-selector {
+            display: flex;
+            gap: 8px;
+            padding: 4px;
+            background: rgba(var(--text-rgb), 0.06);
+            border-radius: 14px;
+            margin-bottom: 16px;
+        }
+        
+        .mode-btn {
+            flex: 1;
+            padding: 10px 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: transparent;
+            color: var(--text-sec);
+            min-height: 44px;
+        }
+        
+        .mode-btn.active {
+            background: var(--card-solid-bg);
+            color: var(--text-main);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .mode-btn:hover:not(.active) {
+            background: rgba(var(--text-rgb), 0.04);
+        }
+        
+        /* Compact Mode - Denser UI */
+        body.compact-mode .product-card {
+            border-radius: 12px;
+        }
+        
+        body.compact-mode .product-details {
+            padding: 10px;
+        }
+        
+        body.compact-mode .section-title {
+            font-size: 1.2em;
+            margin: 20px 0 14px 0;
+        }
+        
+        body.compact-mode .settings-row {
+            padding: 12px 16px;
+            min-height: 50px;
+        }
+        
+        /* Focus Mode - Larger touch targets, cleaner UI */
+        body.focus-mode .product-card {
+            border-radius: 24px;
+        }
+        
+        body.focus-mode .product-details {
+            padding: 20px;
+        }
+        
+        body.focus-mode .product-name {
+            font-size: 1.1em;
+        }
+        
+        body.focus-mode .nav-item {
+            padding: 16px 18px;
+            min-height: 56px;
+        }
+        
+        body.focus-mode .ios-btn {
+            padding: 18px;
+            min-height: 54px;
+            font-size: 1.05em;
         }
     </style>
 </head>
-<body>
+<body class="glass-active">
+
 <div class="app-container">
-    <!-- SIDEBAR SCRIM -->
-    <div class="sidebar-scrim" id="sidebarScrim"></div>
-    
-    <!-- LEFT SIDEBAR -->
+    <!-- SIDEBAR (Desktop only) -->
     <aside class="sidebar" id="sidebar">
         <div class="brand-area">
             <div class="brand-logo"><i class="ph-bold ph-lightning"></i></div>
             <span class="brand-title">Cronoshop</span>
         </div>
         
-        <div class="menu-label">Menu</div>
         <div class="nav-item active" data-view="home"><i class="ph ph-house"></i> Home</div>
         <div class="nav-item" data-view="catalog"><i class="ph ph-bag"></i> Catalogo Prodotti</div>
+        
+        <div class="menu-label">Brand Store</div>
         <div class="nav-item" data-view="apple"><i class="ph ph-apple-logo"></i> Apple Store</div>
         <div class="nav-item" data-view="samsung"><i class="ph ph-device-mobile"></i> Samsung Hub</div>
         
@@ -1141,6 +1415,8 @@
         <div style="flex:1;"></div>
         <div class="nav-item" id="chatBtn"><i class="ph-fill ph-sparkle"></i> CronoAI</div>
     </aside>
+    
+    <div class="sidebar-scrim" id="sidebarScrim"></div>
     
     <!-- DYNAMIC BAR -->
     <nav class="ios-header" id="crono-navbar">
@@ -1168,19 +1444,6 @@
         <!-- Expanded Menus -->
         <div class="expanded-menu" id="nav-menu"></div>
         <div class="expanded-menu" id="user-panel"></div>
-        
-        <!-- Settings Section in Expanded -->
-        <div id="expanded-settings" class="hidden">
-            <div class="settings-section">
-                <h4>Account</h4>
-                <div class="theme-buttons">
-                    <button class="theme-btn light" onclick="app.applyTheme('light'); app.closeAll()">Light</button>
-                    <button class="theme-btn dark" onclick="app.applyTheme('dark'); app.closeAll()">Dark</button>
-                    <button class="theme-btn gold" onclick="app.applyTheme('luxury'); app.closeAll()">Gold</button>
-                    <button class="theme-btn cyber" onclick="app.applyTheme('cyber'); app.closeAll()">Cyber</button>
-                </div>
-            </div>
-        </div>
         
         <!-- VIEW: HOME -->
         <section id="view-home" class="view-section active">
@@ -1267,24 +1530,24 @@
             <div class="settings-group">
                 <div class="settings-row">
                     <span><i class="ph ph-sparkle"></i> Effetto Glass</span>
-                    <label class="switch-toggle">
+                    <label class="ios26-toggle">
                         <input type="checkbox" id="glassToggle">
-                        <span class="slider"></span>
+                        <span class="toggle-track"><span class="toggle-knob"></span></span>
                     </label>
                 </div>
                 <div class="settings-row">
                     <span><i class="ph ph-text-b"></i> Testo Bold</span>
-                    <label class="switch-toggle">
+                    <label class="ios26-toggle">
                         <input type="checkbox" id="boldToggle">
-                        <span class="slider"></span>
+                        <span class="toggle-track"><span class="toggle-knob"></span></span>
                     </label>
                 </div>
                 <div class="settings-row">
                     <span><i class="ph ph-text-aa"></i> Dimensione Testo</span>
                     <div style="display:flex; gap:10px; align-items:center;">
-                        <button class="ios-btn btn-secondary" style="width:40px; height:40px; padding:0;" id="sizeDown">-</button>
+                        <button class="ios-btn btn-secondary" style="width:44px; height:44px; padding:0;" id="sizeDown">-</button>
                         <span id="sizeValue">17</span>
-                        <button class="ios-btn btn-secondary" style="width:40px; height:40px; padding:0;" id="sizeUp">+</button>
+                        <button class="ios-btn btn-secondary" style="width:44px; height:44px; padding:0;" id="sizeUp">+</button>
                     </div>
                 </div>
             </div>
@@ -1310,7 +1573,35 @@
     </main>
 </div>
 
-<!-- Aggiunto scrim per menu slide su desktop -->
+<!-- MOBILE BOTTOM NAV BAR -->
+<nav class="mobile-bottom-bar" id="mobileBottomBar">
+    <div class="bottom-bar-items">
+        <div class="bottom-bar-item active" data-view="home">
+            <i class="ph-fill ph-house"></i>
+            <span>Home</span>
+        </div>
+        <div class="bottom-bar-item" data-view="catalog">
+            <i class="ph ph-bag"></i>
+            <span>Catalogo</span>
+        </div>
+        <div class="bottom-bar-item" data-view="cart">
+            <i class="ph ph-shopping-cart"></i>
+            <span>Carrello</span>
+            <span class="bottom-badge" id="bottomCartBadge">0</span>
+        </div>
+        <div class="bottom-bar-item" data-view="wishlist">
+            <i class="ph ph-heart"></i>
+            <span>Preferiti</span>
+            <span class="bottom-badge" id="bottomWishBadge">0</span>
+        </div>
+        <div class="bottom-bar-item" data-view="settings">
+            <i class="ph ph-user"></i>
+            <span>Profilo</span>
+        </div>
+    </div>
+</nav>
+
+<!-- Full Menu Scrim -->
 <div class="full-menu-scrim" id="fullMenuScrim"></div>
 
 <!-- Full Menu Overlay per modalità minimale -->
@@ -1348,18 +1639,36 @@
     </div>
     
     <div class="full-menu-section">
-        <h4>Layout</h4>
+        <h4>Modalità Interfaccia</h4>
+        <div class="mode-selector">
+            <button class="mode-btn" id="modeCompact">Compatta</button>
+            <button class="mode-btn active" id="modeDynamic">Dinamica</button>
+            <button class="mode-btn" id="modeFocus">Focus</button>
+        </div>
+    </div>
+    
+    <div class="full-menu-section">
+        <h4>Display</h4>
         <div class="full-menu-toggle">
             <span>Modalità Minimale</span>
-            <button class="ios-toggle" id="fullMenuMinimalToggle">Toggle</button>
+            <label class="ios26-toggle">
+                <input type="checkbox" id="fullMenuMinimalToggle">
+                <span class="toggle-track"><span class="toggle-knob"></span></span>
+            </label>
         </div>
         <div class="full-menu-toggle">
-            <span>Rimuovi Trasparenza</span>
-            <button class="ios-toggle" id="fullMenuGlassToggle">Toggle</button>
+            <span>Effetto Glass</span>
+            <label class="ios26-toggle">
+                <input type="checkbox" id="fullMenuGlassToggle" checked>
+                <span class="toggle-track"><span class="toggle-knob"></span></span>
+            </label>
         </div>
         <div class="full-menu-toggle">
             <span>Testo in Grassetto</span>
-            <button class="ios-toggle" id="fullMenuBoldToggle">Toggle</button>
+            <label class="ios26-toggle">
+                <input type="checkbox" id="fullMenuBoldToggle">
+                <span class="toggle-track"><span class="toggle-knob"></span></span>
+            </label>
         </div>
     </div>
     
@@ -1367,23 +1676,38 @@
         <h4>Accessibilità</h4>
         <div class="full-menu-toggle">
             <span>Mostra Bordi</span>
-            <button class="ios-toggle" id="fullMenuBordersToggle">Toggle</button>
+            <label class="ios26-toggle">
+                <input type="checkbox" id="fullMenuBordersToggle">
+                <span class="toggle-track"><span class="toggle-knob"></span></span>
+            </label>
         </div>
         <div class="full-menu-toggle">
             <span>Colori Saturi</span>
-            <button class="ios-toggle" id="fullMenuSaturatedToggle">Toggle</button>
+            <label class="ios26-toggle">
+                <input type="checkbox" id="fullMenuSaturatedToggle">
+                <span class="toggle-track"><span class="toggle-knob"></span></span>
+            </label>
         </div>
         <div class="full-menu-toggle">
             <span>Scala di Grigi</span>
-            <button class="ios-toggle" id="fullMenuGrayscaleToggle">Toggle</button>
+            <label class="ios26-toggle">
+                <input type="checkbox" id="fullMenuGrayscaleToggle">
+                <span class="toggle-track"><span class="toggle-knob"></span></span>
+            </label>
         </div>
         <div class="full-menu-toggle">
             <span>Riduci Movimento</span>
-            <button class="ios-toggle" id="fullMenuMotionToggle">Toggle</button>
+            <label class="ios26-toggle">
+                <input type="checkbox" id="fullMenuMotionToggle">
+                <span class="toggle-track"><span class="toggle-knob"></span></span>
+            </label>
         </div>
         <div class="full-menu-toggle">
             <span>Contrasto Elevato</span>
-            <button class="ios-toggle" id="fullMenuContrastToggle">Toggle</button>
+            <label class="ios26-toggle">
+                <input type="checkbox" id="fullMenuContrastToggle">
+                <span class="toggle-track"><span class="toggle-knob"></span></span>
+            </label>
         </div>
     </div>
     
@@ -1473,6 +1797,7 @@
 /* =========================================
    PRODUCTS DATABASE
    ========================================= */
+
 const products = [
   {
     id: "labubu-special",
@@ -2599,16 +2924,8 @@ const presets = {
     cyber: { name: 'Cyber', bg: '0, 0, 0', card: '20, 20, 30', text: '255, 255, 255', primary: '255, 0, 255', accent: '0, 255, 255' },
     luxury: { name: 'Luxury', bg: '0, 0, 0', card: '28, 28, 28', text: '255, 215, 0', primary: '218, 165, 32', accent: '255, 223, 0' },
     rose: { name: 'Rose', bg: '255, 241, 242', card: '255, 255, 255', text: '136, 19, 55', primary: '251, 113, 133', accent: '244, 63, 94' },
-    mint: { name: 'Mint', bg: '236, 253, 245', card: '255, 255, 255', text: '6, 78, 59', primary: '16, 185, 129', accent: '52, 211, 153' },
     midnight: { name: 'Midnight', bg: '15, 15, 35', card: '25, 25, 50', text: '224, 231, 255', primary: '99, 102, 241', accent: '129, 140, 248' },
-    slate: { name: 'Slate', bg: '248, 250, 252', card: '255, 255, 255', text: '15, 23, 42', primary: '100, 116, 139', accent: '148, 163, 184' },
-    latte: { name: 'Latte', bg: '254, 247, 237', card: '255, 255, 255', text: '154, 52, 18', primary: '249, 115, 22', accent: '251, 146, 60' },
-    graphite: { name: 'Graphite', bg: '55, 65, 81', card: '75, 85, 99', text: '249, 250, 251', primary: '156, 163, 175', accent: '209, 213, 219' },
-    desert: { name: 'Desert', bg: '120, 53, 15', card: '146, 64, 14', text: '254, 243, 199', primary: '252, 211, 77', accent: '251, 191, 36' },
-    aurora: { name: 'Aurora', bg: '12, 10, 9', card: '28, 25, 23', text: '245, 245, 244', primary: '0, 212, 255', accent: '138, 43, 226' },
-    solar: { name: 'Solar', bg: '255, 255, 255', card: '255, 251, 235', text: '15, 23, 42', primary: '245, 158, 11', accent: '251, 191, 36' },
-    cherry: { name: 'Cherry', bg: '255, 241, 242', card: '255, 255, 255', text: '190, 18, 60', primary: '220, 38, 38', accent: '239, 68, 68' },
-    highcontrast: { name: 'High Contrast', bg: '0, 0, 0', card: '0, 0, 0', text: '255, 255, 255', primary: '255, 255, 0', accent: '0, 255, 0' }
+    slate: { name: 'Slate', bg: '248, 250, 252', card: '255, 255, 255', text: '15, 23, 42', primary: '100, 116, 139', accent: '148, 163, 184' }
 };
 
 /* =========================================
@@ -2616,11 +2933,7 @@ const presets = {
    ========================================= */
 const Prefs = {
     minimal: false,
-    beta: false,
-    guest: true,
-    newAnimations: false,
-    fluidEngine: false,
-    bottomBar: false,
+    uiMode: 'dynamic', // compact, dynamic, focus
     showBorders: false,
     boldText: false,
     saturatedColors: false,
@@ -2638,11 +2951,7 @@ const Prefs = {
     save() {
         localStorage.setItem('cronoshop_prefs', JSON.stringify({
             minimal: this.minimal,
-            beta: this.beta,
-            guest: this.guest,
-            newAnimations: this.newAnimations,
-            fluidEngine: this.fluidEngine,
-            bottomBar: this.bottomBar,
+            uiMode: this.uiMode,
             showBorders: this.showBorders,
             boldText: this.boldText,
             saturatedColors: this.saturatedColors,
@@ -2668,9 +2977,7 @@ class CronoshopApp {
             bold: false,
             size: 17,
             currentUser: null,
-            users: [],
-            chatX: null,
-            chatY: null
+            users: []
         };
         this.currentProduct = null;
         this.loadState();
@@ -2696,11 +3003,10 @@ class CronoshopApp {
         this.applyTheme(this.state.theme);
         this.applyDisplaySettings();
         this.updateBadges();
-        this.initDraggableChat();
-        this.applyChatPosition();
         this.renderThemeSelector();
         this.renderFullMenuThemes();
         this.updateProfileUI();
+        this.applyUIMode(Prefs.uiMode);
         
         // Apply saved preferences
         document.body.classList.toggle('minimal-mode', Prefs.minimal);
@@ -2711,17 +3017,33 @@ class CronoshopApp {
         document.body.classList.toggle('reduce-motion', Prefs.reduceMotion);
         document.body.classList.toggle('high-contrast', Prefs.highContrast);
         
+        // Sync toggle states
+        this.syncToggleStates();
+        
         // Initialize full menu events
         this.initFullMenuEvents();
     }
+    
+    syncToggleStates() {
+        document.getElementById('fullMenuMinimalToggle').checked = Prefs.minimal;
+        document.getElementById('fullMenuGlassToggle').checked = this.state.glass;
+        document.getElementById('fullMenuBoldToggle').checked = Prefs.boldText;
+        document.getElementById('fullMenuBordersToggle').checked = Prefs.showBorders;
+        document.getElementById('fullMenuSaturatedToggle').checked = Prefs.saturatedColors;
+        document.getElementById('fullMenuGrayscaleToggle').checked = Prefs.grayscale;
+        document.getElementById('fullMenuMotionToggle').checked = Prefs.reduceMotion;
+        document.getElementById('fullMenuContrastToggle').checked = Prefs.highContrast;
+        
+        // Update mode buttons
+        document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById('mode' + Prefs.uiMode.charAt(0).toUpperCase() + Prefs.uiMode.slice(1))?.classList.add('active');
+    }
 
     renderProducts() {
-        // Home grid - featured products
         const homeGrid = document.getElementById('homeGrid');
         const featured = products.filter(p => p.featured || p.isNew).slice(0, 6);
         homeGrid.innerHTML = featured.map(p => this.productCard(p)).join('');
         
-        // All products grid
         const productsGrid = document.getElementById('productsGrid');
         productsGrid.innerHTML = products.map(p => this.productCard(p)).join('');
     }
@@ -2749,6 +3071,16 @@ class CronoshopApp {
             item.addEventListener('click', () => this.navigate(item.dataset.view));
         });
         
+        // Bottom bar navigation
+        document.querySelectorAll('.bottom-bar-item[data-view]').forEach(item => {
+            item.addEventListener('click', () => {
+                this.navigate(item.dataset.view);
+                // Update active state
+                document.querySelectorAll('.bottom-bar-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+            });
+        });
+        
         // Filter chips
         document.querySelectorAll('.ios-chip').forEach(chip => {
             chip.addEventListener('click', () => this.filterProducts(chip.dataset.cat));
@@ -2762,16 +3094,14 @@ class CronoshopApp {
         document.getElementById('userBtn').addEventListener('click', () => this.toggleRightMenu());
         document.getElementById('cartBtn').addEventListener('click', () => this.navigate('cart'));
         document.getElementById('brandTitle').addEventListener('click', () => this.navigate('home'));
-        document.getElementById('uiBackdrop').addEventListener('click', () => this.closeAll());
         
-        // Chat
-        document.getElementById('chatBtn').addEventListener('click', () => this.toggleChat());
-        document.getElementById('chatFloatBtn').addEventListener('click', () => this.toggleChat());
-        document.getElementById('closeChatBtn').addEventListener('click', () => this.toggleChat());
-        document.getElementById('sendChatBtn').addEventListener('click', () => this.sendChat());
-        document.getElementById('chatInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') this.sendChat();
+        // Search
+        document.getElementById('searchInput').addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') this.search(e.target.value);
         });
+        
+        // UI Backdrop
+        document.getElementById('uiBackdrop').addEventListener('click', () => this.closeAll());
         
         // Product modal
         document.getElementById('closeProductModal').addEventListener('click', () => this.closeProductModal());
@@ -2794,19 +3124,21 @@ class CronoshopApp {
         });
         document.getElementById('btnAskAI').addEventListener('click', () => this.askAI());
         
-        // Settings
-        document.getElementById('glassToggle').addEventListener('change', (e) => {
-            this.state.glass = e.target.checked;
-            this.applyDisplaySettings();
+        // Settings toggles
+        document.getElementById('glassToggle').addEventListener('change', () => this.toggleGlass());
+        document.getElementById('boldToggle').addEventListener('change', () => {
+            this.state.bold = !this.state.bold;
             this.saveState();
-        });
-        document.getElementById('boldToggle').addEventListener('change', (e) => {
-            this.state.bold = e.target.checked;
             this.applyDisplaySettings();
-            this.saveState();
         });
-        document.getElementById('sizeUp').addEventListener('click', () => this.changeSize(1));
         document.getElementById('sizeDown').addEventListener('click', () => this.changeSize(-1));
+        document.getElementById('sizeUp').addEventListener('click', () => this.changeSize(1));
+        
+        // AI buttons
+        document.getElementById('aiThemeBtn').addEventListener('click', () => this.openAiPrompt('theme'));
+        document.getElementById('aiDisplayBtn').addEventListener('click', () => this.openAiPrompt('display'));
+        document.getElementById('submitAiPromptBtn').addEventListener('click', () => this.submitAiPrompt());
+        document.getElementById('closeAiPromptBtn').addEventListener('click', () => this.closeAiPrompt());
         
         // Auth
         document.getElementById('loginLogoutBtn').addEventListener('click', () => {
@@ -2821,120 +3153,135 @@ class CronoshopApp {
         document.getElementById('backToLoginBtn').addEventListener('click', () => this.resetAuthUI());
         document.getElementById('closeAuthBtn').addEventListener('click', () => this.closeAuth());
         
-        // AI Prompts
-        document.getElementById('aiThemeBtn').addEventListener('click', () => this.openAiPrompt('theme'));
-        document.getElementById('aiDisplayBtn').addEventListener('click', () => this.openAiPrompt('display'));
-        document.getElementById('submitAiPromptBtn').addEventListener('click', () => this.submitAiPrompt());
-        document.getElementById('closeAiPromptBtn').addEventListener('click', () => this.closeAiPrompt());
-        
-        // Search
-        document.getElementById('searchInput').addEventListener('input', (e) => this.search(e.target.value));
-        
-        // Scroll detection for minimal mode
-        document.getElementById('mainWrapper').addEventListener('scroll', (e) => {
-            if (e.target.scrollTop > 50) {
-                document.body.classList.add('scrolled');
-            } else {
-                document.body.classList.remove('scrolled');
-            }
+        // Chat
+        document.getElementById('chatBtn').addEventListener('click', () => this.toggleChat());
+        document.getElementById('chatFloatBtn').addEventListener('click', () => this.toggleChat());
+        document.getElementById('closeChatBtn').addEventListener('click', () => this.toggleChat());
+        document.getElementById('sendChatBtn').addEventListener('click', () => this.sendChat());
+        document.getElementById('chatInput').addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') this.sendChat();
         });
-        
-        document.getElementById('fullMenuScrim').addEventListener('click', () => this.closeFullMenu());
     }
     
     initFullMenuEvents() {
+        // Full menu close
         document.getElementById('closeFullMenu').addEventListener('click', () => this.closeFullMenu());
+        document.getElementById('fullMenuScrim').addEventListener('click', () => this.closeFullMenu());
         
-        // Navigation items
-        document.querySelectorAll('#fullMenuOverlay .full-menu-item[data-view]').forEach(item => {
+        // Full menu navigation
+        document.querySelectorAll('.full-menu-item[data-view]').forEach(item => {
             item.addEventListener('click', () => {
                 this.navigate(item.dataset.view);
                 this.closeFullMenu();
             });
         });
         
-        // Chat button
+        // Chat button in full menu
         document.getElementById('fullMenuChatBtn').addEventListener('click', () => {
             this.closeFullMenu();
             this.toggleChat();
         });
         
-        // Toggle buttons
-        document.getElementById('fullMenuMinimalToggle').addEventListener('click', () => this.toggleMinimal());
-        document.getElementById('fullMenuGlassToggle').addEventListener('click', () => this.toggleGlass());
-        document.getElementById('fullMenuBoldToggle').addEventListener('click', () => this.toggleBoldText());
-        document.getElementById('fullMenuBordersToggle').addEventListener('click', () => this.toggleShowBorders());
-        document.getElementById('fullMenuSaturatedToggle').addEventListener('click', () => this.toggleSaturatedColors());
-        document.getElementById('fullMenuGrayscaleToggle').addEventListener('click', () => this.toggleGrayscale());
-        document.getElementById('fullMenuMotionToggle').addEventListener('click', () => this.toggleReduceMotion());
-        document.getElementById('fullMenuContrastToggle').addEventListener('click', () => this.toggleHighContrast());
+        // Mode selector
+        document.getElementById('modeCompact').addEventListener('click', () => this.setUIMode('compact'));
+        document.getElementById('modeDynamic').addEventListener('click', () => this.setUIMode('dynamic'));
+        document.getElementById('modeFocus').addEventListener('click', () => this.setUIMode('focus'));
+        
+        // Toggle switches
+        document.getElementById('fullMenuMinimalToggle').addEventListener('change', (e) => {
+            Prefs.minimal = e.target.checked;
+            Prefs.save();
+            document.body.classList.toggle('minimal-mode', Prefs.minimal);
+        });
+        
+        document.getElementById('fullMenuGlassToggle').addEventListener('change', (e) => {
+            this.state.glass = e.target.checked;
+            this.saveState();
+            this.applyDisplaySettings();
+            document.getElementById('glassToggle').checked = e.target.checked;
+        });
+        
+        document.getElementById('fullMenuBoldToggle').addEventListener('change', (e) => {
+            Prefs.boldText = e.target.checked;
+            Prefs.save();
+            document.body.classList.toggle('bold-text', Prefs.boldText);
+        });
+        
+        document.getElementById('fullMenuBordersToggle').addEventListener('change', (e) => {
+            Prefs.showBorders = e.target.checked;
+            Prefs.save();
+            document.body.classList.toggle('show-borders', Prefs.showBorders);
+        });
+        
+        document.getElementById('fullMenuSaturatedToggle').addEventListener('change', (e) => {
+            Prefs.saturatedColors = e.target.checked;
+            Prefs.save();
+            document.body.classList.toggle('saturated-colors', Prefs.saturatedColors);
+        });
+        
+        document.getElementById('fullMenuGrayscaleToggle').addEventListener('change', (e) => {
+            Prefs.grayscale = e.target.checked;
+            Prefs.save();
+            document.body.classList.toggle('grayscale', Prefs.grayscale);
+        });
+        
+        document.getElementById('fullMenuMotionToggle').addEventListener('change', (e) => {
+            Prefs.reduceMotion = e.target.checked;
+            Prefs.save();
+            document.body.classList.toggle('reduce-motion', Prefs.reduceMotion);
+        });
+        
+        document.getElementById('fullMenuContrastToggle').addEventListener('change', (e) => {
+            Prefs.highContrast = e.target.checked;
+            Prefs.save();
+            document.body.classList.toggle('high-contrast', Prefs.highContrast);
+        });
     }
     
-    openFullMenu() {
-        document.getElementById('fullMenuOverlay').classList.add('active');
-        document.getElementById('fullMenuScrim').classList.add('active');
-        this.updateFullMenuUser();
+    setUIMode(mode) {
+        Prefs.uiMode = mode;
+        Prefs.save();
+        this.applyUIMode(mode);
+        
+        // Update buttons
+        document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById('mode' + mode.charAt(0).toUpperCase() + mode.slice(1))?.classList.add('active');
     }
     
-    closeFullMenu() {
-        document.getElementById('fullMenuOverlay').classList.remove('active');
-        document.getElementById('fullMenuScrim').classList.remove('active');
-    }
-    
-    updateFullMenuUser() {
-        const container = document.getElementById('fullMenuUserWidget');
-        if (this.state.currentUser) {
-            container.innerHTML = `
-                <div class="avatar" style="background:var(--primary); color:white;">${this.state.currentUser.avatar}</div>
-                <div class="user-info">
-                    <div class="user-name">${this.state.currentUser.username}</div>
-                    <div class="user-id">${this.state.currentUser.email}</div>
-                </div>
-            `;
-        } else {
-            container.innerHTML = `
-                <div class="avatar">?</div>
-                <div class="user-info">
-                    <div class="user-name">Ospite</div>
-                    <div class="user-id">Non connesso</div>
-                </div>
-            `;
+    applyUIMode(mode) {
+        document.body.classList.remove('compact-mode', 'focus-mode');
+        if (mode === 'compact') {
+            document.body.classList.add('compact-mode');
+        } else if (mode === 'focus') {
+            document.body.classList.add('focus-mode');
         }
-    }
-    
-    renderFullMenuThemes() {
-        const container = document.getElementById('fullMenuThemes');
-        container.innerHTML = Object.entries(presets).map(([key, theme]) => `
-            <button class="full-menu-theme-btn ${this.state.theme === key ? 'active' : ''}" 
-                    style="background: linear-gradient(135deg, rgb(${theme.bg}), rgb(${theme.primary})); color: rgb(${theme.text});"
-                    onclick="app.applyTheme('${key}')">${theme.name.substring(0, 3)}</button>
-        `).join('');
     }
 
     navigate(view) {
         document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
-        document.getElementById(`view-${view}`).classList.add('active');
-        
+        document.getElementById(`view-${view}`)?.classList.add('active');
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.querySelectorAll(`.nav-item[data-view="${view}"]`).forEach(n => n.classList.add('active'));
+        document.querySelector(`.nav-item[data-view="${view}"]`)?.classList.add('active');
+        
+        // Update bottom bar
+        document.querySelectorAll('.bottom-bar-item').forEach(i => i.classList.remove('active'));
+        document.querySelector(`.bottom-bar-item[data-view="${view}"]`)?.classList.add('active');
         
         this.state.view = view;
         this.saveState();
         
-        // Render dynamic content
-        if (view === 'wishlist') this.renderWishlist();
         if (view === 'cart') this.renderCart();
+        if (view === 'wishlist') this.renderWishlist();
         
-        document.getElementById('mainWrapper').scrollTop = 0;
-        this.closeSidebar();
+        document.getElementById('mainWrapper').scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    filterProducts(category) {
+    filterProducts(cat) {
         document.querySelectorAll('.ios-chip').forEach(c => c.classList.remove('active'));
-        document.querySelector(`.ios-chip[data-cat="${category}"]`).classList.add('active');
+        document.querySelector(`.ios-chip[data-cat="${cat}"]`)?.classList.add('active');
         
         const grid = document.getElementById('productsGrid');
-        const filtered = category === 'all' ? products : products.filter(p => p.categoria === category);
+        const filtered = cat === 'all' ? products : products.filter(p => p.categoria === cat);
         grid.innerHTML = filtered.map(p => this.productCard(p)).join('');
     }
 
@@ -2995,13 +3342,6 @@ class CronoshopApp {
         this.renderCart();
     }
 
-    removeFromWishlist(id) {
-        this.state.wishlist = this.state.wishlist.filter(i => i !== id);
-        this.saveState();
-        this.updateBadges();
-        this.renderWishlist();
-    }
-
     updateBadges() {
         const cartCount = this.state.cart.length;
         const wishCount = this.state.wishlist.length;
@@ -3012,6 +3352,12 @@ class CronoshopApp {
         document.getElementById('navCartBadge').style.display = cartCount > 0 ? 'flex' : 'none';
         document.getElementById('wishBadge').innerText = wishCount;
         document.getElementById('wishBadge').style.display = wishCount > 0 ? 'block' : 'none';
+        
+        // Mobile bottom bar badges
+        document.getElementById('bottomCartBadge').innerText = cartCount;
+        document.getElementById('bottomCartBadge').style.display = cartCount > 0 ? 'block' : 'none';
+        document.getElementById('bottomWishBadge').innerText = wishCount;
+        document.getElementById('bottomWishBadge').style.display = wishCount > 0 ? 'block' : 'none';
     }
 
     renderCart() {
@@ -3032,7 +3378,7 @@ class CronoshopApp {
                     <div style="font-weight:600; margin-bottom:4px;">${p.nome}</div>
                     <div style="color:var(--primary); font-weight:700;">€${p.prezzo.toFixed(2)}</div>
                 </div>
-                <button onclick="app.removeFromCart('${p.id}')" style="background:none; border:none; color:#FF3B30; font-size:1.2em; cursor:pointer;"><i class="ph ph-trash"></i></button>
+                <button onclick="app.removeFromCart('${p.id}')" style="background:none; border:none; color:#FF3B30; font-size:1.2em; cursor:pointer; min-width:44px; min-height:44px;"><i class="ph ph-trash"></i></button>
             </div>
         `).join('');
         
@@ -3050,18 +3396,7 @@ class CronoshopApp {
         }
         
         const items = this.state.wishlist.map(id => products.find(p => p.id === id)).filter(Boolean);
-        container.innerHTML = `<div class="grid-layout">${items.map(p => `
-            <div class="product-card ios-touch" onclick="app.openProduct('${p.id}')">
-                <div class="product-img-wrap">
-                    <img class="product-img" src="${p.img}" alt="${p.nome}">
-                </div>
-                <div class="product-details">
-                    <div class="product-name">${p.nome}</div>
-                    <div class="product-price">€${p.prezzo.toFixed(2)}</div>
-                </div>
-                <button onclick="event.stopPropagation(); app.removeFromWishlist('${p.id}')" style="position:absolute; top:10px; right:10px; background:rgba(255,59,48,0.9); color:white; border:none; width:32px; height:32px; border-radius:50%; cursor:pointer;"><i class="ph ph-heart-break"></i></button>
-            </div>
-        `).join('')}</div>`;
+        container.innerHTML = `<div class="grid-layout">${items.map(p => this.productCard(p)).join('')}</div>`;
     }
 
     renderThemeSelector() {
@@ -3075,6 +3410,18 @@ class CronoshopApp {
             </div>
         `).join('');
     }
+    
+    renderFullMenuThemes() {
+        const container = document.getElementById('fullMenuThemes');
+        container.innerHTML = Object.entries(presets).map(([key, theme]) => `
+            <div class="full-menu-theme-item" onclick="app.applyTheme('${key}'); app.closeFullMenu();">
+                <div class="full-menu-theme-circle ${this.state.theme === key ? 'active' : ''}" 
+                     style="background: linear-gradient(135deg, rgb(${theme.bg}), rgb(${theme.primary}));">
+                </div>
+                <div class="full-menu-theme-name">${theme.name}</div>
+            </div>
+        `).join('');
+    }
 
     applyTheme(themeKey) {
         let theme;
@@ -3082,7 +3429,6 @@ class CronoshopApp {
             theme = presets[themeKey];
             this.state.theme = themeKey;
         } else if (typeof themeKey === 'object') {
-            // Custom AI theme
             const hexToRgb = (hex) => {
                 const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
                 return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '0, 0, 0';
@@ -3105,7 +3451,6 @@ class CronoshopApp {
         document.documentElement.style.setProperty('--primary-rgb', theme.primary);
         document.documentElement.style.setProperty('--accent-rgb', theme.accent || theme.primary);
         
-        // Check if dark theme
         const bgValues = theme.bg.split(',').map(Number);
         const isDark = (bgValues[0] + bgValues[1] + bgValues[2]) / 3 < 128;
         document.body.classList.toggle('theme-dark', isDark);
@@ -3124,6 +3469,11 @@ class CronoshopApp {
         document.getElementById('glassToggle').checked = this.state.glass;
         document.getElementById('boldToggle').checked = this.state.bold;
         document.getElementById('sizeValue').innerText = this.state.size;
+        
+        // Sync full menu toggle
+        if (document.getElementById('fullMenuGlassToggle')) {
+            document.getElementById('fullMenuGlassToggle').checked = this.state.glass;
+        }
     }
 
     changeSize(delta) {
@@ -3166,12 +3516,10 @@ class CronoshopApp {
         document.getElementById('passwordSection').classList.add('open');
         
         if (!existingUser) {
-            // New user - show registration
             setTimeout(() => {
                 document.getElementById('registerSection').style.display = 'block';
             }, 300);
         } else {
-            // Existing user - login
             document.getElementById('authContinueBtn').onclick = () => this.loginUser(email);
         }
     }
@@ -3277,7 +3625,6 @@ class CronoshopApp {
         document.getElementById('chatBody').innerHTML += `<div class="msg-bubble msg-user">${txt}</div>`;
         inp.value = '';
         
-        // Scroll to bottom
         const chatBody = document.getElementById('chatBody');
         chatBody.scrollTop = chatBody.scrollHeight;
         
@@ -3408,50 +3755,6 @@ class CronoshopApp {
         box.innerHTML = `<b><i class="ph-fill ph-sparkle"></i> CronoAI:</b><br>${res || 'Non sono riuscito ad analizzare il prodotto.'}`;
     }
 
-    // DRAGGABLE CHAT
-    initDraggableChat() {
-        const isMobile = window.innerWidth <= 768;
-        if (isMobile) return;
-        
-        const el = document.getElementById('chatOverlay');
-        const h = document.getElementById('chatHeader');
-        let isDown = false, offX, offY;
-        
-        h.addEventListener('mousedown', (e) => {
-            isDown = true;
-            offX = el.offsetLeft - e.clientX;
-            offY = el.offsetTop - e.clientY;
-        });
-        
-        document.addEventListener('mouseup', () => {
-            isDown = false;
-            this.saveState();
-        });
-        
-        document.addEventListener('mousemove', (e) => {
-            if (!isDown) return;
-            e.preventDefault();
-            const newX = e.clientX + offX;
-            const newY = e.clientY + offY;
-            el.style.left = newX + 'px';
-            el.style.top = newY + 'px';
-            el.style.bottom = 'auto';
-            el.style.right = 'auto';
-            this.state.chatX = newX;
-            this.state.chatY = newY;
-        });
-    }
-
-    applyChatPosition() {
-        const el = document.getElementById('chatOverlay');
-        if (this.state.chatX !== null && this.state.chatY !== null && window.innerWidth > 768) {
-            el.style.left = this.state.chatX + 'px';
-            el.style.top = this.state.chatY + 'px';
-            el.style.bottom = 'auto';
-            el.style.right = 'auto';
-        }
-    }
-
     // MENU TOGGLES
     toggleLeftMenu() {
         if (Prefs.minimal) {
@@ -3468,11 +3771,13 @@ class CronoshopApp {
                 header.querySelector('.ios-search').style.display = 'none';
                 header.querySelector('.brand-center').style.display = 'none';
                 content.innerHTML = `
+                    <div style="font-weight:700; font-size:1.1em; margin-bottom:12px; padding:0 4px;">Navigazione</div>
                     <div class="nav-item" onclick="app.navigate('home'); app.closeAll()"><i class="ph ph-house"></i> Home</div>
                     <div class="nav-item" onclick="app.navigate('catalog'); app.closeAll()"><i class="ph ph-bag"></i> Catalogo Prodotti</div>
                     <div class="nav-item" onclick="app.navigate('apple'); app.closeAll()"><i class="ph ph-apple-logo"></i> Apple Store</div>
                     <div class="nav-item" onclick="app.navigate('samsung'); app.closeAll()"><i class="ph ph-device-mobile"></i> Samsung Hub</div>
                     <div class="nav-divider"></div>
+                    <div style="font-weight:700; font-size:1.1em; margin-bottom:12px; padding:0 4px;">Personale</div>
                     <div class="nav-item" onclick="app.navigate('wishlist'); app.closeAll()"><i class="ph ph-heart"></i> Preferiti</div>
                     <div class="nav-item" onclick="app.navigate('cart'); app.closeAll()"><i class="ph ph-shopping-cart"></i> Carrello</div>
                     <div class="nav-item" onclick="app.navigate('settings'); app.closeAll()"><i class="ph ph-user"></i> Profilo</div>
@@ -3506,96 +3811,44 @@ class CronoshopApp {
                         </div>
                     </div>
                     <div class="nav-divider"></div>
-                    <div class="settings-section">
-                        <div class="toggle-item">
-                            <span>Ospite</span>
-                            <button class="ios-toggle" onclick="app.toggleGuest()">Toggle</button>
-                        </div>
-                        <div class="toggle-item">
-                            <span>Accedi a CronoID</span>
-                            <button class="ios-toggle" onclick="app.openAuth(); app.closeAll()">→</button>
-                        </div>
-                        <div class="toggle-item">
-                            <span>Nuove Animazioni BETA</span>
-                            <button class="ios-toggle" onclick="app.toggleNewAnimations()">Toggle</button>
-                        </div>
-                        <div class="toggle-item">
-                            <span>Engine più fluido</span>
-                            <button class="ios-toggle" onclick="app.toggleFluidEngine()">Toggle</button>
-                        </div>
+                    <div style="font-weight:700; font-size:1.1em; margin-bottom:12px; padding:0 4px;">Display</div>
+                    <div class="toggle-item">
+                        <span>Effetto Glass</span>
+                        <label class="ios26-toggle">
+                            <input type="checkbox" ${this.state.glass ? 'checked' : ''} onchange="app.toggleGlass()">
+                            <span class="toggle-track"><span class="toggle-knob"></span></span>
+                        </label>
+                    </div>
+                    <div class="toggle-item">
+                        <span>Modalità Minimale</span>
+                        <label class="ios26-toggle">
+                            <input type="checkbox" ${Prefs.minimal ? 'checked' : ''} onchange="Prefs.minimal = this.checked; Prefs.save(); document.body.classList.toggle('minimal-mode', Prefs.minimal);">
+                            <span class="toggle-track"><span class="toggle-knob"></span></span>
+                        </label>
                     </div>
                     <div class="nav-divider"></div>
-                    <div class="settings-section">
-                        <h4>Layout</h4>
-                        <div class="toggle-item">
-                            <span>Modalità minimale</span>
-                            <button class="ios-toggle" onclick="app.toggleMinimal()">Toggle</button>
-                        </div>
-                        <div class="toggle-item">
-                            <span>Barra in basso</span>
-                            <button class="ios-toggle" onclick="app.toggleBottomBar()">Toggle</button>
-                        </div>
-                    </div>
-                    <div class="nav-divider"></div>
-                    <div class="settings-section">
-                        <h4>Accessibilità</h4>
-                        <div class="toggle-item">
-                            <span>Rimuovi Trasparenza</span>
-                            <button class="ios-toggle" onclick="app.toggleGlass()">Toggle</button>
-                        </div>
-                        <div class="toggle-item">
-                            <span>Mostra Bordi</span>
-                            <button class="ios-toggle" onclick="app.toggleShowBorders()">Toggle</button>
-                        </div>
-                        <div class="toggle-item">
-                            <span>Testo in Grassetto</span>
-                            <button class="ios-toggle" onclick="app.toggleBoldText()">Toggle</button>
-                        </div>
-                        <div class="toggle-item">
-                            <span>Colori Saturi</span>
-                            <button class="ios-toggle" onclick="app.toggleSaturatedColors()">Toggle</button>
-                        </div>
-                        <div class="toggle-item">
-                            <span>Scala di Grigi</span>
-                            <button class="ios-toggle" onclick="app.toggleGrayscale()">Toggle</button>
-                        </div>
-                        <div class="toggle-item">
-                            <span>Riduci Movimento</span>
-                            <button class="ios-toggle" onclick="app.toggleReduceMotion()">Toggle</button>
-                        </div>
-                        <div class="toggle-item">
-                            <span>Contrasto Elevato</span>
-                            <button class="ios-toggle" onclick="app.toggleHighContrast()">Toggle</button>
-                        </div>
-                    </div>
-                    <div class="nav-divider"></div>
-                    <div class="theme-grid">
-                        <h4>Temi</h4>
-                        <div class="theme-buttons">
-                            <button class="theme-btn light" onclick="app.applyTheme('light'); app.closeAll()">Light</button>
-                            <button class="theme-btn dark" onclick="app.applyTheme('dark'); app.closeAll()">Dark</button>
-                            <button class="theme-btn gold" onclick="app.applyTheme('luxury'); app.closeAll()">Gold</button>
-                            <button class="theme-btn cyber" onclick="app.applyTheme('cyber'); app.closeAll()">Cyber</button>
-                            <button class="theme-btn midnight" onclick="app.applyTheme('midnight'); app.closeAll()">Midnight</button>
-                            <button class="theme-btn slate" onclick="app.applyTheme('slate'); app.closeAll()">Slate</button>
-                            <button class="theme-btn forest" onclick="app.applyTheme('forest'); app.closeAll()">Forest</button>
-                            <button class="theme-btn sunset" onclick="app.applyTheme('sunset'); app.closeAll()">Sunset</button>
-                            <button class="theme-btn ocean" onclick="app.applyTheme('ocean'); app.closeAll()">Ocean</button>
-                            <button class="theme-btn latte" onclick="app.applyTheme('latte'); app.closeAll()">Latte</button>
-                            <button class="theme-btn graphite" onclick="app.applyTheme('graphite'); app.closeAll()">Graphite</button>
-                            <button class="theme-btn desert" onclick="app.applyTheme('desert'); app.closeAll()">Desert</button>
-                            <button class="theme-btn rose" onclick="app.applyTheme('rose'); app.closeAll()">Rose</button>
-                            <button class="theme-btn aurora" onclick="app.applyTheme('aurora'); app.closeAll()">Aurora</button>
-                            <button class="theme-btn solar" onclick="app.applyTheme('solar'); app.closeAll()">Solar</button>
-                            <button class="theme-btn cherry" onclick="app.applyTheme('cherry'); app.closeAll()">Cherry</button>
-                            <button class="theme-btn highcontrast" onclick="app.applyTheme('highcontrast'); app.closeAll()">High Contrast</button>
-                        </div>
+                    <div style="font-weight:700; font-size:1.1em; margin-bottom:12px; padding:0 4px;">Temi Rapidi</div>
+                    <div class="theme-buttons">
+                        <button class="theme-btn light" onclick="app.applyTheme('light'); app.closeAll()">Light</button>
+                        <button class="theme-btn dark" onclick="app.applyTheme('dark'); app.closeAll()">Dark</button>
+                        <button class="theme-btn gold" onclick="app.applyTheme('luxury'); app.closeAll()">Gold</button>
+                        <button class="theme-btn cyber" onclick="app.applyTheme('cyber'); app.closeAll()">Cyber</button>
                     </div>
                 `;
                 content.style.display = 'flex';
                 backdrop.classList.add('active');
             }
         }
+    }
+    
+    openFullMenu() {
+        document.getElementById('fullMenuOverlay').classList.add('active');
+        document.getElementById('fullMenuScrim').classList.add('active');
+    }
+    
+    closeFullMenu() {
+        document.getElementById('fullMenuOverlay').classList.remove('active');
+        document.getElementById('fullMenuScrim').classList.remove('active');
     }
 
     closeAll() {
@@ -3609,7 +3862,6 @@ class CronoshopApp {
         document.querySelector('.ios-search').style.display = 'flex';
         document.querySelector('.brand-center').style.display = 'block';
         this.closeSidebar();
-        this.closeRightSidebar();
         this.closeFullMenu();
     }
 
@@ -3618,95 +3870,13 @@ class CronoshopApp {
         document.getElementById('sidebarScrim').classList.remove('active');
     }
 
-    closeRightSidebar() {
-        // Placeholder for right sidebar close if needed
-    }
-
-    toggleMinimal() {
-        Prefs.minimal = !Prefs.minimal;
-        Prefs.save();
-        document.body.classList.toggle('minimal-mode', Prefs.minimal);
-        this.closeAll();
-    }
-
-    toggleBeta() {
-        Prefs.beta = !Prefs.beta;
-        Prefs.save();
-        this.closeAll();
-    }
-
-    toggleGuest() {
-        Prefs.guest = !Prefs.guest;
-        Prefs.save();
-        this.closeAll();
-    }
-
-    toggleLogin() {
-        this.closeAll();
-        this.openAuth();
-    }
-
-    toggleNewAnimations() {
-        Prefs.newAnimations = !Prefs.newAnimations;
-        Prefs.save();
-        this.closeAll();
-    }
-
-    toggleFluidEngine() {
-        Prefs.fluidEngine = !Prefs.fluidEngine;
-        Prefs.save();
-        this.closeAll();
-    }
-
-    toggleBottomBar() {
-        Prefs.bottomBar = !Prefs.bottomBar;
-        Prefs.save();
-        this.closeAll();
-    }
-
-    toggleShowBorders() {
-        Prefs.showBorders = !Prefs.showBorders;
-        Prefs.save();
-        document.body.classList.toggle('show-borders', Prefs.showBorders);
-    }
-
-    toggleBoldText() {
-        Prefs.boldText = !Prefs.boldText;
-        Prefs.save();
-        document.body.classList.toggle('bold-text', Prefs.boldText);
-    }
-
-    toggleSaturatedColors() {
-        Prefs.saturatedColors = !Prefs.saturatedColors;
-        Prefs.save();
-        document.body.classList.toggle('saturated-colors', Prefs.saturatedColors);
-    }
-
-    toggleGrayscale() {
-        Prefs.grayscale = !Prefs.grayscale;
-        Prefs.save();
-        document.body.classList.toggle('grayscale', Prefs.grayscale);
-    }
-
-    toggleReduceMotion() {
-        Prefs.reduceMotion = !Prefs.reduceMotion;
-        Prefs.save();
-        document.body.classList.toggle('reduce-motion', Prefs.reduceMotion);
-    }
-
-    toggleHighContrast() {
-        Prefs.highContrast = !Prefs.highContrast;
-        Prefs.save();
-        document.body.classList.toggle('high-contrast', Prefs.highContrast);
-    }
-
     // NOTIFICATIONS
     showNotification(message, type = 'info') {
         const d = document.createElement('div');
         const bg = type === 'success' ? 'var(--primary)' : (type === 'error' ? '#FF3B30' : 'rgba(var(--text-rgb), 0.8)');
         d.style.cssText = `
             position: fixed;
-            bottom: 100px;
+            bottom: 120px;
             left: 50%;
             transform: translateX(-50%);
             background: ${bg};
