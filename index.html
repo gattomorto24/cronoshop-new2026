@@ -27,6 +27,8 @@
             --glass-blur: 0px;
             --glass-shadow: 0px 4px 12px rgba(0,0,0,0.05);
             --glass-saturate: 100%;
+            /* specific glass background for the search bar to ensure visible blur */
+            --search-glass-bg: var(--card-solid-bg);
             
             --card-solid-bg: rgb(var(--card-rgb));
             
@@ -48,6 +50,16 @@
             --toggle-knob: #FFFFFF;
             --toggle-shadow: 0 3px 8px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.12);
             --toggle-inner-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.04);
+            /* Nuovo Background specifico per la ricerca (vetro satinato) */
+            --search-glass-bg: rgba(255, 255, 255, 0.45); 
+            --search-glass-border: rgba(255, 255, 255, 0.3);
+            --search-blur: blur(15px) saturate(160%);
+}
+
+/* Variante Dark se attiva */
+body.theme-dark {
+    --search-glass-bg: rgba(40, 40, 42, 0.5);
+    --search-glass-border: rgba(255, 255, 255, 0.1);
         }
         
         body.glass-active {
@@ -56,11 +68,27 @@
             --glass-blur: 40px;
             --glass-saturate: 180%;
             --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            --search-glass-bg: rgba(var(--card-rgb), 0.82);
+        }
+
+        /* Reusable glass panel class: solid background by default, glass blur when active */
+        .glass-panel {
+            background: var(--card-solid-bg);
+            border-radius: 12px;
+            border: 1px solid transparent;
+        }
+        body.glass-active .glass-panel {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+            -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+            box-shadow: var(--glass-shadow);
         }
         
         body.theme-dark.glass-active {
             --glass-bg: rgba(30, 30, 30, 0.65);
             --glass-border: rgba(255, 255, 255, 0.15);
+            --search-glass-bg: rgba(28, 28, 30, 0.82);
         }
         
         body.theme-dark {
@@ -77,6 +105,7 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             border-radius: 0;
             width: 100%;
+            z-index: -1
             
         }
 
@@ -326,6 +355,20 @@
             background: rgba(var(--text-rgb), 0.08);
         }
 
+        /* When glass is disabled, make minimal header, its search and minimal panels fully solid
+           to match the dynamic bar appearance */
+        body.no-glass.minimal-mode .ios-header,
+        body.no-glass .minimal-side-panel,
+        body.no-glass .minimal-side-panel.active,
+        body.no-glass .ios-header .ios-search,
+        body.no-glass.minimal-mode .ios-header .ios-search {
+            background: var(--card-solid-bg) !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            border: 1px solid var(--separator) !important;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08) !important;
+        }
+
         .brand-center {
             font-weight: 600;
             cursor: pointer;
@@ -381,6 +424,18 @@
             width: 100%;
         }
 
+        /* Ensure search shows glass blur when glass mode is active or when given .glass-panel
+           Also include minimal-mode when glass is active and when the .glass-panel class is used */
+        body.glass-active .ios-header .ios-search,
+        body.minimal-mode.glass-active .ios-header .ios-search,
+        .ios-header .ios-search.glass-panel,
+        body.minimal-mode .ios-header .ios-search.glass-panel {
+            background: var(--search-glass-bg) !important;
+            border: 1px solid var(--glass-border) !important;
+            backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+            -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+            box-shadow: var(--glass-shadow) !important;
+        }
         .nav-divider {
             height: 1px;
             background: var(--separator);
@@ -836,7 +891,7 @@
         }
         body.glass-active .ios-header.expanded-left .ios-search,
         body.glass-active .ios-header.expanded-right .ios-search {
-            background: var(--glass-bg);
+            background: var(--search-glass-bg);
             backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
             -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
             border: 1px solid var(--glass-border);
@@ -1064,7 +1119,7 @@
             display: flex;
             flex-direction: column;
             box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-            z-index: 1001;
+            z-index: 1020;
             opacity: 0;
             visibility: hidden;
             transform: translateY(20px);
@@ -1598,10 +1653,10 @@
 
                 /* If glass effect active, make search inherit glass styling */
                 body.glass-active .ios-header .ios-search {
-                    background: var();
-                    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-                    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-                    border: 1px solid var(--glass-border);
+                    background: var(--search-glass-bg) !important;
+                    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+                    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) !important;
+                    border: 1px solid var(--glass-border) !important;
                 }
                 /* Increase top padding so content sits below the divided search panel */
                 .main-wrapper { padding-top: 170px; }
@@ -1634,7 +1689,7 @@
             /* glass styling when both minimal-mode and glass-active */
             body.minimal-mode.body.glass-active .ios-header .ios-search,
             body.glass-active body.minimal-mode .ios-header .ios-search {
-                background: var(--glass-bg);
+                background: var(--search-glass-bg);
                 backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
                 -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
                 border: 1px solid var(--glass-border);
@@ -1680,7 +1735,7 @@
     <!-- DYNAMIC BAR -->
     <nav class="ios-header" id="crono-navbar">
         <button class="nav-btn" id="menuBtn"><i class="ph ph-list"></i></button>
-        <div class="ios-search">
+        <div class="ios-search glass-panel">
             <i class="ph ph-magnifying-glass"></i>
             <input type="text" placeholder="Cerca..." id="searchInput">
             
@@ -1986,8 +2041,8 @@
 </button>
 
 <!-- Minimal-mode sliding panels (left navigation / right settings) -->
-<div id="minimalLeftPanel" class="minimal-side-panel left" aria-hidden="true"></div>
-<div id="minimalRightPanel" class="minimal-side-panel right" aria-hidden="true"></div>
+<div id="minimalLeftPanel" class="minimal-side-panel left glass-panel" aria-hidden="true"></div>
+<div id="minimalRightPanel" class="minimal-side-panel right glass-panel" aria-hidden="true"></div>
 
 <!-- CHAT INTERFACE -->
 <div class="chat-interface" id="chatOverlay">
