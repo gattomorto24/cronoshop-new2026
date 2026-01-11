@@ -58,6 +58,10 @@
             --search-glass-border: rgba(255, 255, 255, 0.3);
             --search-blur: blur(15px) saturate(160%);
             --search-blur-premium: blur(25px) saturate(180%);
+            /* dynamic search vertical offset (default for floating dynamic bar) */
+            --dynamic-search-top: 100px;
+            /* shared bottom offset for floating action buttons (chat, back-to-top) */
+            --floating-action-bottom: 24px;
 }
 
 /* Variante Dark se attiva */
@@ -1149,7 +1153,7 @@ body.theme-dark {
         /* CHAT */
         .chat-btn-float {
             position: fixed;
-            bottom: 24px;
+            bottom: calc(env(safe-area-inset-bottom, 0px) + var(--floating-action-bottom));
             right: 24px;
             width: 60px;
             height: 60px;
@@ -1170,8 +1174,8 @@ body.theme-dark {
         
         /* Hide float button on mobile with bottom bar */
         @media (max-width: 768px) {
-            .chat-btn-float {
-                bottom: 90px;
+            :root {
+                --floating-action-bottom: 90px;
             }
         }
         
@@ -1345,6 +1349,35 @@ body.theme-dark {
             opacity: 1;
             visibility: visible;
         }
+
+        /* Back-to-top button */
+        .back-to-top {
+            position: fixed;
+            left: 14px;
+            bottom: calc(env(safe-area-inset-bottom, 0px) + var(--floating-action-bottom));
+            width: 52px;
+            height: 52px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #34C759;
+            color: white;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.18), 0 0 24px rgba(52,199,89,0.28);
+            border: none;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(8px) scale(0.98);
+            transition: all 240ms cubic-bezier(0.2,0.8,0.2,1);
+            z-index: 1100;
+        }
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+        .back-to-top i { font-size: 1.15em; }
 
         /* ACCESSIBILITY CLASSES */
         body.show-borders * {
@@ -1832,6 +1865,8 @@ body.theme-dark {
     
     <!-- UI Backdrop for expanded menus -->
     <div class="ui-backdrop" id="uiBackdrop"></div>
+    <!-- Back to top button -->
+    <button id="backToTop" class="back-to-top" aria-label="Torna su" title="Torna su"><i class="ph ph-arrow-up"></i></button>
     
     <!-- MAIN CONTENT -->
     <main class="main-wrapper" id="mainWrapper">
@@ -3521,6 +3556,16 @@ class CronoshopApp {
                 }
                 lastY = y;
             }, { passive: true });
+            // Back-to-top button behavior
+            const backBtn = document.getElementById('backToTop');
+            if (backBtn) {
+                const handleScroll = () => {
+                    if (mainScroll.scrollTop > 160) backBtn.classList.add('visible'); else backBtn.classList.remove('visible');
+                };
+                mainScroll.addEventListener('scroll', handleScroll, { passive: true });
+                handleScroll();
+                backBtn.addEventListener('click', () => { mainScroll.scrollTo({ top: 0, behavior: 'smooth' }); });
+            }
         }
         
         // Product modal
