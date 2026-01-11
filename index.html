@@ -98,6 +98,65 @@
             background: rgba(28, 28, 30, 0.85);
             border: 1px solid rgba(255, 255, 255, 0.15);
         }
+
+        /* Compact state while scrolling: shrink header into a small pill and hide controls */
+        body.scroll-compact .ios-header {
+            height: 44px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            width: fit-content;
+            min-width: auto;
+            left: 50%;
+            transform: translateX(-50%);
+            top: env(safe-area-inset-top, 12px);
+            box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+            transition: all 0.25s var(--ease);
+        }
+        body.scroll-compact .ios-header .right-icons,
+        body.scroll-compact .ios-header .nav-btn {
+            display: none !important;
+        }
+        body.scroll-compact .ios-header .brand-center { display: block; font-weight:700; }
+        body.scroll-compact .ios-header .ios-search { display: none !important; }
+
+        /* Minimal-mode compact: thinner, more transparent glass, hide controls */
+        body.minimal-mode.scroll-compact .ios-header {
+            height: 40px;
+            padding: 6px 10px;
+            background: rgba(var(--card-rgb), 0.35);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: none;
+            transition: all 0.25s var(--ease);
+        }
+        body.minimal-mode.scroll-compact .ios-header .right-icons,
+        body.minimal-mode.scroll-compact .ios-header .nav-btn { display: none !important; }
+        body.minimal-mode.scroll-compact .ios-header .brand-center { display: block; }
+        body.minimal-mode.scroll-compact .ios-header .ios-search { display: none !important; }
+
+        /* Make brand centered and header thinner in minimal compact */
+        body.minimal-mode.scroll-compact .ios-header {
+            height: 36px;
+            padding: 4px 8px;
+            /* full width attached to edges */
+            width: 100%;
+            left: 0;
+            transform: none;
+            border-radius: 0;
+            top: 0;
+        }
+        body.minimal-mode.scroll-compact .ios-header .brand-center {
+            margin: 0 auto;
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.95em;
+        }
+
+        /* Increase space between header and page content when compact */
+        body.minimal-mode.scroll-compact .main-wrapper {
+            padding-top: 96px; /* give extra space so content doesn't sit under header */
+        }
         
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
@@ -1493,6 +1552,12 @@
 
             .minimal-side-panel.active { transform: translateX(0); opacity: 1; }
 
+            /* When in minimal-mode, ensure side panels render above the header/navbar */
+            body.minimal-mode .minimal-side-panel,
+            body.minimal-mode .minimal-side-panel.active {
+                z-index: 1006; /* higher than .ios-header (1002) and expanded elements */
+            }
+
             @media (max-width: 1024px) {
                 .minimal-side-panel { width: 85%; }
                 body.minimal-mode .main-wrapper { padding-top: calc(env(safe-area-inset-top, 64px)); }
@@ -1538,6 +1603,8 @@
                     -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
                     border: 1px solid var(--glass-border);
                 }
+                /* Increase top padding so content sits below the divided search panel */
+                .main-wrapper { padding-top: 170px; }
             }
 
             /* Make search attach to navbar in minimal-mode and be full-width */
@@ -3302,6 +3369,24 @@ class CronoshopApp {
         
         // UI Backdrop
         document.getElementById('uiBackdrop').addEventListener('click', () => this.closeAll());
+
+        // Header compact behavior on scroll
+        const mainScroll = document.getElementById('mainWrapper');
+        if (mainScroll) {
+            let lastY = mainScroll.scrollTop;
+            mainScroll.addEventListener('scroll', () => {
+                const y = mainScroll.scrollTop;
+                const delta = y - lastY;
+                // scrolling down -> compact
+                if (delta > 6) {
+                    document.body.classList.add('scroll-compact');
+                } else if (delta < -6) {
+                    // scrolling up -> restore
+                    document.body.classList.remove('scroll-compact');
+                }
+                lastY = y;
+            }, { passive: true });
+        }
         
         // Product modal
         document.getElementById('closeProductModal').addEventListener('click', () => this.closeProductModal());
