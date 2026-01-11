@@ -43,6 +43,9 @@
             
             --radius-md: 20px;
             --ease: cubic-bezier(0.25, 1, 0.5, 1);
+            /* Minimal header height variables for coordinated movement */
+            --minimal-header-height: 64px;
+            --minimal-header-compact-height: 36px;
             
             /* iOS 26 Toggle Colors */
             --toggle-on-bg: #34C759;
@@ -54,6 +57,7 @@
             --search-glass-bg: rgba(255, 255, 255, 0.45); 
             --search-glass-border: rgba(255, 255, 255, 0.3);
             --search-blur: blur(15px) saturate(160%);
+            --search-blur-premium: blur(25px) saturate(180%);
 }
 
 /* Variante Dark se attiva */
@@ -440,6 +444,74 @@ body.theme-dark {
             height: 1px;
             background: var(--separator);
             margin: 10px 0;
+        }
+
+        /* Piano B: standalone search element to guarantee independent backdrop-filter */
+        .ios-search-standalone {
+            position: fixed;
+            /* dynamic mode: placed below the navbar; value can be tuned */
+            top: var(--dynamic-search-top, 78px);
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 999; /* sit below the header (1000) so menu buttons remain clickable */
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 240px;
+            max-width: calc(100vw - 160px);
+            height: 44px;
+            padding: 0 16px;
+            background: var(--search-glass-bg);
+            backdrop-filter: var(--search-blur-premium);
+            -webkit-backdrop-filter: var(--search-blur-premium);
+            border: 1.5px solid var(--search-glass-border);
+            border-radius: var(--radius-md);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: all 0.4s cubic-bezier(0.25,1,0.5,1);
+            pointer-events: auto;
+        }
+        .ios-search-standalone:focus-within {
+            width: 300px;
+            background: rgba(255,255,255,0.7);
+            border-color: var(--primary);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+        .ios-search-standalone input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 16px;
+            color: var(--text-main);
+        }
+
+        /* Minimal-mode: search attached under the minimal navbar, full-width and squared */
+        body.minimal-mode .ios-search-standalone {
+            top: var(--minimal-header-height);
+            left: 0;
+            transform: none;
+            width: 100vw;
+            max-width: 100%;
+            border-radius: 0;
+            height: var(--minimal-header-height);
+            padding: 0 16px;
+            z-index: 1001; /* place below the minimal header (which is 1002) */
+            box-shadow: none;
+            transition: top 220ms var(--ease), height 220ms var(--ease), padding 220ms var(--ease);
+        }
+
+        /* During scrolling: dynamic bar hides, minimal bar thins */
+        body.scroll-compact:not(.minimal-mode) .ios-search-standalone {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(-50%) translateY(-8px);
+        }
+
+        body.minimal-mode.scroll-compact .ios-search-standalone {
+            top: var(--minimal-header-compact-height);
+            height: var(--minimal-header-compact-height);
+            padding: 0 12px;
+            border-radius: 0;
         }
 
         .crono-id-widget {
@@ -1660,6 +1732,10 @@ body.theme-dark {
                 }
                 /* Increase top padding so content sits below the divided search panel */
                 .main-wrapper { padding-top: 170px; }
+                /* On phone, when minimal-mode active, give extra space so attached search doesn't overlap content */
+                body.minimal-mode .main-wrapper {
+                    padding-top: calc(var(--minimal-header-height) + 80px);
+                }
             }
 
             /* Make search attach to navbar in minimal-mode and be full-width */
@@ -1735,11 +1811,6 @@ body.theme-dark {
     <!-- DYNAMIC BAR -->
     <nav class="ios-header" id="crono-navbar">
         <button class="nav-btn" id="menuBtn"><i class="ph ph-list"></i></button>
-        <div class="ios-search glass-panel">
-            <i class="ph ph-magnifying-glass"></i>
-            <input type="text" placeholder="Cerca..." id="searchInput">
-            
-        </div>
         <span class="brand-center" id="brandTitle">Cronoshop</span>
         <div class="right-icons">
             <button class="nav-btn cart-btn" id="cartBtn">
@@ -1753,6 +1824,11 @@ body.theme-dark {
             <button class="full-menu-close" onclick="app.closeAll()"><i class="ph ph-x"></i></button>
         </div>
     </nav>
+    <!-- Standalone search moved outside the navbar to ensure independent backdrop-filter context -->
+    <div class="ios-search-standalone glass-panel" id="dynamicSearch" aria-hidden="false">
+        <i class="ph ph-magnifying-glass"></i>
+        <input type="text" placeholder="Cerca..." id="searchInput">
+    </div>
     
     <!-- UI Backdrop for expanded menus -->
     <div class="ui-backdrop" id="uiBackdrop"></div>
@@ -3411,16 +3487,20 @@ class CronoshopApp {
         // Sidebar
         document.getElementById('sidebarScrim').addEventListener('click', () => this.closeSidebar());
         
-        // Dynamic bar buttons
-        document.getElementById('menuBtn').addEventListener('click', () => this.toggleLeftMenu());
-        document.getElementById('userBtn').addEventListener('click', () => this.toggleRightMenu());
-        document.getElementById('cartBtn').addEventListener('click', () => this.navigate('cart'));
-        document.getElementById('brandTitle').addEventListener('click', () => this.navigate('home'));
+        // Dynamic bar buttons (attach safely)
+        try {
+            this.attachHeaderButtons();
+        } catch (e) {
+            console.warn('attachHeaderButtons failed', e);
+        }
         
         // Search
-        document.getElementById('searchInput').addEventListener('keyup', (e) => {
-            if (e.key === 'Enter') this.search(e.target.value);
-        });
+        const _search = document.getElementById('searchInput');
+        if (_search) {
+            _search.removeEventListener('keyup', this._searchKeyHandler);
+            this._searchKeyHandler = (e) => { if (e.key === 'Enter') this.search(e.target.value); };
+            _search.addEventListener('keyup', this._searchKeyHandler);
+        }
         
         // UI Backdrop
         document.getElementById('uiBackdrop').addEventListener('click', () => this.closeAll());
@@ -3432,11 +3512,11 @@ class CronoshopApp {
             mainScroll.addEventListener('scroll', () => {
                 const y = mainScroll.scrollTop;
                 const delta = y - lastY;
-                // scrolling down -> compact
+                // scrolling down -> compact (use threshold to avoid micro-noise)
                 if (delta > 6) {
                     document.body.classList.add('scroll-compact');
-                } else if (delta < -6) {
-                    // scrolling up -> restore
+                } else if (delta < 0) {
+                    // any upward movement -> restore immediately
                     document.body.classList.remove('scroll-compact');
                 }
                 lastY = y;
@@ -3501,6 +3581,34 @@ class CronoshopApp {
         document.getElementById('chatInput').addEventListener('keyup', (e) => {
             if (e.key === 'Enter') this.sendChat();
         });
+    }
+
+    attachHeaderButtons() {
+        const menuBtn = document.getElementById('menuBtn');
+        const userBtn = document.getElementById('userBtn');
+        const cartBtn = document.getElementById('cartBtn');
+        const brandTitle = document.getElementById('brandTitle');
+
+        if (menuBtn) {
+            menuBtn.removeEventListener('click', this._menuHandler);
+            this._menuHandler = () => this.toggleLeftMenu();
+            menuBtn.addEventListener('click', this._menuHandler);
+        }
+        if (userBtn) {
+            userBtn.removeEventListener('click', this._userHandler);
+            this._userHandler = () => this.toggleRightMenu();
+            userBtn.addEventListener('click', this._userHandler);
+        }
+        if (cartBtn) {
+            cartBtn.removeEventListener('click', this._cartHandler);
+            this._cartHandler = () => this.navigate('cart');
+            cartBtn.addEventListener('click', this._cartHandler);
+        }
+        if (brandTitle) {
+            brandTitle.removeEventListener('click', this._brandHandler);
+            this._brandHandler = () => this.navigate('home');
+            brandTitle.addEventListener('click', this._brandHandler);
+        }
     }
     
     initFullMenuEvents() {
@@ -4291,8 +4399,10 @@ class CronoshopApp {
         const content = document.getElementById('expanded-content');
         content.style.display = 'none';
         content.innerHTML = '';
-        document.querySelector('.ios-search').style.display = 'flex';
-        document.querySelector('.brand-center').style.display = 'block';
+        const oldSearch = document.querySelector('.ios-search') || document.getElementById('dynamicSearch') || document.querySelector('.ios-search-standalone');
+        if (oldSearch) oldSearch.style.display = 'flex';
+        const brand = document.querySelector('.brand-center');
+        if (brand) brand.style.display = 'block';
         this.closeSidebar();
         this.closeFullMenu();
         // ensure minimal panels are closed as well
