@@ -741,6 +741,64 @@
             display: flex;
         }
 
+        /* Place the close button at the top-right of the expanded header */
+        .ios-header.expanded-left .full-menu-close,
+        .ios-header.expanded-right .full-menu-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            z-index: 1005;
+            background: transparent;
+            color: var(--text-main);
+            border: none;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        /* Detached search panel inside expanded header */
+        .ios-header.expanded-left .ios-search,
+        .ios-header.expanded-right .ios-search {
+            display: flex;
+            width: calc(100% - 24px);
+            margin: 8px 12px;
+            padding: 10px 12px;
+            box-sizing: border-box;
+            align-items: center;
+            gap: 8px;
+            border-radius: var(--radius-md);
+            background: var(--card-solid-bg);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            z-index: 1004;
+            justify-content: center;
+        }
+        body.glass-active .ios-header.expanded-left .ios-search,
+        body.glass-active .ios-header.expanded-right .ios-search {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+            -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+            border: 1px solid var(--glass-border);
+        }
+        /* show the static nav close when header expanded */
+        .ios-header.expanded-left .nav-static-close,
+        .ios-header.expanded-right .nav-static-close {
+            display: flex !important;
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            z-index: 1006;
+            background: transparent;
+            border: none;
+            width: 40px;
+            height: 40px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
         .mobile-menu-btn { display: none; font-size: 1.6em; color: var(--primary); background: none; border: none; padding: 8px; min-width: 44px; min-height: 44px; }
         @media (max-width: 1024px) { .mobile-menu-btn { display: flex; align-items: center; justify-content: center; } }
 
@@ -1387,6 +1445,141 @@
             min-height: 54px;
             font-size: 1.05em;
         }
+            /* Minimal-mode header: full width, touching screen edges */
+            body.minimal-mode .ios-header {
+                top: 0;
+                left: 0;
+                right: 0;
+                transform: none;
+                border-radius: 0;
+                padding: 10px 14px;
+                width: 100vw;
+                max-width: 100%;
+                min-width: 0;
+                justify-content: space-between;
+                z-index: 1002;
+            }
+
+            /* Reduce main top padding when header is docked */
+            body.minimal-mode .main-wrapper { padding-top: 64px; }
+
+            /* Minimal side panels sliding from screen borders */
+            .minimal-side-panel {
+                position: fixed;
+                top: 0;
+                bottom: 0;
+                width: 320px;
+                max-width: 85%;
+                background: var(--glass-bg);
+                backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+                -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sature));
+                box-shadow: 5px 0 30px rgba(0,0,0,0.15);
+                border: 1px solid var(--glass-border);
+                z-index: 1001;
+                transform: translateX(-100%);
+                transition: transform 0.35s var(--ease), opacity 0.25s;
+                overflow-y: auto;
+                padding: max(env(safe-area-inset-top), 64px) 16px 20px 16px;
+            }
+
+            .minimal-side-panel.right {
+                right: 0;
+                left: auto;
+                transform: translateX(100%);
+                box-shadow: -5px 0 30px rgba(0,0,0,0.15);
+            }
+
+            .minimal-side-panel.left { left: 0; }
+
+            .minimal-side-panel.active { transform: translateX(0); opacity: 1; }
+
+            @media (max-width: 1024px) {
+                .minimal-side-panel { width: 85%; }
+                body.minimal-mode .main-wrapper { padding-top: calc(env(safe-area-inset-top, 64px)); }
+            }
+
+            /* Narrow / thin screens: show search bar below the navbar as an expansion */
+            @media (max-width: 420px) {
+                .ios-header {
+                    /* center header and expand to near-full width on very narrow screens */
+                    left: 50%;
+                    transform: translateX(-50%);
+                    width: calc(100vw - 32px);
+                    max-width: calc(100vw - 32px);
+                    position: fixed;
+                }
+                .ios-header .ios-search {
+                    display: flex;
+                    position: absolute;
+                    top: 115%;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    width: calc(100% - 0px);
+                    max-width: calc(100% - 0px);
+                    padding: 8px 12px;
+                    gap: 8px;
+                    align-items: center;
+                    border-bottom-left-radius: 12px;
+                    border-bottom-right-radius: 12px;
+                    border-top-left-radius: 12px;
+                    border-top-right-radius: 12px;
+                    background: var(--card-solid-bg);
+                    box-shadow: var(--glass-shadow);
+                    z-index: 1003;
+                    pointer-events: auto;
+                    box-sizing: border-box;
+                }
+                .ios-header .ios-search input { width: 100%; }
+
+                /* If glass effect active, make search inherit glass styling */
+                body.glass-active .ios-header .ios-search {
+                    background: var();
+                    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+                    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+                    border: 1px solid var(--glass-border);
+                }
+            }
+
+            /* Make search attach to navbar in minimal-mode and be full-width */
+            body.minimal-mode .ios-header {
+                position: fixed;
+            }
+            body.minimal-mode .ios-header .ios-search {
+                position: absolute;
+                top: 100%;
+                left: 50%;
+                transform: translateX(-50%);
+                width: calc(100% - 0px);
+                box-sizing: border-box;
+                padding: 10px 14px;
+                gap: 8px;
+                align-items: center;
+                border-radius: 0; /* squared */
+                background: var(--card-solid-bg);
+                box-shadow: var(--glass-shadow);
+                z-index: 1003;
+                overflow: hidden;
+                display: flex;
+                justify-content: center;
+            }
+            body.minimal-mode .ios-header .ios-search input { width: 100%; border-radius: 8px; }
+
+            /* glass styling when both minimal-mode and glass-active */
+            body.minimal-mode.body.glass-active .ios-header .ios-search,
+            body.glass-active body.minimal-mode .ios-header .ios-search {
+                background: var(--glass-bg);
+                backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+                -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+                border: 1px solid var(--glass-border);
+            }
+
+            /* Ensure close button is visible when header is expanded (including in minimal-mode) */
+            .ios-header.expanded-left .full-menu-close,
+            .ios-header.expanded-right .full-menu-close {
+                display: flex;
+                visibility: visible;
+                opacity: 1;
+            }
     </style>
 </head>
 <body class="glass-active">
@@ -1423,6 +1616,7 @@
         <div class="ios-search">
             <i class="ph ph-magnifying-glass"></i>
             <input type="text" placeholder="Cerca..." id="searchInput">
+            
         </div>
         <span class="brand-center" id="brandTitle">Cronoshop</span>
         <div class="right-icons">
@@ -1432,7 +1626,10 @@
             </button>
             <button class="nav-btn" id="userBtn"><i class="ph ph-user-circle"></i></button>
         </div>
-        <div id="expanded-content"></div>
+        <button class="full-menu-close nav-static-close" onclick="app.closeAll()" style="display:none;"><i class="ph ph-x"></i></button>
+        <div id="expanded-content">
+            <button class="full-menu-close" onclick="app.closeAll()"><i class="ph ph-x"></i></button>
+        </div>
     </nav>
     
     <!-- UI Backdrop for expanded menus -->
@@ -1720,6 +1917,10 @@
 <button class="chat-btn-float" id="chatFloatBtn">
     <i class="ph-fill ph-sparkle"></i>
 </button>
+
+<!-- Minimal-mode sliding panels (left navigation / right settings) -->
+<div id="minimalLeftPanel" class="minimal-side-panel left" aria-hidden="true"></div>
+<div id="minimalRightPanel" class="minimal-side-panel right" aria-hidden="true"></div>
 
 <!-- CHAT INTERFACE -->
 <div class="chat-interface" id="chatOverlay">
@@ -3757,7 +3958,8 @@ class CronoshopApp {
     // MENU TOGGLES
     toggleLeftMenu() {
         if (Prefs.minimal) {
-            this.openFullMenu();
+            this.toggleMinimalLeft();
+            return;
         } else {
             const header = document.getElementById('crono-navbar');
             const content = document.getElementById('expanded-content');
@@ -3767,10 +3969,12 @@ class CronoshopApp {
             } else {
                 this.closeAll();
                 header.classList.add('expanded-left');
-                header.querySelector('.ios-search').style.display = 'none';
                 header.querySelector('.brand-center').style.display = 'none';
                 content.innerHTML = `
-                    <div style="font-weight:700; font-size:1.1em; margin-bottom:12px; padding:0 4px;">Navigazione</div>
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+                        <div style="font-weight:700; font-size:1.1em; padding:0 4px;">Navigazione</div>
+                        <button class="full-menu-close" onclick="app.closeAll()"><i class="ph ph-x"></i></button>
+                    </div>
                     <div class="nav-item" onclick="app.navigate('home'); app.closeAll()"><i class="ph ph-house"></i> Home</div>
                     <div class="nav-item" onclick="app.navigate('catalog'); app.closeAll()"><i class="ph ph-bag"></i> Catalogo Prodotti</div>
                     <div class="nav-item" onclick="app.navigate('apple'); app.closeAll()"><i class="ph ph-apple-logo"></i> Apple Store</div>
@@ -3789,7 +3993,8 @@ class CronoshopApp {
 
     toggleRightMenu() {
         if (Prefs.minimal) {
-            this.openFullMenu();
+            this.toggleMinimalRight();
+            return;
         } else {
             const header = document.getElementById('crono-navbar');
             const content = document.getElementById('expanded-content');
@@ -3799,9 +4004,9 @@ class CronoshopApp {
             } else {
                 this.closeAll();
                 header.classList.add('expanded-right');
-                header.querySelector('.ios-search').style.display = 'none';
                 header.querySelector('.brand-center').style.display = 'none';
                 content.innerHTML = `
+                    <button class="full-menu-close" onclick="app.closeAll()"><i class="ph ph-x"></i></button>
                     <div class="crono-id-widget">
                         <div class="avatar">${this.state.currentUser ? this.state.currentUser.avatar : '?'}</div>
                         <div class="user-info">
@@ -3844,6 +4049,94 @@ class CronoshopApp {
         document.getElementById('fullMenuOverlay').classList.add('active');
         document.getElementById('fullMenuScrim').classList.add('active');
     }
+
+    /* Minimal-mode sliding panels (left/right) */
+    toggleMinimalLeft() {
+        const left = document.getElementById('minimalLeftPanel');
+        const backdrop = document.getElementById('uiBackdrop');
+        if (!left) return;
+        if (left.classList.contains('active')) {
+            left.classList.remove('active');
+            left.setAttribute('aria-hidden', 'true');
+            backdrop.classList.remove('active');
+        } else {
+            // populate with navigation (reusing same items)
+            left.innerHTML = `
+                <div style="display:flex; align-items:center; justify-content:space-between; position:sticky; top:12px; background:transparent; padding-bottom:10px;">
+                    <div style="font-weight:700; font-size:1.05em;">Navigazione</div>
+                    <button class="full-menu-close" onclick="app.closeAll()"><i class="ph ph-x"></i></button>
+                </div>
+                <div style="margin-top:12px;">
+                    <div class="nav-item" onclick="app.navigate('home'); app.closeAll()"><i class="ph ph-house"></i> Home</div>
+                    <div class="nav-item" onclick="app.navigate('catalog'); app.closeAll()"><i class="ph ph-bag"></i> Catalogo Prodotti</div>
+                    <div class="nav-item" onclick="app.navigate('apple'); app.closeAll()"><i class="ph ph-apple-logo"></i> Apple Store</div>
+                    <div class="nav-item" onclick="app.navigate('samsung'); app.closeAll()"><i class="ph ph-device-mobile"></i> Samsung Hub</div>
+                    <div class="nav-divider"></div>
+                    <div style="font-weight:700; font-size:1.05em; margin:8px 0;">Personale</div>
+                    <div class="nav-item" onclick="app.navigate('wishlist'); app.closeAll()"><i class="ph ph-heart"></i> Preferiti</div>
+                    <div class="nav-item" onclick="app.navigate('cart'); app.closeAll()"><i class="ph ph-shopping-cart"></i> Carrello</div>
+                    <div class="nav-item" onclick="app.navigate('settings'); app.closeAll()"><i class="ph ph-user"></i> Profilo</div>
+                </div>
+            `;
+            left.classList.add('active');
+            left.setAttribute('aria-hidden', 'false');
+            backdrop.classList.add('active');
+        }
+    }
+
+    toggleMinimalRight() {
+        const right = document.getElementById('minimalRightPanel');
+        const backdrop = document.getElementById('uiBackdrop');
+        if (!right) return;
+        if (right.classList.contains('active')) {
+            right.classList.remove('active');
+            right.setAttribute('aria-hidden', 'true');
+            backdrop.classList.remove('active');
+        } else {
+            right.innerHTML = `
+                <div style="display:flex; align-items:center; justify-content:space-between; position:sticky; top:12px; background:transparent; padding-bottom:10px;">
+                    <div style="font-weight:700; font-size:1.05em;">Impostazioni</div>
+                    <button class="full-menu-close" onclick="app.closeAll()"><i class="ph ph-x"></i></button>
+                </div>
+                <div style="margin-top:12px;">
+                    <div class="crono-id-widget">
+                        <div class="avatar">${this.state.currentUser ? this.state.currentUser.avatar : '?'}</div>
+                        <div class="user-info">
+                            <div class="user-name">${this.state.currentUser ? this.state.currentUser.username : 'Ospite'}</div>
+                            <div class="user-id">${this.state.currentUser ? this.state.currentUser.email : 'Non connesso'}</div>
+                        </div>
+                    </div>
+                    <div class="nav-divider"></div>
+                    <div style="font-weight:700; font-size:1.05em; margin:8px 0;">Display</div>
+                    <div class="toggle-item">
+                        <span>Effetto Glass</span>
+                        <label class="ios26-toggle">
+                            <input type="checkbox" ${this.state.glass ? 'checked' : ''} onchange="app.toggleGlass()">
+                            <span class="toggle-track"><span class="toggle-knob"></span></span>
+                        </label>
+                    </div>
+                    <div class="toggle-item">
+                        <span>Modalità Minimale</span>
+                        <label class="ios26-toggle">
+                            <input type="checkbox" ${Prefs.minimal ? 'checked' : ''} onchange="Prefs.minimal = this.checked; Prefs.save(); document.body.classList.toggle('minimal-mode', Prefs.minimal);">
+                            <span class="toggle-track"><span class="toggle-knob"></span></span>
+                        </label>
+                    </div>
+                    <div class="nav-divider"></div>
+                    <div style="font-weight:700; font-size:1.05em; margin:8px 0;">Temi Rapidi</div>
+                    <div class="theme-buttons">
+                        <button class="theme-btn light" onclick="app.applyTheme('light'); app.closeAll()">Light</button>
+                        <button class="theme-btn dark" onclick="app.applyTheme('dark'); app.closeAll()">Dark</button>
+                        <button class="theme-btn gold" onclick="app.applyTheme('luxury'); app.closeAll()">Gold</button>
+                        <button class="theme-btn cyber" onclick="app.applyTheme('cyber'); app.closeAll()">Cyber</button>
+                    </div>
+                </div>
+            `;
+            right.classList.add('active');
+            right.setAttribute('aria-hidden', 'false');
+            backdrop.classList.add('active');
+        }
+    }
     
     closeFullMenu() {
         document.getElementById('fullMenuOverlay').classList.remove('active');
@@ -3862,6 +4155,11 @@ class CronoshopApp {
         document.querySelector('.brand-center').style.display = 'block';
         this.closeSidebar();
         this.closeFullMenu();
+        // ensure minimal panels are closed as well
+        const l = document.getElementById('minimalLeftPanel');
+        const r = document.getElementById('minimalRightPanel');
+        if (l) { l.classList.remove('active'); l.setAttribute('aria-hidden','true'); }
+        if (r) { r.classList.remove('active'); r.setAttribute('aria-hidden','true'); }
     }
 
     closeSidebar() {
