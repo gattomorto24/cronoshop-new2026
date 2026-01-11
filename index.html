@@ -44,8 +44,8 @@
             --radius-md: 20px;
             --ease: cubic-bezier(0.25, 1, 0.5, 1);
             /* Minimal header height variables for coordinated movement */
-            --minimal-header-height: 64px;
-            --minimal-header-compact-height: 36px;
+            --minimal-header-height: 52px;
+            --minimal-header-compact-height: 30px;
             
             /* iOS 26 Toggle Colors */
             --toggle-on-bg: #34C759;
@@ -1664,14 +1664,14 @@ body.theme-dark {
             min-height: 54px;
             font-size: 1.05em;
         }
-            /* Minimal-mode header: full width, touching screen edges */
+            /* Minimal-mode header: full width, touching screen edges (thinner) */
             body.minimal-mode .ios-header {
                 top: 0;
                 left: 0;
                 right: 0;
                 transform: none;
                 border-radius: 0;
-                padding: 10px 14px;
+                padding: 6px 12px;
                 width: 100vw;
                 max-width: 100%;
                 min-width: 0;
@@ -1679,8 +1679,8 @@ body.theme-dark {
                 z-index: 1002;
             }
 
-            /* Reduce main top padding when header is docked */
-            body.minimal-mode .main-wrapper { padding-top: 64px; }
+            /* Reduce main top padding when header is docked (use variable) */
+            body.minimal-mode .main-wrapper { padding-top: var(--minimal-header-height); }
 
             /* Minimal side panels sliding from screen borders */
             .minimal-side-panel {
@@ -1720,7 +1720,7 @@ body.theme-dark {
 
             @media (max-width: 1024px) {
                 .minimal-side-panel { width: 85%; }
-                body.minimal-mode .main-wrapper { padding-top: calc(env(safe-area-inset-top, 64px)); }
+                body.minimal-mode .main-wrapper { padding-top: calc(env(safe-area-inset-top, 0px) + var(--minimal-header-height)); }
             }
 
             /* Narrow / thin screens: show search bar below the navbar as an expansion */
@@ -1782,8 +1782,8 @@ body.theme-dark {
                 transform: translateX(-50%);
                 width: calc(100% - 0px);
                 box-sizing: border-box;
-                padding: 10px 14px;
-                gap: 8px;
+                padding: 6px 12px;
+                gap: 6px;
                 align-items: center;
                 border-radius: 0; /* squared */
                 background: var(--card-solid-bg);
@@ -1793,7 +1793,7 @@ body.theme-dark {
                 display: flex;
                 justify-content: center;
             }
-            body.minimal-mode .ios-header .ios-search input { width: 100%; border-radius: 8px; }
+            body.minimal-mode .ios-header .ios-search input { width: 100%; border-radius: 6px; font-size: 15px; }
 
             /* glass styling when both minimal-mode and glass-active */
             body.minimal-mode.body.glass-active .ios-header .ios-search,
