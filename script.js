@@ -1179,6 +1179,7 @@ class CronoshopApp {
             wishlist: [],
             view: 'home',
             theme: 'light',
+            themeAuto: true, // follows device unless user chooses explicitly
             glass: true,
             bold: false,
             size: 17,
@@ -1196,7 +1197,11 @@ class CronoshopApp {
         const saved = localStorage.getItem('cronoshop_state');
         if (saved) {
             const parsed = JSON.parse(saved);
+            // If the saved state does not include a theme, keep themeAuto = true; otherwise respect saved and mark manual
             this.state = { ...this.state, ...parsed };
+            this.state.themeAuto = typeof parsed.theme === 'undefined';
+        } else {
+            this.state.themeAuto = true;
         }
     }
 
@@ -1207,7 +1212,17 @@ class CronoshopApp {
     init() {
         this.renderProducts();
         this.bindEvents();
-        this.applyTheme(this.state.theme);
+        // If the user didn't explicitly choose a theme, follow the device preference
+        if (this.state.themeAuto && window.matchMedia) {
+            const mq = window.matchMedia('(prefers-color-scheme: dark)');
+            this.state.theme = mq.matches ? 'dark' : 'light';
+            this.applyTheme(this.state.theme, false); // false = not a manual selection
+            const mqHandler = (e) => { if (this.state.themeAuto) this.applyTheme(e.matches ? 'dark' : 'light', false); };
+            if (mq.addEventListener) mq.addEventListener('change', mqHandler);
+            else if (mq.addListener) mq.addListener(mqHandler);
+        } else {
+            this.applyTheme(this.state.theme);
+        }
         this.applyDisplaySettings();
         this.updateBadges();
         this.renderThemeSelector();
@@ -1690,11 +1705,15 @@ class CronoshopApp {
         `).join('');
     }
 
-    applyTheme(themeKey) {
+    applyTheme(themeKey, manual = true) {
         let theme;
         if (typeof themeKey === 'string' && presets[themeKey]) {
             theme = presets[themeKey];
             this.state.theme = themeKey;
+            if (manual) {
+                this.state.themeAuto = false; // mark as user-selected
+                this.saveState();
+            }
         } else if (typeof themeKey === 'object') {
             const hexToRgb = (hex) => {
                 const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -1708,6 +1727,10 @@ class CronoshopApp {
                 accent: hexToRgb(themeKey.accent)
             };
             this.state.theme = 'custom';
+            if (manual) {
+                this.state.themeAuto = false;
+                this.saveState();
+            }
         } else {
             return;
         }
@@ -1722,7 +1745,6 @@ class CronoshopApp {
         const isDark = (bgValues[0] + bgValues[1] + bgValues[2]) / 3 < 128;
         document.body.classList.toggle('theme-dark', isDark);
         
-        this.saveState();
         this.renderThemeSelector();
         this.renderFullMenuThemes();
     }
@@ -2036,6 +2058,8 @@ class CronoshopApp {
             } else {
                 this.closeAll();
                 header.classList.add('expanded-left');
+                const oldSearch = document.querySelector('.ios-search') || document.getElementById('dynamicSearch') || document.querySelector('.ios-search-standalone');
+                if (oldSearch) oldSearch.style.display = 'none';
                 header.querySelector('.brand-center').style.display = 'none';
                 content.innerHTML = `
                     <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
@@ -2071,6 +2095,8 @@ class CronoshopApp {
             } else {
                 this.closeAll();
                 header.classList.add('expanded-right');
+                const oldSearch = document.querySelector('.ios-search') || document.getElementById('dynamicSearch') || document.querySelector('.ios-search-standalone');
+                if (oldSearch) oldSearch.style.display = 'none';
                 header.querySelector('.brand-center').style.display = 'none';
                 content.innerHTML = `
                     <button class="full-menu-close" onclick="app.closeAll()"><i class="ph ph-x"></i></button>
@@ -2115,6 +2141,8 @@ class CronoshopApp {
     openFullMenu() {
         document.getElementById('fullMenuOverlay').classList.add('active');
         document.getElementById('fullMenuScrim').classList.add('active');
+        const oldSearch = document.querySelector('.ios-search') || document.getElementById('dynamicSearch') || document.querySelector('.ios-search-standalone');
+        if (oldSearch) oldSearch.style.display = 'none';
     }
 
     /* Minimal-mode sliding panels (left/right) */
